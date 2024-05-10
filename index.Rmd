@@ -1,0 +1,13 @@
+---
+title: "RAMP - Uganda"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean 
+---
+
+#  {.tabset .tabset-fade .tabset-pills}
+
+## $\odot$ {.tabset .tabset-fade .tabset-pills}
+
+Welcome to the github home of RAMP-Uganda. 
