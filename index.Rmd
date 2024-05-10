@@ -1,6 +1,6 @@
 ---
 title: "RAMP - Uganda"
-subtitle: "Robust Analytics for Malaria Policy in Uganda"
+subtitle: "Adaptive Malaria Control through Robust Analytics"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   html_document:
