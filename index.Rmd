@@ -1,6 +1,6 @@
 ---
 title: "RAMP - Uganda"
-subtitle: "Adaptive Malaria Control through Robust Analytics"
+subtitle: "Robust Analytics and Adaptive Malaria Control for Uganda"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   html_document:
@@ -35,6 +35,9 @@ Through careful analysis of uncertainty and through consultation with program ma
 ## Reports
 
 ## Outbreaks 
+
+
+![**Figure**: A historical assessment of malaria outbreaks in Uganda.](./Images/outbreaks.png)
 
 ## Data 
 
