@@ -12,7 +12,15 @@ output:
 
 Welcome to the github home of RAMP-Uganda. 
 
++ **Reports** --- routine reporting for NMCD. 
+
++ **Outbreaks** --- an outbreak response tool. 
+
++ **Data** --- a data processing pipeline 
+
 ## Reports
 
 ## Outbreaks 
+
+## Data 
 
