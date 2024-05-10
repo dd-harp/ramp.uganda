@@ -15,7 +15,7 @@ Welcome to the github home of RAMP-Uganda.
 
 Our goal is to develop and implement **Adaptive Malaria Control,** working in collaboration with the **National Malaria Control Division** (NMCD) of **Uganda**'s National Ministry of Health. 
 
-Adaptive malaria control is a structured, iterative approach to developing malaria intelligence and **r**obust **a**nalytics for **m**alaria **p**olicy (RAMP).
+Adaptive malaria control is a structured, iterative approach to developing policy using a bespoke inferential system called **r**obust **a**nalytics for **m**alaria **p**olicy (RAMP).
 Malaria intelligence is information about malaria needed to support policy developed around stable information systems that involve involve data processing and curation, the transformation of data into information through data analysis, and estimation and imputation to quantify key aspects of malaria transmission, mosquito ecology, human care seeking behaviors, and health systems. 
 RAMP analytics use malaria intelligence to formulate policies using simulation-based analytics, including analyses to optimize the allocation of resources, improve technical efficiency, and develop strategy and evidence-based policies to reduce burden and eliminate malaria.
 Malaria is managed on monthly and annual cycles, and on multi-year funding and strategic planning cycles.
