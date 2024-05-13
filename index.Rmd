@@ -41,5 +41,12 @@ Through careful analysis of uncertainty and through consultation with program ma
 
 ## Data 
 
+## Malaria Intelligence
+
+![](Images/MalariaIntelligenceFlow.png)
+
 ## Simulation 
 
+## $\boxplus$ {.tabset .tabset-fade .tabset-pills}
+
+## $\dagger$ 
