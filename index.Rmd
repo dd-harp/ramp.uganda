@@ -49,4 +49,6 @@ Through careful analysis of uncertainty and through consultation with program ma
 
 ## $\boxplus$ {.tabset .tabset-fade .tabset-pills}
 
+[Applied Dynamics](Dynamics_latest/index.html){target="_blank"}
+
 ## $\dagger$ 
