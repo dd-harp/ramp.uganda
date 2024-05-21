@@ -34,6 +34,8 @@ Through careful analysis of uncertainty and through consultation with program ma
 
 ## Reports
 
+![](Images/ETL-Outputs.png)
+
 ## Outbreaks 
 
 
