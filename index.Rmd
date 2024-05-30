@@ -5,26 +5,27 @@ date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   html_document:
     theme: flatly 
+split_by: section+number
 ---
 
 #  {.tabset .tabset-fade .tabset-pills}
 
 ## $\odot$ {.tabset .tabset-fade .tabset-pills}
 
-Welcome to the github home of RAMP-Uganda. 
+Welcome to the github home for RAMP-Uganda. 
 
 Our goal is to develop and implement **Adaptive Malaria Control,** working in collaboration with the **National Malaria Control Division** (NMCD) of **Uganda**'s National Ministry of Health. 
 
-Adaptive malaria control is a structured, iterative approach to developing policy using a bespoke inferential system called **r**obust **a**nalytics for **m**alaria **p**olicy (RAMP).
-Malaria intelligence is information about malaria needed to support policy developed around stable information systems that involve involve data processing and curation, the transformation of data into information through data analysis, and estimation and imputation to quantify key aspects of malaria transmission, mosquito ecology, human care seeking behaviors, and health systems. 
-RAMP analytics use malaria intelligence to formulate policies using simulation-based analytics, including analyses to optimize the allocation of resources, improve technical efficiency, and develop strategy and evidence-based policies to reduce burden and eliminate malaria.
+Adaptive malaria control is a structured, iterative approach to developing malaria policy that is guided by a bespoke inferential system called **r**obust **a**nalytics for **m**alaria **p**olicy (RAMP).
+Malaria intelligence -- information about malaria needed to support policy -- is developed around stable information systems that involve involve data processing and curation, the transformation of data into information through data analysis, and estimation and imputation to quantify key aspects of malaria transmission, mosquito ecology, human care seeking behaviors, and health systems. 
+We use malaria intelligence to develop and evaluate policies using simulation-based analytics, including analyses to optimize the allocation of resources, improve technical efficiency, and develop strategy and evidence-based policies to reduce burden and eliminate malaria.
 Malaria is managed on monthly and annual cycles, and on multi-year funding and strategic planning cycles.
 Adaptive malaria control must support these policy cycles through development of protocols and procedures for repeated analysis to ensure policy advice is consistent, that it is of the highest quality, and that it is updated to be responsive to changing needs.
 Through careful analysis of uncertainty and through consultation with program managers, surveillance systems are reviewed to identify key data gaps, and plans are made to fill those gaps and improve future decisions.
 
 *** 
 
-+ **Reports** --- routine reporting for NMCD. 
++ **Data Assets** --- development of data processing pipelines and stable data assets to support robust analytics
 
 + **Outbreaks** --- an outbreak response tool. 
 
@@ -32,22 +33,43 @@ Through careful analysis of uncertainty and through consultation with program ma
 
 + **Simulation** --- simulation-based analytics 
 
-## Reports
+## Data Assets {.tabset .tabset-fade .tabset-pills}
 
-![](Images/ETL-Outputs.png)
+To save lives and set the stage for malaria elimination, Uganda's National Malaria Control Division has invested time and resources in sophisticated analytics to translate malaria surveillance and research data into malaria policy. A core goal for RAMP-Uganda has been to organize a **data warehouse** that holds data of all sorts describing malaria in Uganda for public use. 
+
+Malaria data is of little use if it is not routinely used, so we have developed data processing pipelines. We call these **ETL pipelines** because they *extract* the data from various sources, *transform* the data -- basic data cleaning tasks such as identification of outliers, consistency checks, and imputation of missing and outliered data -- while tracking modifications with version control, and *load* the data in a format that can be used for analysis by many different parties. The endpoint of the ETL pipeline is a version controlled data asset. 
+
+**Malaria Surveillance** 
+
+Uganda's Ministry of Health maintains a health management information system (HMIS). Data from all public and some private facilities is collected and maintained by the Division of Health Information (DHI) in a DHIS-2 database. The current DHIS-2 instance started on  
+
+**Malaria Research** 
+
+We are also interested in using high-quality malaria research data to supplement Uganda's HMIS data. To this end, we have partnered with the Malaria Atlas Project (MAP) and Vector Atlas.   
+
+For a longer discussion, see [Data Assets](Data-Assets.html). 
+
+***
+
+**NOTES:**
+
++ The more I think about it, the more it feels to me like our goals are closer to data warehouse, rather than data lake.
+
+
+## Routine Reports 
 
 ## Outbreaks 
 
 
 ![**Figure**: A historical assessment of malaria outbreaks in Uganda.](./Images/outbreaks.png)
 
-## Data 
+## RAMP {.tabset .tabset-fade .tabset-pills}
 
-## Malaria Intelligence
+### Malaria Intelligence
 
 ![](Images/MalariaIntelligenceFlow.png)
 
-## Simulation 
+### Simulation 
 
 ## $\boxplus$ {.tabset .tabset-fade .tabset-pills}
 

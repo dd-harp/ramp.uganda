@@ -1,0 +1,23 @@
+---
+title: "Adaptive Malaria Control"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: flatly 
+---
+
+# {.tabset .tabset-fade .tabset-pills}
+
+## $\odot$ {.tabset .tabset-fade .tabset-pills}
+
+## White Paper {.tabset .tabset-fade .tabset-pills}
+
+1. Evidence to action for complex adaptive systems
+
+1. Evidence to action for complex adaptive systems
+
+
+
+## $\boxplus$ {.tabset .tabset-fade .tabset-pills}
+
+## $\dagger$ {.tabset .tabset-fade .tabset-pills}

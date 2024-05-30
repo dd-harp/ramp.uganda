@@ -1,3 +1,3 @@
 # ramp.uganda
 
-This is the github home of [RAMP-Uganda](RAMP-Uganda.html).  
+This is the github home for [RAMP-Uganda](RAMP-Uganda.html).  

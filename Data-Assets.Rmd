@@ -1,0 +1,22 @@
+---
+title: "Data Assets"
+subtitle: "for the RAMP Uganda Project"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: flatly 
+---
+
+[ramp.uganda](index.html)
+
+*** 
+
+#  {.tabset .tabset-fade .tabset-pills}
+
+## $\odot$ {.tabset .tabset-fade .tabset-pills}
+
+**Current Data Assets** 
+
++ Spatial Hierarchies 
+
+##  {.tabset .tabset-fade .tabset-pills}
