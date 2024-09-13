@@ -264,7 +264,7 @@ hist(sf_max$avg_pfpr)
 points(seq(0.0, 0.95, by=0.05), rep(0, 20), pch = 15, col = rev(plasma(20)), main = "TPR")
 ```
 
-```{r, fig.height=8, fig.width=8, echo=F, eval=F}
+```{r, fig.height=8, fig.width=8, echo=F}
 plot(st_geometry((sf_max)), col = clrs, main = "PfPR")
 ```
 
