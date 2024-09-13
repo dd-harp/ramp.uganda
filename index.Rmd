@@ -246,25 +246,25 @@ for(i in 1:136){
 }
 ```
 
-```{r, fig.height=3, fig.width=12, echo=F}
+```{r, fig.height=3, fig.width=8, echo=F}
 hist(sf_max$avg_tpr)
 points(seq(0.0, 0.95, by=0.05), rep(0, 20), pch = 15, col = rev(plasma(20)))
 ```
 
-```{r, fig.height=12, fig.width=12, echo=F, eval=F}
+```{r, fig.height=8, fig.width=8, echo=F, eval=F}
 inferno(20)[20-round(sf_max$avg_tpr*20)] -> clrs
 plot(st_geometry((sf_max)), col = clrs, main = "TPR")
 ```
 
 #### *Pf*PR 
 
-```{r, fig.height=3, fig.width=12, echo=F}
+```{r, fig.height=3, fig.width=8, echo=F}
 plasma(20)[20-round(sf_max$avg_pfpr*20)] -> clrs
 hist(sf_max$avg_pfpr)
 points(seq(0.0, 0.95, by=0.05), rep(0, 20), pch = 15, col = rev(plasma(20)), main = "TPR")
 ```
 
-```{r, fig.height=12, fig.width=12, echo=F, eval=F}
+```{r, fig.height=8, fig.width=8, echo=F, eval=F}
 plot(st_geometry((sf_max)), col = clrs, main = "PfPR")
 ```
 
@@ -444,7 +444,7 @@ hist(sf_max$peak_week)
 points(1:52, rep(0, 52), pch = 15, col = turbo(52), main = "peak")
 ```
 
-```{r, fig.height=12, fig.width=12, eval=F}
+```{r, fig.height=8, fig.width=8}
 turbo(52)[round(sf_max$peak_week)] -> clrs
 plot(st_geometry((sf_max)), col = clrs)
 ```
