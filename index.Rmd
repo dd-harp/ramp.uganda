@@ -260,8 +260,8 @@ plot(st_geometry((sf_max)), col = clrs, main = "TPR")
 
 ```{r, fig.height=3, fig.width=8, echo=F}
 plasma(20)[20-round(sf_max$avg_pfpr*20)] -> clrs
-hist(sf_max$avg_pfpr)
-points(seq(0.0, 0.95, by=0.05), rep(0, 20), pch = 15, col = rev(plasma(20)), main = "TPR")
+hist(sf_max$avg_pfpr, 14)
+points(seq(0.025, 0.975, by=0.05), rep(0, 20), pch = 15, col = rev(plasma(20)), main = "TPR")
 ```
 
 ```{r, fig.height=8, fig.width=8, echo=F}
