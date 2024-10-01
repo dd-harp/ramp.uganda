@@ -3,8 +3,7 @@ title: "Health Facility Reference Project"
 subtitle: "Version 1.0" 
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
-  html_document: 
-    theme: flatly 
+  html_document 
 ---
 
 ***
