@@ -1,0 +1,74 @@
+---
+title: "Health Facility Reference Project"
+subtitle: "Version 1.0" 
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document: 
+    theme: flatly 
+---
+
+***
+
+[Home](index.html) | [Master Data Plan](DataPlan.html)
+
+***
+
+
+# {.tabset} 
+
+## $\odot$
+
+The **Health Facility Reference Project** maintains data describing the locations and types of health facilities and a linked set of data assets for creating reports. The data assets are: 
+
+- The master facilities list
+
+- GIS shape files
+    
+- A table describing each facilities location in a nested spatial hierarchy 
+
+## Access
+
+*Where are the current operating and development versions and how can members of NMCD get access?* 
+
+*** 
+
+The *development* version of these files is maintained by RAMP-Uganda on Box at *<describe location.>*  
+
+The *operating* version of these files is launched on Box at *<describe location.>* Upon completion, it will be moved to *<describe location>* with access controlled by DHI. 
+
+## Development Plan {.tabset}
+
+### $\oplus$ 
+
+The **Health Facility Reference** data assets are updated for several reasons: 
+
++ the locations of existing facilities are updated 
+
++ new facilities are added 
+
++ the shape files are modified 
+
++ the location table is modified 
+
+### Updating 
+
+When a new version of the *Health Facility Reference* Project is released...
+
+*Describe the procedure for updating the current operating version and archiving old versions*  
+
+### Issues 
+
+### Tasks  
+
+## Documentation {.tabset}
+
+### Version 1.0
+
+*summary of issues leading up to version 1.0* 
+
+# 
+
+*** 
+The Health Facility Reference Project is maintained by *Meddy* 
+
+
