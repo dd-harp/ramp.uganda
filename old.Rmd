@@ -1,0 +1,160 @@
+#### TPR 
+
+The end point of cross walking is a set of *Pf*PR estimates for *specific* age groups, based on the MAP *Pf*PR databases and facility-based TPR data 
+
+```{r, echo=F, eval=F}
+library(sf)
+library(viridisLite)
+load("../Uganda/Data/pop_centroid_maxweek_tpr_by_district_2023.rda")
+sf_max1 <- sf_max
+load("../Uganda/Data/pop_centroid_maxweek_by_district.rda")
+sf_max$avg_tpr <- sf_max1$avg_tpr
+PfPR <- read.csv("../Uganda/Data/Average_pfpr_data.csv") 
+```
+
+```{r, echo=F, eval=F}
+sf_max$avg_pfpr = sf_max$avg_tpr
+for(i in 1:136){
+  ix = which(PfPR$district_name == sf_max$name[i])
+  if(length(ix)>0) sf_max$avg_pfpr[i] = PfPR$average_pfpr[ix]
+}
+```
+
+```{r, fig.height=3, fig.width=8, echo=F}
+hist(sf_max$avg_tpr)
+points(seq(0.025, 0.975, by=0.05), rep(0, 20), pch = 15, col = rev(plasma(20)))
+```
+
+```{r, fig.height=8, fig.width=8, echo=F}
+inferno(20)[20-round(sf_max$avg_tpr*20)] -> clrs
+plot(st_geometry((sf_max)), col = clrs, main = "TPR")
+```
+
+#### *Pf*PR 
+
+```{r, fig.height=3, fig.width=8, echo=F}
+plasma(20)[20-round(sf_max$avg_pfpr*20)] -> clrs
+hist(sf_max$avg_pfpr, 14)
+points(seq(0.025, 0.975, by=0.05), rep(0, 20), pch = 15, col = rev(plasma(20)), main = "TPR")
+```
+
+```{r, fig.height=8, fig.width=8, echo=F}
+plot(st_geometry((sf_max)), col = clrs, main = "PfPR")
+```
+
+#### PR $\leftrightarrow$ EIR 
+
++ In malaria research, more than 150 studies have estimated the *Pf*EIR and the *Pf*PR in the same population at roughly the same time.
+
++ We have developed algorithms that compute the *Pf*EIR - *Pf*PR relationships that are *fitted* to these data.  
+
+***
+
+```{r}
+library(ramp.xds)
+```
+
+```{r, echo=F}
+xde_scaling_eir = function(model, N=25){
+
+  EIR = 10^seq(-1,3, length.out=N)*365
+  pr = 0*EIR
+  ni = 0*EIR
+  eir = 0*EIR
+  scaling = list()
+  for(i in 1:N){
+    model$EIRpar$eir = EIR[i]/365
+    model <- ramp.xds::xds_solve_cohort(model, A=10, da=1)
+    out <- model$outputs$cohort
+    pr_t = tail(out$true_pr, 365); pr[i] = mean(pr_t)
+    ni_t = tail(out$ni, 365);  ni[i]= mean(ni_t)
+    eir_t = tail(out$eir, 365); eir[i] = mean(eir_t)
+    scaling[[i]] = list(aeir = eir_t*365, eir = eir_t, pr = pr_t, ni = ni_t)
+  }
+
+  model$outputs$eirpr <- list(aeir=365*eir, eir=eir, pr=pr, ni=ni, scaling=scaling)
+
+  return(model)
+}
+```
+
+
+```{r, echo=F}
+xde_pr2eir = function(pr, model, extend=FALSE){
+  with(model$outputs, stopifnot(exists("eirpr")))
+  PR = model$outputs$eirpr$pr
+  EIR = model$outputs$eirpr$eir
+  if(extend==TRUE){
+    PR = c(0, PR, 1)
+    EIR = c(0, EIR, 5*10^3/365)
+  }
+  ix = which(pr<=max(PR) & pr>=min(PR))
+  get_eir = function(pr){
+    if(pr == min(PR)) return(min(EIR))
+    if(pr == max(PR)) return(max(EIR))
+    ix = max(which(PR<pr))
+    ff = (pr-PR[ix])/(PR[ix+1]-PR[ix])
+    eir=EIR[ix] + ff*(EIR[ix+1]-EIR[ix])
+    return(eir)
+  }
+  eir = 0*pr-1
+  eir[ix] = sapply(pr[ix], get_eir)
+  pr2eir = list(pr=pr[ix], eir=eir[ix])
+  if(length(ix)>0) pr2eir$errors = c(pr=pr[-ix])
+  return(pr2eir)
+}
+```
+
+
+```{r}
+Xo = list(delta=2/365, rho=0.3)
+mod <- xds_setup_cohort(Xname= "SIP", Xopts=Xo)
+mod <- xde_scaling_eir(mod, 25)
+```
+
+
+```{r}
+xde_pr2eir(sf_max$avg_pfpr, mod, TRUE)$eir -> eir
+```
+
+```{r}
+plot(sf_max$avg_pfpr, 365*eir)
+```
+
+```{r}
+mod <- xds_setup(Xname = "SIS", MYZname="si", HPop = sf_max$population, residence = 1:146, nPatches=146)
+```
+
+```{r, eval=F}
+inferno(90)[127-round((sf_max$population)^(1/3))] -> clrs
+plot(st_geometry((sf_max)), col = clrs)
+```
+
+```{r}
+hist(sf_max$peak_week)
+points(1:52+0.5, rep(0, 52), pch = 15, col = turbo(52), main = "peak")
+```
+
+```{r, fig.height=8, fig.width=8}
+turbo(52)[round(sf_max$peak_week)] -> clrs
+plot(st_geometry((sf_max)), col = clrs)
+```
+
+```{r, eval=F}
+pk = sf_max$peak_week
+Fs = function(t, pk){1+cos(2*pi*(t-pk*7)/365)}
+tt = 1:365
+plot(tt, Fs(tt, pk[1]), type = "n")
+points(1+0*pk, Fs(1, pk))
+```
+
+```{r}
+t = 0:60 
+F_trend = function(t){3 + .1*t/12}
+F_season = function(t){(cos(2*pi*t*30/365))/5}
+pattern = F_trend(t) + F_season(t)
+data = pattern + rnorm(61,0,.1)
+plot(t, pattern, type = "l", ylim = range(data), xlim = c(0,72))
+points(t, data)
+lines(c(0:72), F_trend(c(0:72)), col = "blue")
+```
