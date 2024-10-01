@@ -65,9 +65,28 @@ When a new version of the *Health Facility Reference* Project is released...
 
 *summary of issues leading up to version 1.0* 
 
+ 
+
+
+## $\boxplus$ {.tabset .tabset-fade .tabset-pills}
+
+*Related Documents*
+
+## $\dagger$ 
+
+The Health Facility Reference Project was developed by:
+
++ Meddy
+
++ Dianna
+
++ Jaffer
+
++ Austin
+
++ Rek 
+
 # 
 
 *** 
-The Health Facility Reference Project is maintained by *Meddy* 
-
-
+The Health Facility Reference Project is maintained by *Meddy*
