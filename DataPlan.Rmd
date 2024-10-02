@@ -6,11 +6,17 @@ output:
   html_document 
 ---
 
+***
+
+[RAMP-Uganda](index.html)
+
+*** 
+
 #  {.tabset}
 
 ## $\odot$
 
-Uganda's National Malaria Control Division (NMCD) and Department of Health Information (DHI) have been collaborating with the University of Washington and Pilgrim Africa to implement **Adaptive Malaria Control,** which calls for developing a formal process of *repeated analytics* and *iterative policy engagement.* 
+Uganda's National Malaria Control Division (NMCD) and Department of Health Information (DHI) have been collaborating with the University of Washington and Pilgrim Africa to implement [**Adaptive Malaria Control,**](index.html) which calls for developing a formal process of *repeated analytics* and *iterative policy engagement.* 
 
 Adaptive malaria control involves intensive analysis of malaria surveillance and research data. To that end, the data and analytics are being organized into stable *data processing & analytics pipelines* with stable version controlled data assets and malaria intelligence assets.
 
@@ -22,7 +28,7 @@ Adaptive malaria control involves intensive analysis of malaria surveillance and
 
 This framework document provides an overview of the projects that are being put in place. It's goal is to serve as a reference and overview of these projects.  The need for stable, version controlled data and algorithms that can be revised over calls for establishing two distinct and well-defined modes. The **operating** versions are stable, well-defined algorithms and some data assets. These are designed to be critically reviewed, revised, and updated on a schedule. The **development** versions of the algorithms and some data sets include new features that are scheduled to be added to the operational versions, once they have been thoroughly verified, validated, and tested for consistency and stability. 
 
-***
+## Projects
 
 At the present time, all projects are in the development stage. The goal for the RAMP-Uganda team is to transform early development into *operating* and *development* versions of the following before Oct 15, 2024:
 
