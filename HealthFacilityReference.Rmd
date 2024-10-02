@@ -25,6 +25,15 @@ The **Health Facility Reference Project** maintains data describing the location
     
 - A table describing each facilities location in a nested spatial hierarchy 
 
+The webpage is organized by tabs. 
+
++ **Access** describes how to get access. 
+
++ ** 
+See $\boxplus$ for related documents.
+
+See $\dagger$ for Contributors 
+
 ## Access
 
 *Where are the current operating and development versions and how can members of NMCD get access?* 
@@ -35,7 +44,8 @@ The *development* version of these files is maintained by RAMP-Uganda on Box at 
 
 The *operating* version of these files is launched on Box at *<describe location.>* Upon completion, it will be moved to *<describe location>* with access controlled by DHI. 
 
-## Development Plan {.tabset}
+
+## Updates {.tabset}
 
 ### $\oplus$ 
 
@@ -49,15 +59,11 @@ The **Health Facility Reference** data assets are updated for several reasons:
 
 + the location table is modified 
 
-### Updating 
+### Protocol 
 
 When a new version of the *Health Facility Reference* Project is released...
 
 *Describe the procedure for updating the current operating version and archiving old versions*  
-
-### Issues 
-
-### Tasks  
 
 ## Documentation {.tabset}
 
@@ -69,6 +75,8 @@ When a new version of the *Health Facility Reference* Project is released...
 
 
 ## $\boxplus$ {.tabset .tabset-fade .tabset-pills}
+
+**Bug Reporting**  
 
 *Related Documents*
 
@@ -89,4 +97,4 @@ The Health Facility Reference Project was developed by:
 # 
 
 *** 
-The Health Facility Reference Project is maintained by *Meddy*
+The *Health Facility Reference* Project is maintained by *Meddy?* Please contact *Meddy?* to report a bug, request a feature or make some other suggestion, or contribute to the project.  
