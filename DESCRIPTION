@@ -1,0 +1,34 @@
+Package: ramp.uganda
+Type: Package
+Title: Simulation Modeling for Uganda 
+Version: 0.98
+Authors@R: c(
+      person("David L.", "Smith", email = "smitdave@uw.edu", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4367-3849"))
+    )
+Description: RAMP Uganda simulation project 
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+URL: https://dd-harp.github.io/ramp.xds/
+BugReports: https://github.com/dd-harp/ramp.xds/issues
+Roxygen: list(markdown = TRUE)
+Imports: 
+  ramp.xds,
+  ramp.library,
+  ramp.forcing,
+  ramp.control,
+  ramp.work,
+  rootSolve,
+  expm,
+  graphics
+Suggests:
+    ggplot2,
+    viridisLite,
+    data.table,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+RdMacros: Rdpack
+Config/testthat/edition: 3
