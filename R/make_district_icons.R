@@ -1,0 +1,11 @@
+source("libraries_district.R")
+district_dir <- read.csv("district_directories.csv", header=TRUE)
+
+for(i in 1:136){
+   district <- district_dir[i,1]
+   dir <- district_dir[i,2]
+   icon_name = paste(dir, "/", dir, "_icon.png", sep="")
+   png(icon_name, width=600, height=700)
+   shade_district(district)
+   dev.off(dev.cur())
+}
