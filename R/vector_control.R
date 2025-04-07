@@ -5,7 +5,7 @@ plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
   years <- c(start:end)
   yrs <- 365*(c(start:end)-start)
 
-  uga_irs <- read.csv("uganda/uga_irs_fmt.csv", header=T)
+  uga_irs <- read.csv("data/uga_irs_fmt.csv", header=T)
   ix = which(uga_irs$location == district_name)
   here_irs <- uga_irs[ix,]
   here_irs$spray_start <- as.Date(here_irs$spray_start)
@@ -26,7 +26,7 @@ plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
 
 get_irs_dates = function(district_name, start=2012){
   origin = as.Date(paste(start,"-01-01", sep =""))
-  uga_irs <- read.csv("uganda/uga_irs_fmt.csv", header=T)
+  uga_irs <- read.csv("data/uga_irs_fmt.csv", header=T)
   ix = which(uga_irs$location == district_name)
   here_irs <- uga_irs[ix,]
   here_irs$spray_start <- as.Date(here_irs$spray_start)
@@ -40,7 +40,7 @@ plot_itn_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
   years <- c(start:end)
   yrs <- 365*(c(start:end)-start)
 
-  uga_itn <- read.csv("uganda/uga_itn_fmt.csv", header=T)
+  uga_itn <- read.csv("data/uga_itn_fmt.csv", header=T)
   ix = which(uga_itn$district_name == district_name)
   here_itn <- uga_itn[ix,]
   here_itn$distribution_date <- as.Date(here_itn$mean_date)
