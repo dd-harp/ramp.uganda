@@ -1,5 +1,3 @@
-suppressMessages(library(ramptools))
-suppressMessages(library(sf))
 
 shade_region = function(region, names){
   which(uga_region_shp$name == region) ->ix

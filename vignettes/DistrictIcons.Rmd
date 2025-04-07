@@ -1,3 +1,9 @@
+---
+title: "DistrictIcons"
+output: html_document
+---
+
+```{r}
 source("libraries_district.R")
 district_dir <- read.csv("district_directories.csv", header=TRUE)
 
@@ -9,3 +15,5 @@ for(i in 1:136){
    shade_district(district)
    dev.off(dev.cur())
 }
+```
+

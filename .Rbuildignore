@@ -1,1 +1,3 @@
 ^~/\.boxr-oauth$
+^.*\.Rproj$
+^\.Rproj\.user$
