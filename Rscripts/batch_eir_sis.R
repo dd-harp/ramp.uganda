@@ -1,4 +1,4 @@
-# Rscript batch_eir i
+# Rscript batch_eir i j
 
 library(ramp.xds)
 library(ramp.work)
