@@ -16,16 +16,22 @@ abim <- readRDS("/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/Models/abim_d
 ```
 
 ```{r}
+xds_plot_PR(abim)
+```
+
+```{r}
 agago <- readRDS("/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/Models/agago_district_eir_sis.rds")
 ```
 
+```{r}
+xds_plot_PR(agago)
+```
 
 
 ```{r}
 dist_dir <- read.csv("../data/district_directories.csv")
 city_dir <- read.csv("../data/city_directories.csv")
 ```
-
 
 ```{r}
 start = as.Date("2015-01-01")

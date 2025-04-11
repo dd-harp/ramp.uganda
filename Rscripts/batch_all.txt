@@ -1,0 +1,15 @@
+Rscript batch_Lambda_sis.R 1 10  &
+Rscript batch_Lambda_sis.R 11 20 &
+Rscript batch_Lambda_sis.R 21 30 &
+Rscript batch_Lambda_sis.R 31 40 &
+Rscript batch_Lambda_sis.R 41 50 &
+Rscript batch_Lambda_sis.R 51 60 &
+Rscript batch_Lambda_sis.R 61 70 &
+Rscript batch_Lambda_sis.R 71 80 &
+Rscript batch_Lambda_sis.R 81 90 &
+Rscript batch_Lambda_sis.R 91 100 &
+Rscript batch_Lambda_sis.R 101 110 &
+Rscript batch_Lambda_sis.R 111 120 &
+Rscript batch_Lambda_sis.R 121 130 &
+Rscript batch_Lambda_sis.R 131 140 &
+Rscript batch_Lambda_sis.R 141 146 &

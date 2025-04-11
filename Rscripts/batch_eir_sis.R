@@ -1,4 +1,4 @@
-# Rscript batch_eir i
+# Rscript batch_eir i j
 
 library(ramp.xds)
 library(ramp.work)
@@ -34,6 +34,7 @@ model <- last_to_inits(model)
 
 args <- commandArgs(trailingOnly=TRUE)
 run_ix = c(args[1]:args[2])
+
 for(dist_ix in run_ix){
   district <- district_names[dist_ix,1]
   model$location <- district_names[dist_ix,2]
