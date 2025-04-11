@@ -6,7 +6,9 @@ library(ramp.work)
 
 
 ## ----read TPR data-----------------------------------------------------------------------------------------------------
-tprdata <- read.csv(file='C:/Users/Admin/Documents/ramp.uganda/data/pfpr_ts_district_from_hf_pixel_agg.csv')
+source("my_ramp_uganda.R")
+data_file <- paste(ramp_uganda_local, "data/pfpr_ts_district_from_hf_pixel_agg.csv", sep="")
+tprdata <- read.csv(file=data_file)
 sorted_data <- tprdata[order(tprdata$district_name,tprdata$period),] #arrange the data in chronical order of period and district name
 id_name = sorted_data$district_name
 dist_name = unique(sorted_data$district_name)
@@ -30,9 +32,9 @@ for(i in 1:146)
   data_list[[i]] <- get_one_district(i)
 
 ## ----fit_all_district--------------------------------------------------------------------------------------------------
-directory <- "C:/Users/Admin/Box/Models"
 # List all RDS files in the directory
-rds_files <- list.files(path = directory, pattern = "\\.rds$", full.names = TRUE)
+mod_dir <- paste(Box_RAMP_local, "Models/", sep="")
+rds_files <- list.files(path = mod_dir, pattern = "\\.rds$", full.names = TRUE)
 eir_files <- grep("_eir_sis\\.rds$", rds_files,value=TRUE)
 # Initialize an empty list to store the contents
 fitted_mod <- list()
@@ -94,14 +96,30 @@ profile = function(i, model_list, data_list){
 }
 
 ## ----------------------------------------------------------------------------------------------------------------------
-pdf("../Images/all_district.pdf")
- par(mfrow = c(2,2))
+#pdf("../Images/all_district.pdf")
+
+source("R/vector_control.R")
+names_file <- "data/district_directories.csv"
+district_names <- read.csv(names_file, header=TRUE)
+names_file <- "data/city_directories.csv"
+city_names <- read.csv(names_file, header=TRUE)
+district_names <- rbind(district_names, city_names)
+uga_irs <- read.csv("data/uga_irs_fmt.csv", header=T)
+
 malaria_data <- list()
 for (i in 1:146) {
+  location <- fitted_mod[[i]]$location
+  ix = which(district_names$dir == location)
+  dist_name <- district_names[ix,1]
+  image_file <- paste(intel_local, location, "/", fitted_mod[[i]]$location, "_eir.png", sep="")
+  png(image_file, width=1040,height=720)
+  par(mfrow = c(2,2))
   Est_data <- profile(i, fitted_mod, data_list)
+  add_irs_history(dist_name, uga_irs)
+  dev.off(dev.cur())
   malaria_data[[i]] <- Est_data
 }
-malaria_dat_df <- do.call(rbind, malaria_data)
-write.csv(malaria_dat_df, "../data/all_malaria_data_R0.csv", row.names = FALSE)
-dev.off(dev.cur())
+#malaria_dat_df <- do.call(rbind, malaria_data)
+#write.csv(malaria_dat_df, "../data/all_malaria_data_R0.csv", row.names = FALSE)
+#dev.off(dev.cur())
 

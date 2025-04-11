@@ -24,6 +24,23 @@ plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
   points(irs_dates, irs_dates*0, pch = 15, col = clr)
 }
 
+add_irs_history = function(district_name, uga_irs, start=2015, end=2025, add=FALSE, clr = viridis::turbo(7)[2]){
+  origin = as.Date(paste(start,"-01-01", sep =""))
+  last = as.Date(paste(end, "-12-31", sep =""))
+
+  if(district_name %in% unique(uga_irs$location)){
+    ix = which(uga_irs$location == district_name)
+    here_irs <- uga_irs[ix,]
+    spray_dates = as.Date(here_irs$spray_start)
+    formula = here_irs$formulation
+
+    for(i in 1:length(spray_dates)){
+      segments(spray_dates[i], 0.5, spray_dates[i], 1)
+      text(spray_dates[i], 0, formula[i], srt=90, adj=0, col = grey(0.5))
+    }
+  }
+}
+
 get_irs_dates = function(district_name, start=2012){
   origin = as.Date(paste(start,"-01-01", sep =""))
   uga_irs <- read.csv("data/uga_irs_fmt.csv", header=T)
