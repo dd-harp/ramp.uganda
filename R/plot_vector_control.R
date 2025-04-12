@@ -16,8 +16,8 @@ plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
   years <- c(start:end)
   yrs <- 365*(c(start:end)-start)
 
-  ix = which(uga_irs$location == district_name)
-  here_irs <- uga_irs[ix,]
+  ix = which(ramp.uganda::uga_irs$location == district_name)
+  here_irs <- ramp.uganda::uga_irs[ix,]
   here_irs$spray_start <- as.Date(here_irs$spray_start)
   here_irs$spray_end <- as.Date(here_irs$spray_end)
 
@@ -46,11 +46,11 @@ plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
 #' @export
 add_irs_history = function(district_name, clr = "#4686FBFF", Yr0=2015){
   origin = as.Date(paste(Yr0,"-01-01", sep =""))
-  jd <- get_irs_jdates(district_name, uga_irs)
+  jd <- get_irs_jdates(district_name, ramp.uganda::uga_irs)
 
   if(length(jd)>0){
-    ix = which(uga_irs$location == district_name)
-    formula <- uga_irs[ix,]$formulation
+    ix = which(ramp.uganda::uga_irs$location == district_name)
+    formula <- ramp.uganda::uga_irs[ix,]$formulation
 
     for(i in 1:length(jd)){
       segments(jd[i], 0.5, jd[i], 1)
@@ -68,8 +68,8 @@ add_irs_history = function(district_name, clr = "#4686FBFF", Yr0=2015){
 #' @export
 get_irs_jdates = function(district_name, Yr0=2015){
   origin = as.Date(paste(Yr0,"-01-01", sep =""))
-  ix = which(uga_irs$location == district_name)
-  here_irs <- uga_irs[ix,]
+  ix = which(ramp.uganda::uga_irs$location == district_name)
+  here_irs <- ramp.uganda::uga_irs[ix,]
   here_irs$spray_start <- as.Date(here_irs$spray_start)
   irs_dates <- as.numeric(here_irs$spray_start-origin)
   return(irs_dates)
@@ -92,8 +92,8 @@ plot_itn_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
   years <- c(start:end)
   yrs <- 365*(c(start:end)-start)
 
-  ix = which(uga_itn$district_name == district_name)
-  here_itn <- uga_itn[ix,]
+  ix = which(ramp.uganda::uga_itn$district_name == district_name)
+  here_itn <- ramp.uganda::uga_itn[ix,]
   here_itn$distribution_date <- as.Date(here_itn$mean_date)
   itn_dates <- as.numeric(here_itn$distribution_date-origin)
 

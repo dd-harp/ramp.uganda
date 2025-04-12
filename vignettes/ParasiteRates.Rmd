@@ -1,8 +1,0 @@
----
-title: "ParasiteRates"
-output: html_document
----
-
-```{r}
-district_dir <- read.csv("../data/district_directories.csv", header=FALSE)
-```

@@ -1,6 +1,11 @@
 ---
 title: "District Icons"
-output: html_document
+subtitle: "The Location of Every District"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{District Icons}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r}
