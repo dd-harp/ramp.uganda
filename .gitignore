@@ -8,4 +8,5 @@ index.pdf
 ramp.uganda.Rproj
 ~/.boxr-oauth
 .DS_Store
-my_ramp_uganda.R
+/outputs/*.png
+/outputs/*.mp4

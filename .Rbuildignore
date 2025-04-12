@@ -2,3 +2,14 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^my_ramp_uganda.R$
+^Rscripts$
+^outputs$
+^models$
+^images$
+^index.Rmd$
+^index.html$
+^index_files$
+^colors.yaml$
+^my_paths.yaml$
+^my_paths_template.yaml$
+^LICENSE\.md$
