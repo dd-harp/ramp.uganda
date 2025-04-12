@@ -7,16 +7,19 @@ output: html_document
 library(chron)
 library(ramp.work)
 ```
+
 ```{r}
 BoxModels <- "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/Models/"
 ```
 
 ```{r}
 abim <- readRDS("/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/Models/abim_district_eir_sis.rds")
+abim1 <- readRDS("/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/Models/abim_district_Lambda_sis.rds")
 ```
 
 ```{r}
 xds_plot_PR(abim)
+xds_plot_PR(abim1, add=T, clrs = "darkred")
 ```
 
 ```{r}

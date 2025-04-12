@@ -1,3 +1,8 @@
 # ramp.uganda
 
-This is the github home for [RAMP-Uganda](RAMP-Uganda.html).  
+## Colors
+
+Default colors for plotting are set in `colors.yml` 
+
+``` 
+

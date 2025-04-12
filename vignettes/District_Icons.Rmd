@@ -6,30 +6,32 @@ output: html_document
 ```{r}
 library(ramptools)
 library(sf)
-source("../R/plot_outlines.R")
+library(ramp.uganda)
+attach(yaml::read_yaml("../my_paths.yaml")) 
 ```
 
+
+This creates a file called `abim_icon.png` 
 
 ```{r}
-png("../images/abim_icon.png", width=480, height=520)
+png("../outputs/abim_icon.png", width=480, height=520) -> out
 shade_district("Abim District")
-dev.off(dev.cur())
+dev.off(dev.cur()) -> out
 ```
 
-![](../images/abim_icon.png)
-![](~/Nextcloud/uganda_intelligence/abim_district/abim_district_icon.png)
+*** 
 
-![](~/Nextcloud/uganda_intelligence/arua_district/arua_district_icon.png) 
+![This is `abim_icon.png`](../images/abim_icon.png)
+
+*** 
+
+This creates the icons for all districts in the local directories:  
 
 ```{r, eval=F}
-district_dir <- read.csv("../data/district_directories.csv", header=TRUE)
-city_dir <- read.csv("../data/city_directories.csv", header=TRUE)
-district_dir <- rbind(district_dir, city_dir)
 for(i in 1:146){
    district <- district_dir[i,1]
-   print(district)
    dir <- district_dir[i,2]
-   icon_name = paste("~/Nextcloud/uganda_intelligence/", dir, "/", dir, "_icon.png", sep="")
+   icon_name = paste(website_dir, dir, "/", dir, "_icon.png", sep="")
    png(icon_name, width=480, height=520)
    shade_district(district)
    dev.off(dev.cur())

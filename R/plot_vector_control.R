@@ -1,11 +1,21 @@
 
-plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr = viridis::turbo(7)[2]){
+#' Create a Plot of IRS spray Dates for a District
+#'
+#' @param district_name a district name
+#' @param start the first year to plot
+#' @param end the last year to plot
+#' @param add if TRUE, add to an existing plot
+#' @param clr a color for the labels
+#' @importFrom graphics plot lines text points axis
+#'
+#' @returns invisible()
+#' @export
+plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr = "#4686FBFF"){
   origin = as.Date(paste(start,"-01-01", sep =""))
   last = as.Date(paste(end, "-01-01", sep ="")) - 1
   years <- c(start:end)
   yrs <- 365*(c(start:end)-start)
 
-  uga_irs <- read.csv("data/uga_irs_fmt.csv", header=T)
   ix = which(uga_irs$location == district_name)
   here_irs <- uga_irs[ix,]
   here_irs$spray_start <- as.Date(here_irs$spray_start)
@@ -19,31 +29,45 @@ plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
   }
   axis(1, yrs, years)
   irs_dates <- as.numeric(here_irs$spray_start-origin)
-  text(irs_dates, irs_dates*0+0.95, here_irs$formulation, srt=90, adj=0, col = grey(0.5))
+  text(irs_dates, irs_dates*0+0.95, here_irs$formulation, srt=90, adj=0, col = "#808080")
   text(irs_dates, irs_dates*0+0.2, "IRS: ", srt=90, adj=0, col = clr)
   points(irs_dates, irs_dates*0, pch = 15, col = clr)
+  return(invisible())
 }
 
-add_irs_history = function(district_name, uga_irs, start=2015, end=2025, add=FALSE, clr = viridis::turbo(7)[2]){
-  origin = as.Date(paste(start,"-01-01", sep =""))
-  last = as.Date(paste(end, "-12-31", sep =""))
+#' Add IRS History as Vertical Lines
+#'
+#' @param district_name a district name
+#' @param clr a color for the labels
+#' @param Yr0 the start year
+#' @importFrom graphics segments text
+#'
+#' @returns invisible()
+#' @export
+add_irs_history = function(district_name, clr = "#4686FBFF", Yr0=2015){
+  origin = as.Date(paste(Yr0,"-01-01", sep =""))
+  jd <- get_irs_jdates(district_name, uga_irs)
 
-  if(district_name %in% unique(uga_irs$location)){
+  if(length(jd)>0){
     ix = which(uga_irs$location == district_name)
-    here_irs <- uga_irs[ix,]
-    spray_dates = as.Date(here_irs$spray_start)
-    formula = here_irs$formulation
+    formula <- uga_irs[ix,]$formulation
 
-    for(i in 1:length(spray_dates)){
-      segments(spray_dates[i], 0.5, spray_dates[i], 1)
-      text(spray_dates[i], 0, formula[i], srt=90, adj=0, col = grey(0.5))
+    for(i in 1:length(jd)){
+      segments(jd[i], 0.5, jd[i], 1)
+      text(jd[i], 0, formula[i], srt=90, adj=0, col = clr)
     }
   }
 }
 
-get_irs_dates = function(district_name, start=2012){
-  origin = as.Date(paste(start,"-01-01", sep =""))
-  uga_irs <- read.csv("data/uga_irs_fmt.csv", header=T)
+#' Get Julian dates for IRS spray rounds
+#'
+#' @param district_name  a district name
+#' @param Yr0 the start year
+#'
+#' @returns a vector
+#' @export
+get_irs_jdates = function(district_name, Yr0=2015){
+  origin = as.Date(paste(Yr0,"-01-01", sep =""))
   ix = which(uga_irs$location == district_name)
   here_irs <- uga_irs[ix,]
   here_irs$spray_start <- as.Date(here_irs$spray_start)
@@ -51,13 +75,23 @@ get_irs_dates = function(district_name, start=2012){
   return(irs_dates)
 }
 
-plot_itn_history = function(district_name, start=2012, end=2026, add=FALSE, clr = viridis::turbo(7)[6]){
+#' Create a Plot of ITN Mass Distributions for a District
+#'
+#' @param district_name a district name
+#' @param start the first year to plot
+#' @param end the last year to plot
+#' @param add if TRUE, add to an existing plot
+#' @param clr a color for the labels
+#' @importFrom graphics plot lines text points axis
+#'
+#' @returns invisible()
+#' @export
+plot_itn_history = function(district_name, start=2012, end=2026, add=FALSE, clr = "#E4460AFF"){
   origin = as.Date(paste(start,"-01-01", sep =""))
   last = as.Date(paste(end, "-01-01", sep ="")) - 1
   years <- c(start:end)
   yrs <- 365*(c(start:end)-start)
 
-  uga_itn <- read.csv("data/uga_itn_fmt.csv", header=T)
   ix = which(uga_itn$district_name == district_name)
   here_itn <- uga_itn[ix,]
   here_itn$distribution_date <- as.Date(here_itn$mean_date)
