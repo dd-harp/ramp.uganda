@@ -22,3 +22,13 @@ get_district_pfpr_i = function(i){
   district <- district_dir[i,1]
   return(get_district_pfpr(district))
 }
+
+#' Get a District PfPR, by Index
+#'
+#' @param district a district name
+#'
+#' @returns a data frame
+#' @export
+get_one_district = function(i){
+  get_district_pfpr_i(i)
+}

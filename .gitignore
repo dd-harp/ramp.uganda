@@ -10,3 +10,4 @@ ramp.uganda.Rproj
 .DS_Store
 /outputs/*.png
 /outputs/*.mp4
+my_paths.yaml

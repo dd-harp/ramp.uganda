@@ -1,2 +1,3 @@
-box_dir: '/Users/{username}/Library/CloudStorage/Box-Box/RAMP'
-code_dir: '/Users/{username}/projects'
+box_dir: "/Users/{username}/Library/CloudStorage/Box-Box/RAMP/"
+ramp_uganda_dir: "/Users/{username}/git/ramp.uganda/"
+website_dir: "/Users/{username}/Library/CloudStorage/Box-Box/RAMP/websites/uganda_intelligence"

@@ -15,48 +15,23 @@ output:
 library(ramp.xds)
 library(dplyr)
 library(ramp.uganda)
-
+attach(yaml::read_yaml("../my_paths.yaml")) 
 ```
 
 This sets locations for `Box/RAMP` and `ramp.uganda` 
 
 ```{r}
-directory <- paste(Box_RAMP_local, "Models", sep = "") 
-# List all RDS files in the directory
+directory <- paste(box_dir, "Models", sep = "") 
 eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
 head(eir_files, 2)
 ```
 
 ```{r}
 fitted_mod <- list()
-# Loop through each RDS file and load it into the list
 for (i in 1:146) {
   fitted_mod[[i]] <- readRDS(eir_files[i])
 }
 ```
-
-```{r}
-tprdata <- read.csv(file=paste(ramp_uganda_local, 'data/pfpr_ts_district_from_hf_pixel_agg.csv', sep=""))
-sorted_data <- tprdata[order(tprdata$district_name,tprdata$period),] 
-id_name = sorted_data$district_name
-dist_name = unique(sorted_data$district_name)
-```
-
-```{r}
-get_one_district = function(i){
-  # Pull PfPR values
-  pfpr <- as.vector(sorted_data %>% filter(id_name == dist_name[i]) %>% select(pfpr))$pfpr
-  # Pull and convert month year to date
-  t_start =2015
-  period <- as.vector(sorted_data %>% filter(id_name == dist_name[i]) %>% select(period))$period
-  year <- as.numeric(substr(period, 1, 4))  # Extract first 4 characters
-  month <- as.numeric(substr(period, 5, 6))  # Extract last 2 characters
-  fac_time_month = (year+month/12) # TIME IN months
-  fac_time_day = (fac_time_month-t_start)*365 -15 # time in days
-  list(pr = pfpr, times = fac_time_day, name = dist_name[i])
-}
-```
-
 
 ```{r}
 data_list = list()
@@ -65,21 +40,11 @@ for(i in 1:146)
 ```
 
 ```{r}
-uga_irs <- read.csv("../data/uga_irs_fmt.csv", header=TRUE)
-get_irs_jdates = function(district_name, uga_irs, start=2012){
-  origin = as.Date(paste(start,"-01-01", sep =""))
-  ix = which(uga_irs$location == district_name)
-  here_irs <- uga_irs[ix,]
-  here_irs$spray_start <- as.Date(here_irs$spray_start)
-  irs_dates <- as.numeric(here_irs$spray_start-origin)
-  return(irs_dates)
-}
-get_irs_jdates("Tororo District", uga_irs, 2015)
+get_irs_jdates("Tororo District", 2015)
 ```
 
 
 ```{r, fig.height=8, fig.width=11}
-source ("../R/profile_plot.R")
 profile_plot_i(1, fitted_mod, data_list)
 ```
 
