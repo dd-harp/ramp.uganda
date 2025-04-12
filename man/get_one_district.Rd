@@ -7,7 +7,7 @@
 get_one_district(i)
 }
 \arguments{
-\item{district}{a district name}
+\item{i}{district index}
 }
 \value{
 a data frame

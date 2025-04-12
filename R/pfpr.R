@@ -6,26 +6,26 @@
 #' @returns a data frame
 #' @export
 get_district_pfpr = function(district){
-  ix <- which(pfpr_by_district$district_name == district)
-  tmp <- pfpr_by_district[ix,]
+  ix <- which(ramp.uganda::pfpr_by_district$district_name == district)
+  tmp <- ramp.uganda::pfpr_by_district[ix,]
   ot <- order(tmp$jdate)
   return(tmp[ot,])
 }
 
 #' Get a District PfPR, by Index
 #'
-#' @param district a district name
+#' @param i district index
 #'
 #' @returns a data frame
 #' @export
 get_district_pfpr_i = function(i){
-  district <- district_dir[i,1]
+  district <- ramp.uganda::district_dir[i,1]
   return(get_district_pfpr(district))
 }
 
 #' Get a District PfPR, by Index
 #'
-#' @param district a district name
+#' @param i district index
 #'
 #' @returns a data frame
 #' @export

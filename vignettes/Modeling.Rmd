@@ -1,10 +1,12 @@
 ---
-title: "Simulation Modeling"
-subtitle: "Adaptive Malaria Control, Uganda" 
-date: "`r format(Sys.time(), '%B %d, %Y')`"
-output:
-  html_document 
+title: "Working with Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Working with Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
 
 ***
 [RAMP-Uganda](../index.html)

@@ -1,7 +1,10 @@
 ---
-title: "Movies"
-subtitle: "How to Make an Animation"
-output: html_document
+title: "Making Movies"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Making Movies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 Movie making requires the `av` package: 

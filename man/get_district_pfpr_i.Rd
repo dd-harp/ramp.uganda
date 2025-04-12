@@ -7,7 +7,7 @@
 get_district_pfpr_i(i)
 }
 \arguments{
-\item{district}{a district name}
+\item{i}{district index}
 }
 \value{
 a data frame

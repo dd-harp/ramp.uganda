@@ -6,6 +6,8 @@
 ^outputs$
 ^models$
 ^images$
+^data-raw$
+^docs$
 ^index.Rmd$
 ^index.html$
 ^index_files$
