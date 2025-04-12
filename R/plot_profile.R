@@ -26,7 +26,7 @@ profile_plot_i = function(i, model_list, data_list, Yr0=2015){
 #' @export
 profile_plot = function(model, data, Yr0=2015){
 
-  tt <- seq(-90, ceiling(max(data$times)/365)*365-90, by=10)
+  tt <- seq(-90, ceiling(max(data$jdate)/365)*365-90, by=10)
   model <- ramp.xds::xds_solve_cohort(model, times=tt)
 
   par(mfrow = c(2,2))
@@ -54,7 +54,7 @@ profile_pr = function(model, data, Yr0=2015){
             ylab = "PR", lwd=2, xlab = "Time",
             main = data$name, type = "l", col="darkred"))
 
-  with(data, lines(times/365+Yr0, pr, type="o"))
+  with(data, lines(jdate/365+Yr0, pfpr, type="o"))
 
   return(invisible())
 }
@@ -117,14 +117,14 @@ profile_temporal = function(model, Yr0=2015){
 #' @export
 profile_residual = function(model, data, Yr0=2015){
 
-  model1 <- ramp.xds::xds_solve_cohort(model, times=data$times)
-  resid = data$pr - get_XH(model1)$true_pr
+  model1 <- ramp.xds::xds_solve_cohort(model, times=data$jdate)
+  resid = data$pfpr - get_XH(model1)$true_pr
 
-  plot(data$times/365+Yr0, resid,
+  plot(data$jdate/365+Yr0, resid,
        type = "b", ylim = c(-0.25,.25),
        xlab = "Time", main = "Residual Errors")
 
-  segments(Yr0, 0, max(data$times/365+Yr0),0)
+  segments(Yr0, 0, max(data$jdate/365+Yr0),0)
 
   return(invisible())
 }
