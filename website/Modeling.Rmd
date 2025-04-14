@@ -1,0 +1,88 @@
+---
+title: "Working with Models"
+output: html_vignette
+---
+
+
+***
+[RAMP-Uganda](../index.html)
+
+*** 
+
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+
+```{r, eval=F}
+directory <- paste(box_dir, "Models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+head(eir_files, 2)
+```
+
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:146) {
+  fitted_mod[[i]] <- readRDS(eir_files[i])
+}
+```
+
+```{r, eval=F}
+data_list = list()
+for(i in 1:146)
+  data_list[[i]] <- get_one_district(i)
+```
+
+```{r}
+get_irs_jdates("Tororo District", 2015)
+```
+
+
+
+```{r, fig.height=8, fig.width=11}
+abim_mod_file <- readRDS("../models/abim_district_eir_model.rds")
+
+profile_plot(abim_mod_file, get_district_pfpr("Abim District"))
+```
+
+```{r}
+devtools::load_all()
+```
+
+```{r, fig.width=8, fig.height=7}
+png("../outputs/tororo.png", width=720, height=600)
+filename <- paste(box_dir, "Models/tororo_district_eir_sis.rds", sep="")
+tororo_mod_file <- readRDS(filename)
+data <- get_district_pfpr("Tororo District")
+profile_plot(tororo_mod_file, data, 2015)
+dev.off(dev.cur())
+```
+
+```{r, fig.width=8, fig.height=7}
+i=137
+district <- district_dir[i,1]
+dir <- district_dir[i,2]
+filename <- paste(box_dir, "Models/", dir, "_eir_sis.rds", sep="")
+model <- readRDS(filename)
+data <- get_district_pfpr(district)
+mod_name = paste(website_dir, dir, "/", dir, "_eir.png", sep="")
+profile_plot(model, data, 2015)
+```
+
+```{r, eval=F}
+for(i in 1:146){
+  district <- district_dir[i,1]
+  dir <- district_dir[i,2]
+  filename <- paste(box_dir, "Models/", dir, "_eir_sis.rds", sep="")
+  model <- readRDS(filename)
+  data <- get_district_pfpr(district)
+  mod_name = paste(website_dir, dir, "/", dir, "_eir.png", sep="")
+  png(mod_name, width=720, height=600)
+  profile_plot(model, data, 2015)
+  dev.off(dev.cur())
+}
+```

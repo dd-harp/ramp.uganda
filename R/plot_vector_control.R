@@ -46,15 +46,45 @@ plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
 #' @export
 add_irs_history = function(district_name, clr = "#4686FBFF", Yr0=2015){
   origin = as.Date(paste(Yr0,"-01-01", sep =""))
-  jd <- get_irs_jdates(district_name, ramp.uganda::uga_irs)
+
+  jd <- get_irs_jdates(district_name, Yr0)
 
   if(length(jd)>0){
     ix = which(ramp.uganda::uga_irs$location == district_name)
     formula <- ramp.uganda::uga_irs[ix,]$formulation
 
+    jd = jd/365 + Yr0
+
     for(i in 1:length(jd)){
-      segments(jd[i], 0.5, jd[i], 1)
-      text(jd[i], 0, formula[i], srt=90, adj=0, col = clr)
+      points(jd[i], 0, pch = 15, col=clr)
+      segments(jd[i], 0, jd[i], .25, col=clr)
+      text(jd[i], 1, formula[i], srt=90, adj=0, pos=2, col = clr, cex=0.8)
+    }
+  }
+}
+
+#' Add itn History as Vertical Lines
+#'
+#' @param district_name a district name
+#' @param clr a color for the labels
+#' @param Yr0 the start year
+#' @importFrom graphics segments text
+#'
+#' @returns invisible()
+#' @export
+add_itn_history = function(district_name, clr = "#E4460AFF", Yr0=2015){
+  origin = as.Date(paste(Yr0,"-01-01", sep =""))
+
+  jd <- get_itn_jdates(district_name, Yr0)
+
+  if(length(jd)>0){
+    ix = which(ramp.uganda::uga_itn$location == district_name)
+
+    jd = jd/365 + Yr0
+
+    for(i in 1:length(jd)){
+      points(jd[i], 0, pch = 21, col=clr)
+      segments(jd[i], 0, jd[i], .5, col=clr)
     }
   }
 }
@@ -73,6 +103,24 @@ get_irs_jdates = function(district_name, Yr0=2015){
   here_irs$spray_start <- as.Date(here_irs$spray_start)
   irs_dates <- as.numeric(here_irs$spray_start-origin)
   return(irs_dates)
+}
+
+#' Get Julian dates for ITN spray rounds
+#'
+#' @param district_name  a district name
+#' @param Yr0 the start year
+#'
+#' @returns a vector
+#' @export
+get_itn_jdates = function(district_name, Yr0=2015){
+  origin = as.Date(paste(Yr0,"-01-01", sep =""))
+  ix = which(ramp.uganda::uga_itn$district_name == district_name)
+  browser()
+  jd <- ramp.uganda::uga_itn[ix,]$distribution_date
+  for(i in 1:length(jd)) jd[i] <- paste(jd[i], "-15", sep="")
+  jd <- as.Date(jd)
+  itn_dates <- as.numeric(jd-origin)
+  return(itn_dates)
 }
 
 #' Create a Plot of ITN Mass Distributions for a District

@@ -1,0 +1,38 @@
+---
+title: "Making Movies"
+output: html_vignette
+---
+
+Movie making requires the `av` package: 
+
+```{r}
+library(ramp.uganda)
+library(av)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+If you want to make a movie, the first step is to create a set of images and give them a name. You pass the file names in a list to a function called `av_encode_video,` which makes an animation by pasting the images in a sequence, saving it to an `.mp4` file.
+
+The movie takes the file names in the list, so an easy way to do the first step is to pick a stem name, like `_pfpr_uga.png` and the date, being sure that January is encoded as `01` and not `1.` This makes a `system` call to list the files and put them in an object called `filenames` 
+
+```{r, eval=F}
+location <- paste(box_dir, "Scratch/Dianna/pfpr_maps", sep = "") 
+list.files(path = location, pattern = "*pfpr_uga.png") -> filenames
+head(filenames, 3)
+```
+
+
+```{r, eval=F}
+setwd(location)
+moviename = paste(ramp_uganda_dir, "outputs/PfPR_by_district.mp4", sep="")
+av::av_encode_video(filenames, moviename, framerate = 2, verbose=TRUE)
+```
+
+The animation can be embedded in an html file, and would be viewable here, but by policy, we don't save `.mp4` files to our GitHub repository. 
+
+```
+![](../outputs/PfPR_by_district.mp4){width=50%}
+```
+![](../outputs/PfPR_by_district.mp4){width=50%}
+
+
