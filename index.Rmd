@@ -22,6 +22,11 @@ The goal of RAMP has been to develop and implement **Adaptive Malaria Control,**
 
 To serve NMCD's strategic planning, we are developing simulation models for malaria in Uganda using the national HMIS data. 
 
++ [District_Icons](website/District_Icons.html)
+
++ [Movies](website/Movies.html)
+
++ [Modeling](website/Modeling.html)
 
 
 ## $\boxplus$ {.tabset .tabset-fade .tabset-pills}

@@ -1,0 +1,58 @@
+---
+title: "District Icons"
+subtitle: "The Location of Every District"
+output: html_vignette
+
+---
+
+```{r}
+library(ramptools)
+library(sf)
+library(ramp.uganda)
+library(yaml)
+```
+
+
+```{r}
+attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+
+This creates a file called `abim_icon.png` 
+
+```{r, eval=F}
+png("../outputs/abim_icon.png", width=480, height=520) -> out
+shade_district("Abim District")
+dev.off(dev.cur()) -> out
+```
+
+
+We can't show you this file here, because by policy, we don't save any `.png` or `.mp4` files, or any graphical outputs on the GitHub repository, but if you clone the repository and run the code,  you can view it like this: 
+
+*** 
+
+![This is `abim_icon.png`](../images/abim_icon.png)
+
+```
+![This is `abim_icon.png`](../images/abim_icon.png)
+```
+
+but the file is on our website [Malaria in Uganda](https://faculty.washington.edu/smitdave/uganda_intelligence/). 
+
+![This is `abim_icon.png`](https://faculty.washington.edu/smitdave/uganda_intelligence/abim_district/abim_district_icon.png)
+
+*** 
+
+This creates the icons for all districts in the website: 
+
+```{r, eval=F}
+for(i in 1:146){
+   district <- district_dir[i,1]
+   dir <- district_dir[i,2]
+   icon_name = paste(website_dir, dir, "/", dir, "_icon.png", sep="")
+   png(icon_name, width=480, height=520)
+   shade_district(district)
+   dev.off(dev.cur())
+}
+```
+

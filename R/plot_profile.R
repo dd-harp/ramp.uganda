@@ -32,6 +32,8 @@ profile_plot = function(model, data, Yr0=2015){
   par(mfrow = c(2,2))
 
   profile_pr(model, data, Yr0)
+  add_irs_history(data$district_name[1],Yr0=Yr0)
+  add_itn_history(data$district_name[1],Yr0=Yr0)
   profile_eir(model, Yr0)
   profile_residual(model, data, Yr0)
   profile_temporal(model, Yr0)
@@ -49,10 +51,11 @@ profile_plot = function(model, data, Yr0=2015){
 #' @export
 profile_pr = function(model, data, Yr0=2015){
 
+  mtl <- data$district_name[1]
   with(get_XH(model),
        plot(time/365+Yr0, true_pr, ylim = c(0,1),
             ylab = "PR", lwd=2, xlab = "Time",
-            main = data$name, type = "l", col="darkred"))
+            main = data$district_name[1], type = "l", col="darkred"))
 
   with(data, lines(jdate/365+Yr0, pfpr, type="o"))
 

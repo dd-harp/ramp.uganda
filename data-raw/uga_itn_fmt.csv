@@ -25,14 +25,14 @@
 "Soroti District","2023_2023",NA,NA,"2023-07","",2023-07-01,102,"r0GhWtmPHDj","srmGjHrpVE5",NA,NA,3,"akV6429SUqu,r0GhWtmPHDj,srmGjHrpVE5",NA,NA,"Unsupported Districts",NA,NA,NA,"Teso","Soroti District",NA
 "Namisindwa District","2023_2023",NA,NA,"2023-07","",2023-07-01,102,"Dt6qdenPX1E","TGzZPOmbgn8",NA,NA,3,"akV6429SUqu,Dt6qdenPX1E,TGzZPOmbgn8",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Bugisu","Namisindwa District",NA
 "Lira District","2023_2023",NA,NA,"2023-07","",2023-07-01,102,"DWPnYhoqza0","Lj8t70RYnEt",NA,NA,3,"akV6429SUqu,DWPnYhoqza0,Lj8t70RYnEt",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Lango","Lira District",NA
-"Soroti City District","2023_2023",NA,NA,"2023-07","",2023-07-01,102,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"Lira City District","2023_2023",NA,NA,"2023-07","",2023-07-01,102,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Soroti City","2023_2023",NA,NA,"2023-07","",2023-07-01,102,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Lira City","2023_2023",NA,NA,"2023-07","",2023-07-01,102,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Bushenyi District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"F1o6qBSx783","It5UGwdHAPF",NA,NA,3,"akV6429SUqu,F1o6qBSx783,It5UGwdHAPF",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Ankole","Bushenyi District",NA
 "Lwengo District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"IEU0FjDAhBP","aqpd0Y9eXZ2",NA,NA,3,"akV6429SUqu,IEU0FjDAhBP,aqpd0Y9eXZ2",NA,NA,"Unsupported Districts",NA,NA,NA,"South Central","Lwengo District",NA
 "Rakai District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"IEU0FjDAhBP","P8iz90eiIrW",NA,NA,3,"akV6429SUqu,IEU0FjDAhBP,P8iz90eiIrW",NA,NA,"Unsupported Districts",NA,NA,NA,"South Central","Rakai District",NA
 "Kyotera District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"IEU0FjDAhBP","REJuxCmTwXG",NA,NA,3,"akV6429SUqu,IEU0FjDAhBP,REJuxCmTwXG",NA,NA,"Unsupported Districts",NA,NA,NA,"South Central","Kyotera District",NA
 "Masaka District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"IEU0FjDAhBP","bIONCoCnt3Q",NA,NA,3,"akV6429SUqu,IEU0FjDAhBP,bIONCoCnt3Q",NA,NA,"Unsupported Districts",NA,NA,NA,"South Central","Masaka District",NA
-"Masaka City District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Masaka City","2023_2023",NA,NA,"2023-08","",2023-08-01,103,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Kalungu District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"IEU0FjDAhBP","ahyi8Uq4vaj",NA,NA,3,"akV6429SUqu,IEU0FjDAhBP,ahyi8Uq4vaj",NA,NA,"Unsupported Districts",NA,NA,NA,"South Central","Kalungu District",NA
 "Nakaseke District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"Dl9WvtvDs5V","aSbgVKaeCP0",NA,NA,3,"akV6429SUqu,Dl9WvtvDs5V,aSbgVKaeCP0",NA,NA,"Unsupported Districts",NA,NA,NA,"North Central","Nakaseke District",NA
 "Dokolo District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"DWPnYhoqza0","wMQ25dybdgH",NA,NA,3,"akV6429SUqu,DWPnYhoqza0,wMQ25dybdgH",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Lango","Dokolo District",NA
@@ -40,7 +40,7 @@
 "Bugweri District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"Wd1lV9Qdj4o","AIonX4LaJeU",NA,NA,3,"akV6429SUqu,Wd1lV9Qdj4o,AIonX4LaJeU",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Busoga","Bugweri District",NA
 "Tororo District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"QBPg7KKCeoA","KhT80mlwJ3Y",NA,NA,3,"akV6429SUqu,QBPg7KKCeoA,KhT80mlwJ3Y",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Bukedi","Tororo District",NA
 "Mbale District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"Dt6qdenPX1E","yuo5ielNL7W",NA,NA,3,"akV6429SUqu,Dt6qdenPX1E,yuo5ielNL7W",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Bugisu","Mbale District",NA
-"Mbale City District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Mbale City","2023_2023",NA,NA,"2023-08","",2023-08-01,103,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Bududa District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"Dt6qdenPX1E","AhwgeZQYj16",NA,NA,3,"akV6429SUqu,Dt6qdenPX1E,AhwgeZQYj16",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Bugisu","Bududa District",NA
 "Sironko District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"Dt6qdenPX1E","wJ2a6YKDFZW",NA,NA,3,"akV6429SUqu,Dt6qdenPX1E,wJ2a6YKDFZW",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Bugisu","Sironko District",NA
 "Kween District","2023_2023",NA,NA,"2023-08","",2023-08-01,103,"Dt6qdenPX1E","h1O9AvNR4jS",NA,NA,3,"akV6429SUqu,Dt6qdenPX1E,h1O9AvNR4jS",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Bugisu","Kween District",NA
@@ -50,7 +50,7 @@
 "Buyende District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"Wd1lV9Qdj4o","F3ccON3OCsL",NA,NA,3,"akV6429SUqu,Wd1lV9Qdj4o,F3ccON3OCsL",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Busoga","Buyende District",NA
 "Ibanda District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"F1o6qBSx783","r8WLxW9JwsS",NA,NA,3,"akV6429SUqu,F1o6qBSx783,r8WLxW9JwsS",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Ankole","Ibanda District",NA
 "Iganga District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"Wd1lV9Qdj4o","oNxpMjveyZt",NA,NA,3,"akV6429SUqu,Wd1lV9Qdj4o,oNxpMjveyZt",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Busoga","Iganga District",NA
-"Jinja City District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Jinja City","2023_2023",NA,NA,"2023-09","",2023-09-01,104,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Jinja District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"Wd1lV9Qdj4o","aJR2ZxSH7g4",NA,NA,3,"akV6429SUqu,Wd1lV9Qdj4o,aJR2ZxSH7g4",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Busoga","Jinja District",NA
 "Kamuli District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"Wd1lV9Qdj4o","oyygQ2STBST",NA,NA,3,"akV6429SUqu,Wd1lV9Qdj4o,oyygQ2STBST",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Busoga","Kamuli District",NA
 "Kamwenge District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"JZhJ50nOirX","uCVQXAdKqL9",NA,NA,3,"akV6429SUqu,JZhJ50nOirX,uCVQXAdKqL9",NA,NA,"Unsupported Districts",NA,NA,NA,"Tooro","Kamwenge District",NA
@@ -59,7 +59,7 @@
 "Kyegegwa District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"JZhJ50nOirX","a9tQqo1rSj7",NA,NA,3,"akV6429SUqu,JZhJ50nOirX,a9tQqo1rSj7",NA,NA,"Unsupported Districts",NA,NA,NA,"Tooro","Kyegegwa District",NA
 "Luuka District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"Wd1lV9Qdj4o","hn1AlYtF1Pu",NA,NA,3,"akV6429SUqu,Wd1lV9Qdj4o,hn1AlYtF1Pu",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Busoga","Luuka District",NA
 "Mbarara District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"F1o6qBSx783","auswb7JO9wY",NA,NA,3,"akV6429SUqu,F1o6qBSx783,auswb7JO9wY",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Ankole","Mbarara District",NA
-"Mbarara City District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Mbarara City","2023_2023",NA,NA,"2023-09","",2023-09-01,104,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Namayingo District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"Wd1lV9Qdj4o","Ut0ysYGEipO",NA,NA,3,"akV6429SUqu,Wd1lV9Qdj4o,Ut0ysYGEipO",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Busoga","Namayingo District",NA
 "Ntungamo District","2023_2023",NA,NA,"2023-09","",2023-09-01,104,"F1o6qBSx783","hAoe9dhZh9V",NA,NA,3,"akV6429SUqu,F1o6qBSx783,hAoe9dhZh9V",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Ankole","Ntungamo District",NA
 "Zombo District","2023_2023",NA,NA,"2023-10","",2023-10-01,105,"BD3XaQ7cQAp","A4aGXEfdb8P",NA,NA,3,"akV6429SUqu,BD3XaQ7cQAp,A4aGXEfdb8P",NA,"UNICEF Covered Districts","Unsupported Districts",NA,NA,NA,"West Nile","Zombo District",NA
@@ -68,7 +68,7 @@
 "Bundibugyo District","2023_2023",NA,NA,"2023-10","",2023-10-01,105,"JZhJ50nOirX","g8M1cWRJZV6",NA,NA,3,"akV6429SUqu,JZhJ50nOirX,g8M1cWRJZV6",NA,NA,"Unsupported Districts",NA,NA,NA,"Tooro","Bundibugyo District",NA
 "Bunyangabu District","2023_2023",NA,NA,"2023-10","",2023-10-01,105,"JZhJ50nOirX","iTfbtn6JUsN",NA,NA,3,"akV6429SUqu,JZhJ50nOirX,iTfbtn6JUsN",NA,NA,"Unsupported Districts",NA,NA,NA,"Tooro","Bunyangabu District",NA
 "Kasese District","2023_2023",NA,NA,"2023-10","",2023-10-01,105,"JZhJ50nOirX","aa8xVDzSpte",NA,NA,3,"akV6429SUqu,JZhJ50nOirX,aa8xVDzSpte",NA,NA,"Unsupported Districts",NA,NA,NA,"Tooro","Kasese District",NA
-"Fort Portal City District","2023_2023",NA,NA,"2023-10","",2023-10-01,105,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Fort Portal City","2023_2023",NA,NA,"2023-10","",2023-10-01,105,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Kabarole District","2023_2023",NA,NA,"2023-10","",2023-10-01,105,"JZhJ50nOirX","m77oR1YJESj",NA,NA,3,"akV6429SUqu,JZhJ50nOirX,m77oR1YJESj",NA,NA,"Unsupported Districts",NA,NA,NA,"Tooro","Kabarole District",NA
 "Kyenjojo District","2023_2023",NA,NA,"2023-10","",2023-10-01,105,"JZhJ50nOirX","O9MoQcpZ4uA",NA,NA,3,"akV6429SUqu,JZhJ50nOirX,O9MoQcpZ4uA",NA,NA,"Unsupported Districts",NA,NA,NA,"Tooro","Kyenjojo District",NA
 "Rukungiri District","2023_2023",NA,NA,"2023-10","",2023-10-01,105,"G0rlphd2tcD","tugqr4dY6wq",NA,NA,3,"akV6429SUqu,G0rlphd2tcD,tugqr4dY6wq",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Kigezi","Rukungiri District",NA
@@ -87,7 +87,7 @@
 "Koboko District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"BD3XaQ7cQAp","iqsaGItA68C",NA,NA,3,"akV6429SUqu,BD3XaQ7cQAp,iqsaGItA68C",NA,"UNICEF Covered Districts","Unsupported Districts",NA,NA,NA,"West Nile","Koboko District",NA
 "Yumbe District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"BD3XaQ7cQAp","W1JM2Qdhcv3",NA,NA,3,"akV6429SUqu,BD3XaQ7cQAp,W1JM2Qdhcv3",NA,"UNICEF Covered Districts","Unsupported Districts",NA,NA,NA,"West Nile","Yumbe District",NA
 "Maracha District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"BD3XaQ7cQAp","WyR8Eetj7Uw",NA,NA,3,"akV6429SUqu,BD3XaQ7cQAp,WyR8Eetj7Uw",NA,"UNICEF Covered Districts","Unsupported Districts",NA,NA,NA,"West Nile","Maracha District",NA
-"Arua City District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Arua City","2023_2023",NA,NA,"2023-11","",2023-11-01,106,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Arua District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"BD3XaQ7cQAp","WcB3kLlgRTb",NA,NA,3,"akV6429SUqu,BD3XaQ7cQAp,WcB3kLlgRTb",NA,"UNICEF Covered Districts","Unsupported Districts",NA,NA,NA,"West Nile","Arua District",NA
 "Terego District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"BD3XaQ7cQAp","bJgx6UjvyoP",NA,NA,3,"akV6429SUqu,BD3XaQ7cQAp,bJgx6UjvyoP",NA,"UNICEF Covered Districts","Unsupported Districts",NA,NA,NA,"West Nile","Terego District",NA
 "Madi-Okollo District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"BD3XaQ7cQAp","bLoH4VbxCGI",NA,NA,3,"akV6429SUqu,BD3XaQ7cQAp,bLoH4VbxCGI",NA,"UNICEF Covered Districts","Unsupported Districts",NA,NA,NA,"West Nile","Madi-Okollo District",NA
@@ -104,7 +104,7 @@
 "Sembabule District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"IEU0FjDAhBP","j7AQsnEYmvi",NA,NA,3,"akV6429SUqu,IEU0FjDAhBP,j7AQsnEYmvi",NA,NA,"Unsupported Districts",NA,NA,NA,"South Central","Sembabule District",NA
 "Kitagwenda District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"JZhJ50nOirX","qKmESX5Owwr",NA,NA,3,"akV6429SUqu,JZhJ50nOirX,qKmESX5Owwr",NA,NA,"Unsupported Districts",NA,NA,NA,"Tooro","Kitagwenda District",NA
 "Mityana District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"Dl9WvtvDs5V","Q7PaNIbyZII",NA,NA,3,"akV6429SUqu,Dl9WvtvDs5V,Q7PaNIbyZII",NA,NA,"Unsupported Districts",NA,NA,NA,"North Central","Mityana District",NA
-"Hoima City District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Hoima City","2023_2023",NA,NA,"2023-11","",2023-11-01,106,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Masindi District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"yx0ieyZNF0l","xr8EMirOASp",NA,NA,3,"akV6429SUqu,yx0ieyZNF0l,xr8EMirOASp",NA,NA,"Unsupported Districts",NA,NA,NA,"Bunyoro","Masindi District",NA
 "Nakasongola District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"Dl9WvtvDs5V","aUcYGQCK9ub",NA,NA,3,"akV6429SUqu,Dl9WvtvDs5V,aUcYGQCK9ub",NA,NA,"Unsupported Districts",NA,NA,NA,"North Central","Nakasongola District",NA
 "Kiryandongo District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"yx0ieyZNF0l","B0G9cqixld8",NA,NA,3,"akV6429SUqu,yx0ieyZNF0l,B0G9cqixld8",NA,NA,"Unsupported Districts",NA,NA,NA,"Bunyoro","Kiryandongo District",NA
@@ -113,7 +113,7 @@
 "Kole District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"DWPnYhoqza0","Y4LV8xqkv6J",NA,NA,3,"akV6429SUqu,DWPnYhoqza0,Y4LV8xqkv6J",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Lango","Kole District",NA
 "Oyam District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"DWPnYhoqza0","xpIFdCMhVHG",NA,NA,3,"akV6429SUqu,DWPnYhoqza0,xpIFdCMhVHG",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Lango","Oyam District",NA
 "Omoro District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"SUvODYOcaVf","S5fvUXgY54J",NA,NA,3,"akV6429SUqu,SUvODYOcaVf,S5fvUXgY54J",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Acholi","Omoro District",NA
-"Gulu City District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Gulu City","2023_2023",NA,NA,"2023-11","",2023-11-01,106,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "Gulu District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"SUvODYOcaVf","Gwk4wkLz7EW",NA,NA,3,"akV6429SUqu,SUvODYOcaVf,Gwk4wkLz7EW",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Acholi","Gulu District",NA
 "Lamwo District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"SUvODYOcaVf","xy0M4HhjXtD",NA,NA,3,"akV6429SUqu,SUvODYOcaVf,xy0M4HhjXtD",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Acholi","Lamwo District",NA
 "Kitgum District","2023_2023",NA,NA,"2023-11","",2023-11-01,106,"SUvODYOcaVf","pnTVIF5v27r",NA,NA,3,"akV6429SUqu,SUvODYOcaVf,pnTVIF5v27r",NA,"UHA Covered Districts","Unsupported Districts",NA,NA,NA,"Acholi","Kitgum District",NA
