@@ -14,7 +14,7 @@ library(ramp.xds)
 library(dplyr)
 library(ramp.uganda)
 attach(yaml::read_yaml("../my_paths.yaml")) 
-```
+``` 
 
 This sets locations for `Box/RAMP` and `ramp.uganda` 
 
