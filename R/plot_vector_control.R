@@ -114,8 +114,7 @@ get_irs_jdates = function(district_name, Yr0=2015){
 #' @export
 get_itn_jdates = function(district_name, Yr0=2015){
   origin = as.Date(paste(Yr0,"-01-01", sep =""))
-  ix = which(ramp.uganda::uga_itn$district_name == district_name)
-  browser()
+  ix = which(ramp.uganda::uga_itn$district == district_name)
   jd <- ramp.uganda::uga_itn[ix,]$distribution_date
   for(i in 1:length(jd)) jd[i] <- paste(jd[i], "-15", sep="")
   jd <- as.Date(jd)
