@@ -1,9 +1,12 @@
 ---
 title: "District Icons"
 subtitle: "The Location of Every District"
-output: html_vignette
-
+output: html_document
 ---
+
+[`ramp.uganda`](../index.html)
+
+***
 
 ```{r}
 library(ramptools)

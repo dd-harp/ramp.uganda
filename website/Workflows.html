@@ -11,7 +11,7 @@
 
 
 
-<title>Making Movies</title>
+<title>Workflows</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -348,38 +348,51 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Making Movies</h1>
+<h1 class="title toc-ignore">Workflows</h1>
 
 </div>
 
 
 <p><a href="../index.html"><code>ramp.uganda</code></a></p>
 <hr />
-<p>Movie making requires the <code>av</code> package:</p>
-<pre class="r"><code>library(ramp.uganda)
-library(av)
-attach(yaml::read_yaml(&quot;../my_paths.yaml&quot;)) </code></pre>
-<p>If you want to make a movie, the first step is to create a set of
-images and give them a name. You pass the file names in a list to a
-function called <code>av_encode_video,</code> which makes an animation
-by pasting the images in a sequence, saving it to an <code>.mp4</code>
-file.</p>
-<p>The movie takes the file names in the list, so an easy way to do the
-first step is to pick a stem name, like <code>_pfpr_uga.png</code> and
-the date, being sure that January is encoded as <code>01</code> and not
-<code>1.</code> This makes a <code>system</code> call to list the files
-and put them in an object called <code>filenames</code></p>
-<pre class="r"><code>location &lt;- paste(box_dir, &quot;scratch/Dianna/pfpr_maps&quot;, sep = &quot;&quot;) 
-list.files(path = location, pattern = &quot;*pfpr_uga.png&quot;) -&gt; filenames
-head(filenames, 3)</code></pre>
-<pre class="r"><code>setwd(location)
-moviename = paste(website_dir, &quot;PfPR_by_district.mp4&quot;, sep=&quot;&quot;)
-av::av_encode_video(filenames, moviename, framerate = 2, verbose=TRUE)</code></pre>
-<p>The animation can be embedded in an html file, and would be viewable
-here, but by policy, we don’t save <code>.mp4</code> files to our GitHub
-repository.</p>
-<pre><code>![](../outputs/PfPR_by_district.mp4){width=50%}</code></pre>
-<p><img role="img" src="moviename" /></p>
+<p><code>ramp.uganda</code> is an R package to manage workflows for the
+RAMP Uganda team. Most new projects can start anywhere, but new
+collaborative activities should eventually move to <code>Box/RAMP</code>
+or a <code>GitHub</code> repository.</p>
+<ul>
+<li><p>open <code>/ramp.uganda/ramp.uganda.Rproj</code> in
+RStudio</p></li>
+<li><p>create a new R markdown file in
+<code>ramp.uganda/website</code></p></li>
+<li><p>to use <code>ramp.uganda</code> include the line:</p></li>
+</ul>
+<pre><code>libary(ramp.uganda) </code></pre>
+<div id="malaria-in-uganda" class="section level2">
+<h2>Malaria in Uganda</h2>
+<p>The <a href="https://faculty.washington.edu/smitdave/uganda_intelligence/">Malaria
+in Uganda</a> website holds graphics illustrating features of
+malaria.</p>
+<ul>
+<li><p>develop some new intelligence</p>
+<ul>
+<li><p>start anywhere, like <code>Box/scratch</code></p></li>
+<li><p>when it’s ready for sharing, get some feedback from a team
+member</p></li>
+<li><p>if appropriate, archive code in a
+<code>ramp.uganda/website</code></p></li>
+<li><p>if appropriate, discuss methods in
+<code>ramp.uganda/website</code></p></li>
+</ul></li>
+<li><p>save outputs to <code>web/uganda_intelligence</code></p></li>
+<li><p>update the {region}.qmd or {district}.qmd files</p></li>
+<li><p>open
+Box/RAMP/web/uganda_intelligence/uganda_intelligence.Rproj</p></li>
+<li><p>rebuild</p></li>
+<li><p>check outputs in Box/RAMP/html/malaria_in_uganda</p></li>
+<li><p>approve content</p></li>
+<li><p>upload to html server</p></li>
+</ul>
+</div>
 
 
 

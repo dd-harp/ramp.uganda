@@ -1,0 +1,48 @@
+---
+title: "Workflows"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+`ramp.uganda` is an R package to manage workflows for the RAMP Uganda team. Most new projects can start anywhere, but new collaborative activities should eventually move to `Box/RAMP` or a `GitHub` repository. 
+
++ open `/ramp.uganda/ramp.uganda.Rproj` in RStudio
+
++ create a new R markdown file in `ramp.uganda/website` 
+
++ to use `ramp.uganda` include the line:
+
+```
+libary(ramp.uganda) 
+```
+
+## Malaria in Uganda 
+
+The [Malaria in Uganda](https://faculty.washington.edu/smitdave/uganda_intelligence/) website holds graphics illustrating features of malaria. 
+
++ develop some new intelligence
+
+    - start anywhere, like `Box/scratch` 
+    
+    - when it's ready for sharing, get some feedback from a team member
+    
+    - if appropriate, archive code in a `ramp.uganda/website`    
+    
+    - if appropriate, discuss methods in `ramp.uganda/website`    
+
++ save outputs to `web/uganda_intelligence`
+
++ update the {region}.qmd or {district}.qmd files
+
++ open Box/RAMP/web/uganda_intelligence/uganda_intelligence.Rproj
+
++ rebuild
+
++ check outputs in Box/RAMP/html/malaria_in_uganda
+
++ approve content
+
++ upload to html server

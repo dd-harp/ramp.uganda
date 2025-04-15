@@ -1,13 +1,12 @@
 ---
 title: "Working with Models"
-output: html_vignette
+output: html_document
 ---
 
+[`ramp.uganda`](../index.html)
 
 ***
-[RAMP-Uganda](../index.html)
 
-*** 
 
 ```{r}
 library(ramp.xds)
