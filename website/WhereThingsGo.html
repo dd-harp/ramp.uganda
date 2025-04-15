@@ -11,7 +11,7 @@
 
 
 
-<title>Making Movies</title>
+<title>Where Things Go</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -348,38 +348,163 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Making Movies</h1>
+<h1 class="title toc-ignore">Where Things Go</h1>
+<h3 class="subtitle">A Quick Guide to the RAMP Uganda Project</h3>
 
 </div>
 
 
 <p><a href="../index.html"><code>ramp.uganda</code></a></p>
 <hr />
-<p>Movie making requires the <code>av</code> package:</p>
-<pre class="r"><code>library(ramp.uganda)
-library(av)
-attach(yaml::read_yaml(&quot;../my_paths.yaml&quot;)) </code></pre>
-<p>If you want to make a movie, the first step is to create a set of
-images and give them a name. You pass the file names in a list to a
-function called <code>av_encode_video,</code> which makes an animation
-by pasting the images in a sequence, saving it to an <code>.mp4</code>
-file.</p>
-<p>The movie takes the file names in the list, so an easy way to do the
-first step is to pick a stem name, like <code>_pfpr_uga.png</code> and
-the date, being sure that January is encoded as <code>01</code> and not
-<code>1.</code> This makes a <code>system</code> call to list the files
-and put them in an object called <code>filenames</code></p>
-<pre class="r"><code>location &lt;- paste(box_dir, &quot;scratch/Dianna/pfpr_maps&quot;, sep = &quot;&quot;) 
-list.files(path = location, pattern = &quot;*pfpr_uga.png&quot;) -&gt; filenames
-head(filenames, 3)</code></pre>
-<pre class="r"><code>setwd(location)
-moviename = paste(website_dir, &quot;PfPR_by_district.mp4&quot;, sep=&quot;&quot;)
-av::av_encode_video(filenames, moviename, framerate = 2, verbose=TRUE)</code></pre>
-<p>The animation can be embedded in an html file, and would be viewable
-here, but by policy, we don’t save <code>.mp4</code> files to our GitHub
-repository.</p>
-<pre><code>![](../outputs/PfPR_by_district.mp4){width=50%}</code></pre>
-<p><img role="img" src="moviename" /></p>
+<div id="section" class="section level1 tabset">
+<h1 class="tabset"></h1>
+<div id="odot" class="section level2">
+<h2><span class="math inline">\(\odot\)</span></h2>
+<p><strong>RAMP Uganda</strong> is a large collaborative project,
+including data processing pipelines, conventional and simulation-based
+analytics, malaria intelligence, reports, and other outputs.</p>
+<p>This <strong>R package,</strong> called <code>ramp.uganda</code> has
+been developed to serve as a nexus for RAMP Uganda.</p>
+<p>The following document is a high-level guide to RAMP Uganda documents
+and content. We imagine that new content will be initiated by various
+people. As material matures and gets reviewed, it should get integrated
+into the RAMP document infrastructure so that it can be updated revised
+in a future iteration. To make it easy to find things, most material
+belongs in one of these places, and the other tabs discuss protocols and
+procedures.</p>
+<ul>
+<li><p><strong>Data Warehouse:</strong> DHI maintains a data warehouse
+that serves some of the data assets we use.</p></li>
+<li><p><strong>GitHub:</strong>
+<code>https://github.com/dd-harp</code></p>
+<ul>
+<li><p>R packages</p>
+<ul>
+<li><p>Data processing pipelines</p></li>
+<li><p>Conventional analytics</p></li>
+<li><p>Simulation-based analytics</p></li>
+</ul></li>
+<li><p>Quarto websites</p></li>
+</ul></li>
+<li><p><strong>Box:</strong> <code>Box/RAMP/</code></p>
+<ul>
+<li><p><code>data/</code> holds the current version of several
+<strong>data assets,</strong> any digital object we create for
+RAMP</p></li>
+<li><p><code>models/</code> holds a model swarm</p></li>
+<li><p><code>web/</code> holds a trial version of the Quarto websites
+and images</p>
+<ul>
+<li><p><code>uganda_intelligence</code> holds a local version of
+<strong>Malaria in Uganda</strong></p>
+<ul>
+<li><p>save images and movies here</p></li>
+<li><p>try out changes in the <code>.qmd</code> files, but any
+changes</p></li>
+</ul></li>
+</ul></li>
+<li><p><code>html/</code> holds a local website</p></li>
+</ul></li>
+<li><p><strong>Websites:</strong></p>
+<ul>
+<li><p>the public versions are served from
+<code>https://faculty.washington.edu/smitdave/</code><em>{sitename}</em></p></li>
+<li><p>This is Dave’s faculty website from the University of Washington.
+We need to find a more permanent home.</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="github" class="section level2 tabset">
+<h2 class="tabset">GitHub</h2>
+<div id="oplus" class="section level3">
+<h3><span class="math inline">\(\oplus\)</span></h3>
+<p>We have developed several <strong>R packages</strong> available from
+<code>GitHub</code> for various tasks</p>
+<p><strong>Data Processing</strong></p>
+<ul>
+<li><p><code>uga-etl</code></p></li>
+<li><p><code>uga-etl-spatial-hierarchy</code></p></li>
+<li><p><code>ramptools</code></p></li>
+</ul>
+<p><strong>Malaria Analytics &amp; Intelligence</strong></p>
+<ul>
+<li><p><code>uga-reporting</code></p></li>
+<li><p><code>uga-outbreaks</code></p></li>
+<li><p><code>uga-tpr_to_pr</code></p></li>
+<li><p><code>ramp.uganda</code></p></li>
+</ul>
+<p><a href="https://faculty.washington.edu/smitdave/simba/index.html"><strong>SimBA</strong></a>
+has its own website. R packages include:</p>
+<ul>
+<li><p><code>ramp.xds</code></p></li>
+<li><p><code>ramp.library</code></p></li>
+<li><p><code>ramp.control</code></p></li>
+<li><p><code>ramp.forcing</code></p></li>
+<li><p><code>ramp.demog</code></p></li>
+<li><p><code>ramp.work</code></p></li>
+</ul>
+</div>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<ul>
+<li><p><code>uga-etl</code></p></li>
+<li><p><code>uga-etl-spatial-hierarchy</code></p></li>
+<li><p><code>ramptools</code></p></li>
+</ul>
+</div>
+<div id="analytics" class="section level3">
+<h3>Analytics</h3>
+<ul>
+<li><p><code>uga-reporting</code></p></li>
+<li><p><code>uga-outbreaks</code></p></li>
+<li><p><code>uga-tpr_to_pr</code></p></li>
+</ul>
+</div>
+<div id="ramp.uganda" class="section level3">
+<h3><code>ramp.uganda</code></h3>
+</div>
+</div>
+<div id="websites" class="section level2 tabset">
+<h2 class="tabset">Websites</h2>
+<div id="oplus-1" class="section level3">
+<h3><span class="math inline">\(\oplus\)</span></h3>
+<ul>
+<li><p><a href="https://faculty.washington.edu/smitdave/malaria_data/">Malaria
+Data</a></p></li>
+<li><p><a href="https://faculty.washington.edu/smitdave/theory/">Malaria
+Theory</a></p></li>
+<li><p><a href="https://faculty.washington.edu/smitdave/ramp/">Robust
+Analytics for Adaptive Malaria Control</a></p></li>
+<li><p><a href="https://faculty.washington.edu/smitdave/uganda/">Adaptive Malaria
+Control, Uganda</a></p></li>
+<li><p><a href="https://faculty.washington.edu/smitdave/uganda_intelligence/">Malaria
+in Uganda</a></p></li>
+</ul>
+</div>
+<div id="adaptive-malaria-control-uganda" class="section level3">
+<h3>Adaptive Malaria Control, Uganda</h3>
+<p><a href="https://faculty.washington.edu/smitdave/uganda/">Adaptive
+Malaria Control, Uganda</a> is the website for the methodology.</p>
+</div>
+<div id="malaria-in-uganda" class="section level3">
+<h3>Malaria in Uganda</h3>
+<ul>
+<li><a href="https://faculty.washington.edu/smitdave/uganda_intelligence/">Malaria
+in Uganda</a> is a website to display information about malaria in
+Uganda.</li>
+</ul>
+</div>
+</div>
+<div id="data-pipelines" class="section level2">
+<h2>Data Pipelines</h2>
+</div>
+<div id="malaria-intelligence" class="section level2">
+<h2>Malaria Intelligence</h2>
+</div>
+<div id="simba" class="section level2">
+<h2>SimBA</h2>
+</div>
+</div>
 
 
 

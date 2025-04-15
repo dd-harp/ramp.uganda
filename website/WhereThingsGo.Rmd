@@ -1,0 +1,141 @@
+---
+title: "Where Things Go"
+subtitle: "A Quick Guide to the RAMP Uganda Project"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+# {.tabset}
+
+## $\odot$ 
+
+**RAMP Uganda** is a large collaborative project, including data processing pipelines, conventional and simulation-based analytics, malaria intelligence, reports, and other outputs. 
+
+This **R package,** called `ramp.uganda` has been developed to serve as a nexus for RAMP Uganda.  
+
+The following document is a high-level guide to RAMP Uganda documents and content. We imagine that new content will be initiated by various people. As material matures and gets reviewed,  it should get integrated into the RAMP document infrastructure so that it can be updated revised in a future iteration. To make it easy to find things, most material belongs in one of these places, and the other tabs discuss protocols and procedures. 
+
++ **Data Warehouse:** DHI maintains a data warehouse that serves some of the data assets we use.  
+
++ **GitHub:** `https://github.com/dd-harp`
+
+    - R packages
+    
+        - Data processing pipelines
+        
+        - Conventional analytics 
+        
+        - Simulation-based analytics 
+    
+    - Quarto websites 
+    
++ **Box:** `Box/RAMP/` 
+
+    - `data/` holds the current version of several **data assets,** any digital object we create for RAMP
+    
+    - `models/` holds a model swarm  
+    
+    - `web/` holds a trial version of the Quarto websites and images
+   
+        - `uganda_intelligence` holds a local version of **Malaria in Uganda**  
+
+            - save images and movies here 
+        
+            - try out changes in the `.qmd` files, but any changes  
+    
+    - `html/` holds a local website  
+
++ **Websites:**
+
+    - the public versions are served from `https://faculty.washington.edu/smitdave/`*{sitename}*
+    
+    - This is Dave's faculty website from the University of Washington. We need to find a more permanent home. 
+
+## GitHub {.tabset}
+
+### $\oplus$ 
+
+We have developed several **R packages** available from `GitHub` for various tasks
+
+**Data Processing**
+
++ `uga-etl`
+
++ `uga-etl-spatial-hierarchy`
+
++ `ramptools`
+
+**Malaria Analytics & Intelligence**
+
++ `uga-reporting` 
+
++ `uga-outbreaks` 
+
++ `uga-tpr_to_pr` 
+
++ `ramp.uganda`
+
+[**SimBA**](https://faculty.washington.edu/smitdave/simba/index.html) has its own website. R packages include:
+
++ `ramp.xds`
+
++ `ramp.library`
+
++ `ramp.control`
+
++ `ramp.forcing`
+
++ `ramp.demog`
+
++ `ramp.work`
+
+### Data 
+
++ `uga-etl`
+
++ `uga-etl-spatial-hierarchy`
+
++ `ramptools`
+
+### Analytics 
+
++ `uga-reporting` 
+
++ `uga-outbreaks` 
+
++ `uga-tpr_to_pr` 
+
+### `ramp.uganda` 
+
+## Websites {.tabset}
+
+### $\oplus$ 
+
++ [Malaria Data](https://faculty.washington.edu/smitdave/malaria_data/)
+
++ [Malaria Theory](https://faculty.washington.edu/smitdave/theory/)
+
++ [Robust Analytics for Adaptive Malaria Control](https://faculty.washington.edu/smitdave/ramp/)
+
++ [Adaptive Malaria Control, Uganda](https://faculty.washington.edu/smitdave/uganda/)
+
++ [Malaria in Uganda](https://faculty.washington.edu/smitdave/uganda_intelligence/)
+
+### Adaptive Malaria Control, Uganda 
+
+[Adaptive Malaria Control, Uganda](https://faculty.washington.edu/smitdave/uganda/) is the website for the methodology. 
+
+### Malaria in Uganda
+
++ [Malaria in Uganda](https://faculty.washington.edu/smitdave/uganda_intelligence/) is a website to display information about malaria in Uganda. 
+
+## Data Pipelines
+
+
+
+## Malaria Intelligence 
+
+## SimBA 
