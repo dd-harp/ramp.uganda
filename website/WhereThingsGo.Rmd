@@ -1,6 +1,6 @@
 ---
 title: "Where Things Go"
-subtitle: "A Quick Guide to the RAMP Uganda Project"
+subtitle: "RAMP Uganda Project Documents Overview"
 output: html_document
 ---
 
@@ -66,6 +66,10 @@ We have developed several **R packages** available from `GitHub` for various tas
 
 + `uga-etl-spatial-hierarchy`
 
++ `uga-survey-data` 
+
++ `uga-etl-facility-data` 
+
 + `ramptools`
 
 **Malaria Analytics & Intelligence**
@@ -98,31 +102,46 @@ We have developed several **R packages** available from `GitHub` for various tas
 
 + `uga-etl-spatial-hierarchy`
 
++ `uga-survey-data` 
+
++ `uga-etl-facility-data` 
+
 + `ramptools`
 
 ### Analytics 
 
-+ `uga-reporting` 
++ `uga-etl-weekly-report` 
 
-+ `uga-outbreaks` 
++ `uga-etl-monthly-report` 
 
-+ `uga-tpr_to_pr` 
++ `outbreak` 
+
++ `tpr_to_pr` 
 
 ### `ramp.uganda` 
+
+## Box {.tabset}
 
 ## Websites {.tabset}
 
 ### $\oplus$ 
 
-+ [Malaria Data](https://faculty.washington.edu/smitdave/malaria_data/)
-
-+ [Malaria Theory](https://faculty.washington.edu/smitdave/theory/)
-
-+ [Robust Analytics for Adaptive Malaria Control](https://faculty.washington.edu/smitdave/ramp/)
+**RAMP Uganda** 
 
 + [Adaptive Malaria Control, Uganda](https://faculty.washington.edu/smitdave/uganda/)
 
 + [Malaria in Uganda](https://faculty.washington.edu/smitdave/uganda_intelligence/)
+
+**Supporting Websites** 
+
++ [Robust Analytics for Adaptive Malaria Control](https://faculty.washington.edu/smitdave/ramp/)
+
++ [Malaria Data](https://faculty.washington.edu/smitdave/malaria_data/)
+
++ [Malaria Theory](https://faculty.washington.edu/smitdave/theory/)
+
++ [SimBA](https://faculty.washington.edu/smitdave/simba/)
+
 
 ### Adaptive Malaria Control, Uganda 
 
@@ -133,8 +152,6 @@ We have developed several **R packages** available from `GitHub` for various tas
 + [Malaria in Uganda](https://faculty.washington.edu/smitdave/uganda_intelligence/) is a website to display information about malaria in Uganda. 
 
 ## Data Pipelines
-
-
 
 ## Malaria Intelligence 
 
