@@ -12,7 +12,7 @@ library(ramp.uganda)
 #tprdata <- read.csv(file='C:/Users/Admin/Documents/ramp.uganda/data-raw/pfpr_ts_district_from_hf_pixel_agg.csv')
 tprdata <- read.csv(file='C:/Users/doree/Documents/Github/ramp.uganda/data-raw/pfpr_ts_district_from_hf_pixel_agg.csv')
 sorted_data <- tprdata[order(tprdata$district_name,tprdata$period),] #arrange the data in chronical order of period and district name
-base_data <-sorted_data[sorted_data$period >= 201506 & sorted_data$period <= 202310, ]
+base_data <-sorted_data[sorted_data$period >= 201506 & sorted_data$period <= 201612, ]
 id_namef= sorted_data$district_name
 id_name = base_data$district_name
 dist_name = unique(base_data$district_name)
@@ -46,19 +46,19 @@ get_one_district = function(i){
 }
 
 t_start =2015
-year1 <- as.numeric(substr(202310, 1, 4))  # Extract first 4 characters
-month1 <- as.numeric(substr(202310, 5, 6))  # Extract last 2 characters
+year1 <- as.numeric(substr(201612, 1, 4))  # Extract first 4 characters
+month1 <- as.numeric(substr(201612, 5, 6))  # Extract last 2 characters
 fac_time_month1 = (year1+month1/12) # TIME IN months
 itn_starttime = (fac_time_month1-t_start)*365 -15 # time in days
 
 
 #-------------------------------------full model time fit -------------------------------------------------------------
 data_list = list()
-for(i in 92)
+for(i in 128)
   data_list[[i]] <- get_one_district(i)
  #-------------------------------- base model time fit----------------------------------------------------------------- 
  data_list_base <- list()
-for(i in 92)
+for(i in 128)
   data_list_base[[i]] <- get_one_district_base(i)
 
 #--------------------------------------------------------------------------------------------------------
@@ -68,12 +68,7 @@ fit_one_district_base = function(i, model){
 )}
 #----------------------pre control baseline---------------------------------------------------  \
 fitted_models=list() 
-  
-# Lo <- list(
-#     Lambda = 50,
-#     season_par = makepar_F_sin(),
-#     trend_par = makepar_F_spline(data_list_base[[92]]$times, data_list_base[[92]]$times*0+1)
-#   ) 
+
 Xo = list(xi=1/365, rho=0.2)
 model <- xds_setup_cohort(Xname= "SIP", Xopts = Xo, F_season = make_function(makepar_F_sin()))
 
@@ -85,12 +80,12 @@ eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names 
 fitted_models <- list()
 fitted_mod <- list()
 # Loop through each RDS file and load it into the list
-for (i in 92) {
+for (i in 128) {
     fitted_models[[i]] <- fit_one_district_base(i, model)
     fitted_mod[[i]] <- readRDS(eir_files[i])
   }
   
-  
+
 ## -----------Set up plotting profile---------------------------------------------------------------------------------
 FirstYear = 2015.5
 profileL = function(i, model_list, data_list_base,mod_list_full, data_list){
@@ -100,23 +95,23 @@ profileL = function(i, model_list, data_list_base,mod_list_full, data_list){
   data <- data_list_base[[i]]
   data_full <- data_list[[i]]
   
-  # mod <- fitted_models[[92]]
-  # mod_full <- fitted_mod[[92]]
-  # data <- data_list_base[[92]]
-  # data_full <- data_list[[92]]
+  # mod <- fitted_models[[128]]
+  # mod_full <- fitted_mod[[128]]
+  # data <- data_list_base[[128]]
+  # data_full <- data_list[[128]]
 
   tt <- seq(-90, ceiling(max(data$times)/365)*365-90 , length.out=200)
   tt_full<- seq(-90, ceiling(max(data_full$times)/365)*365-90 , length.out=200)
-  tt_foc <- seq(-90, ceiling(max(data$times)/365)*365-90+5*365 , length.out=200)
+  tt_foc <- seq(-90, ceiling(max(data$times)/365)*365-90+8*365 , length.out=200)
   
   mod <- xds_solve_cohort(mod, times=tt)
   get_XH(mod) -> vals
   mod_full <- xds_solve_cohort(mod_full, times=tt_full)
   get_XH(mod_full) -> vals_full
   
-  baselinevals <- vector("list", 10)
-  for (j in 1:10) {
-    mod1 <- forecast_spline_EIR(mod, 5, x_last = 0)
+  baselinevals <- vector("list", 100)
+  for (j in 1:100) {
+    mod1 <- forecast_spline_EIR(mod, 8, x_last = 0)
     mod1 <- xds_solve_cohort(mod1, times = tt_foc)
     vals1 <- get_XH(mod1)
     baselinevals[[j]] <- vals1$true_pr
@@ -134,13 +129,18 @@ profileL = function(i, model_list, data_list_base,mod_list_full, data_list){
   
   closest_index <- which.min(abs(vals_full$time - itn_starttime))
   
-  effectsize_median <- ((median_list[closest_index:length(vals_full$time)] - vals_full$true_pr[closest_index:length(vals_full$time)])/median_list[closest_index:length(vals_full$time)])*100
-  effectsize_mean <- ((mean_list[closest_index:length(vals_full$time)] - vals_full$true_pr[closest_index:length(vals_full$time)])/mean_list[closest_index:length(vals_full$time)])*100
-  effectsize_max <- ((max_list[closest_index:length(vals_full$time)] - vals_full$true_pr[closest_index:length(vals_full$time)])/max_list[closest_index:length(vals_full$time)])*100
+  # effectsize_median <- ((median_list[closest_index:length(vals_full$time)] - vals_full$true_pr[closest_index:length(vals_full$time)])/median_list[closest_index:length(vals_full$time)])*100
+  # effectsize_mean <- ((mean_list[closest_index:length(vals_full$time)] - vals_full$true_pr[closest_index:length(vals_full$time)])/mean_list[closest_index:length(vals_full$time)])*100
+  # effectsize_max <- ((max_list[closest_index:length(vals_full$time)] - vals_full$true_pr[closest_index:length(vals_full$time)])/max_list[closest_index:length(vals_full$time)])*100
 
-  # effectsize_median <- ((median_list[closest_index:180] - vals_full$true_pr[closest_index:180])/median_list[closest_index:180])*100
-  # effectsize_mean <- ((mean_list[closest_index:180] - vals_full$true_pr[closest_index:180])/mean_list[closest_index:180])*100
-  # effectsize_max <- ((max_list[closest_index:180] - vals_full$true_pr[closest_index:180])/max_list[closest_index:180])*100
+  # effectsize_median <- ((median_list[closest_index:160] - vals_full$true_pr[closest_index:160])/median_list[closest_index:160])*100
+  # effectsize_mean <- ((mean_list[closest_index:160] - vals_full$true_pr[closest_index:160])/mean_list[closest_index:160])*100
+  # effectsize_max <- ((max_list[closest_index:160] - vals_full$true_pr[closest_index:160])/max_list[closest_index:160])*100
+   
+  effectsize_median <- ((median_list[closest_index:140] - vals_full$true_pr[closest_index:140])/median_list[closest_index:140])*100
+  effectsize_mean <- ((mean_list[closest_index:140] - vals_full$true_pr[closest_index:140])/mean_list[closest_index:140])*100
+  effectsize_max <- ((max_list[closest_index:140] - vals_full$true_pr[closest_index:140])/max_list[closest_index:140])*100
+  
   
   
   #par(mfrow = c(2, 1))
@@ -158,13 +158,17 @@ profileL = function(i, model_list, data_list_base,mod_list_full, data_list){
          col = c("black", "purple","red","green","darkblue"),
          lwd=2, pch=c(NA,NA,NA,NA,19), horiz = FALSE, bty="n")      # Colors corresponding to the groups
   
-  plot(FirstYear + (vals_full$time[closest_index:length(vals_full$time)])/365,effectsize_median, ylab = "Effect sze", lwd=2, xlab = "Time", type = "l",col="green" )
-  lines(FirstYear + (vals_full$time[closest_index:length(vals_full$time)])/365,effectsize_mean, lwd=2, col="red")
-  lines(FirstYear + (vals_full$time[closest_index:length(vals_full$time)])/365,effectsize_max, lwd=2, col ="purple")
-  # 
-  # plot(FirstYear + (vals_full$time[closest_index:180])/365,effectsize_median, ylab = "Effect sze", lwd=2, xlab = "Time", type = "l", ylim = c(-50,60), col="green" )
-  # lines(FirstYear + (vals_full$time[closest_index:180])/365,effectsize_mean, lwd=2, col="red")
-  # lines(FirstYear + (vals_full$time[closest_index:180])/365,effectsize_max, lwd=2, col ="purple")
+  # plot(FirstYear + (vals_full$time[closest_index:length(vals_full$time)])/365,effectsize_median, ylab = "Effect sze", lwd=2, xlab = "Time", type = "l",col="green" )
+  # lines(FirstYear + (vals_full$time[closest_index:length(vals_full$time)])/365,effectsize_mean, lwd=2, col="red")
+  # lines(FirstYear + (vals_full$time[closest_index:length(vals_full$time)])/365,effectsize_max, lwd=2, col ="purple")
+  
+  # plot(FirstYear + (vals_full$time[closest_index:160])/365,effectsize_median, ylab = "Effect sze", lwd=2, xlab = "Time", type = "l", ylim = c(-30,50), col="green" )
+  # lines(FirstYear + (vals_full$time[closest_index:160])/365,effectsize_mean, lwd=2, col="red")
+  # lines(FirstYear + (vals_full$time[closest_index:160])/365,effectsize_max, lwd=2, col ="purple")
+  
+  plot(FirstYear + (vals_full$time[closest_index:140])/365,effectsize_median, ylab = "Effect sze", lwd=2, xlab = "Time", type = "l", ylim = c(-50,60), col="green" )
+  lines(FirstYear + (vals_full$time[closest_index:140])/365,effectsize_mean, lwd=2, col="red")
+  lines(FirstYear + (vals_full$time[closest_index:140])/365,effectsize_max, lwd=2, col ="purple")
   
   
   legend("bottomright",              # Position of the legend
@@ -178,20 +182,10 @@ profileL = function(i, model_list, data_list_base,mod_list_full, data_list){
          horiz = FALSE,
          bty = "n")
   
-  
-  # Symbols for the groups
-  # return(list(
-  #   name = data$name,
-  #   baseline = baselinevals,
-  #   fit_vals = vals,
-  #   full_fit_vals = vals_full,
-  #   forecast_vals = vals1
-  # ))
-  
 }
 
-pdf("C:/Users/doree/Documents/Github/Doreen/ramp_uganda_files/Madi_Okollo_effectsize1.pdf")
-for(i in 92)
+pdf("C:/Users/doree/Documents/Github/Doreen/ramp_uganda_files/Pakwach_effectsize6.pdf")
+for(i in 128)
   profileL(i, fitted_models, data_list_base, fitted_mod, data_list)
 dev.off(dev.cur())
 
