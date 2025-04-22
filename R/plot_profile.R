@@ -51,7 +51,7 @@ profile_pr = function(model, data, Yr0=2015){
 
   dname <- data$district_name[1]
   with(get_XH(model),
-       plot(time/365+Yr0, true_pr, ylim = c(0,1),
+       plot(model$outputs$time/365+Yr0, true_pr, ylim = c(0,1),
             ylab = "PR", lwd=2, xlab = "Time",
             main = dname, type = "l", col="darkred"))
 
