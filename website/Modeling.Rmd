@@ -18,7 +18,7 @@ attach(yaml::read_yaml("../my_paths.yaml"))
 This sets locations for `Box/RAMP` and `ramp.uganda` 
 
 ```{r, eval=F}
-directory <- paste(box_dir, "Models", sep = "") 
+directory <- paste(box_dir, "models", sep = "") 
 eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
 head(eir_files, 2)
 ```
@@ -37,15 +37,15 @@ for(i in 1:146)
 ```
 
 ```{r}
-get_irs_jdates("Tororo District", 2015)
+get_irs_jdates("Madi-Okollo District", 2015)
 ```
 
 
 
 ```{r, fig.height=8, fig.width=11}
-abim_mod_file <- readRDS("../models/abim_district_eir_model.rds")
-
-profile_plot(abim_mod_file, get_district_pfpr("Abim District"))
+abim_mod_file <- fitted_mod[[128]] 
+  #readRDS(".../models/pakwach_district_Lambda_model.rds")
+profile_plot(abim_mod_file, get_district_pfpr("Pakwach District"))
 ```
 
 ```{r}
@@ -79,7 +79,7 @@ for(i in 1:146){
   filename <- paste(box_dir, "Models/", dir, "_eir_sis.rds", sep="")
   model <- readRDS(filename)
   data <- get_district_pfpr(district)
-  mod_name = paste(website_dir, dir, "/", dir, "_eir.png", sep="")
+  mod_name = paste(website_dir, "/", dir, "_eir.png", sep="")
   png(mod_name, width=720, height=600)
   profile_plot(model, data, 2015)
   dev.off(dev.cur())
