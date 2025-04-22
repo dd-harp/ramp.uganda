@@ -1,0 +1,24 @@
+---
+title: "Evaluating Vector Control"
+author: Doreen Mbabazi Ssebuliba, Juliet Nsumba Nakakawa, David L Smith
+date: April, 2025 
+output: html_document
+---
+
+See the related [Overleaf](https://www.overleaf.com/read/mckkjxtswgkm#9a1faa) manuscript: [Robust, Simulation-based Evaluation of Vector Control in Uganda using Facility Data (Overleaf)](https://www.overleaf.com/read/mckkjxtswgkm#9a1faa)
+
+```{r}
+library(ramp.uganda)
+library(ramp.xds)
+library(ramp.library)
+library(ramp.work)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+```{r, fig.height=5 fig.width=8}
+model_file <- paste(box_dir, "models/", "madi-okollo_district_Lambda_sis.rds", sep="")
+model <- readRDS(model_file)
+data <- get_district_pfpr("Madi-Okollo District")
+profile_pr(model, data)
+```
+

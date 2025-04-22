@@ -9,11 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Doreen Ssebuliba Mbabazi, Juliet Nsumba Nakakawa, &amp; David L. Smith" />
+<meta name="author" content="Doreen Mbabazi Ssebuliba, Juliet Nsumba Nakakawa, David L Smith" />
 
-<meta name="date" content="2025-04-18" />
 
-<title>RAMP - Uganda</title>
+<title>Evaluating Vector Control</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,60 +349,23 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">RAMP - Uganda</h1>
-<h3 class="subtitle">Simulation-Based Analytics for Uganda</h3>
-<h4 class="author">Doreen Ssebuliba Mbabazi, Juliet Nsumba Nakakawa,
-&amp; David L. Smith</h4>
-<h4 class="date">April 18, 2025</h4>
+<h1 class="title toc-ignore">Evaluating Vector Control</h1>
+<h4 class="author">Doreen Mbabazi Ssebuliba, Juliet Nsumba Nakakawa,
+David L Smith</h4>
+<h4 class="date">April, 2025</h4>
 
 </div>
 
 
-<hr />
-<p><strong>Uganda</strong>:: <a href="https://faculty.washington.edu/smitdave/uganda_intelligence/">Malaria
-Intelligence</a> &amp; <a href="https://faculty.washington.edu/smitdave/uganda/">Adaptive Malaria
-Control</a></p>
-<hr />
-<div id="section" class="section level1 tabset tabset-fade tabset-pills">
-<h1 class="tabset tabset-fade tabset-pills"></h1>
-<div id="odot" class="section level2 tabset tabset-fade tabset-pills">
-<h2 class="tabset tabset-fade tabset-pills"><span class="math inline">\(\odot\)</span></h2>
-<p>The goal of RAMP has been to develop and implement <strong>Adaptive
-Malaria Control,</strong> working in collaboration with the
-<strong>National Malaria Control Division</strong> (NMCD) and
-<strong>Division of of Health Information</strong> (DHI) of
-<strong>Uganda</strong>’s National Ministry of Health.</p>
-<p>To serve NMCD’s strategic planning, we are developing simulation
-models for malaria in Uganda using the national HMIS data.</p>
-<ul>
-<li><p><a href="website/WhereThingsGo.html">Where Things Go</a></p></li>
-<li><p><a href="website/Workflows.html">Workflows</a></p></li>
-</ul>
-</div>
-<div id="vignettes" class="section level2">
-<h2>Vignettes</h2>
-<ul>
-<li><p><a href="website/Workflows.html">Workflows</a></p></li>
-<li><p><a href="website/WhereThingsGo.html">Where Things Go</a></p></li>
-<li><p><a href="website/District_Icons.html">District Icons</a></p></li>
-<li><p><a href="website/Movies.html">Movies</a></p></li>
-<li><p><a href="website/Modeling.html">Modeling</a></p></li>
-</ul>
-</div>
-<div id="malaria" class="section level2">
-<h2>Malaria</h2>
-<ul>
-<li><a href="website/EvaluatingVectorControl.html">Evaluating Vector
-Control</a></li>
-</ul>
-</div>
-<div id="boxplus" class="section level2 tabset tabset-fade tabset-pills">
-<h2 class="tabset tabset-fade tabset-pills"><span class="math inline">\(\boxplus\)</span></h2>
-</div>
-<div id="dagger" class="section level2">
-<h2><span class="math inline">\(\dagger\)</span></h2>
-</div>
-</div>
+<p>See the related <a href="https://www.overleaf.com/read/mckkjxtswgkm#9a1faa">Overleaf</a>
+manuscript: <a href="https://www.overleaf.com/read/mckkjxtswgkm#9a1faa">Robust,
+Simulation-based Evaluation of Vector Control in Uganda using Facility
+Data (Overleaf)</a></p>
+<pre class="r"><code>library(ramp.uganda)
+library(ramp.xds)
+library(ramp.library)
+library(ramp.work)
+attach(yaml::read_yaml(&quot;../my_paths.yaml&quot;)) </code></pre>
 
 
 

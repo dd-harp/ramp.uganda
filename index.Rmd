@@ -38,6 +38,9 @@ To serve NMCD's strategic planning, we are developing simulation models for mala
 
 + [Modeling](website/Modeling.html)
 
+## Malaria
+
++ [Evaluating Vector Control](website/EvaluatingVectorControl.html)
 
 ## $\boxplus$ {.tabset .tabset-fade .tabset-pills}
 

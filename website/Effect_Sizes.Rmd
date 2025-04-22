@@ -1,0 +1,49 @@
+---
+title: "Effect_Sizes"
+output: html_document
+---
+
+```{r}
+library(ramp.uganda)
+library(ramp.xds)
+library(ramp.work)
+```
+
+```{r}
+devtools::load_all()
+```
+
+```{r}
+#prts <- get_district_pfpr_i(142)
+prts <- get_district_pfpr("Madi-Okollo District")
+```
+
+```{r}
+Spar <- makepar_F_sin(bottom = 3)
+with(prts, fit_ts_trend(pfpr, jdate, Spar)) -> fits
+with(prts, fit_ts_season(pfpr, jdate, fits$Tpar)) -> fits
+fits1 <- fits
+with(prts, fit_ts_trend(pfpr, jdate, fits$Spar)) -> fits
+```
+
+```{r}
+Ft <- with(fits, funky(avg, Spar, Tpar)) 
+Ft1 <- with(fits1, funky(avg, Spar, Tpar)) 
+fits2 <- modify_baseline(fits, make_cf_base_median(c(10, 11), fits)) 
+Ft2 <- with(fits2, funky(avg, Spar, Tpar)) 
+```
+
+```{r}
+with(prts, plot(jdate/365+2015, pfpr, ylim = c(0,1), main = district_name[1]))
+tts <- seq(0, max(prts$jdate))
+lines(tts/365+2015, Ft(tts), col = "darkred")
+lines(tts/365+2015, Ft1(tts), col = "darkblue")
+lines(tts/365+2015, Ft2(tts), col = "purple")
+add_irs_history("Madi-Okollo District", Yr0=2015)
+```
+
+```{r}
+plot(tts/365+2015, Ft2(tts)/Ft1(tts), col = "darkred", type = "l")
+```
+
+
