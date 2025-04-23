@@ -1,0 +1,195 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+``` 
+
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+
+```{r, eval=F}
+directory <- paste(box_dir, "models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+```
+
+Get pfpr data by district 
+```{r,eval=F}
+load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+dist_name <- sort(district_dir$district_name)
+data_list = list()
+for(i in dist_name)
+  data_list[[i]] <- get_district_pfpr(i)
+```
+
+Get fitted models to pfpr data for all the 146 district
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:length(dist_name)) {
+  fitted_mod[[i]] <- readRDS(eir_files[i])
+}
+```
+
+```{r}
+FirstYear <-2015
+irs_time <- list()
+for (j in dist_name)
+  irs_time[[j]] <- sort(get_irs_jdates(j, 2015))
+```
+
+## District Baseline
+
+```{r, fig.height=8, fig.width=11}
+profile_irs = function(i, model_list, data_list){
+  mod_file <- model_list[[i]]
+  data <- data_list[[i]]
+
+  ix = c(10,11,12)
+  cf_max <- make_cf_base_max(ix, mod_file)
+  cf_min <- make_cf_base_min(ix, mod_file)
+  cf_median <- make_cf_base_median(ix, mod_file)
+  cf_mean <- make_cf_base_mean(ix, mod_file)
+  mod1a <- modify_baseline(mod_file, cf_max) 
+  mod1b <- modify_baseline(mod_file, cf_min) 
+  mod1c <- modify_baseline(mod_file, cf_median) 
+  mod1d <- modify_baseline(mod_file, cf_mean) 
+  vals <- get_XH(mod_file)
+  vals1a <- get_XH(mod1a)
+  vals1b <- get_XH(mod1b)
+  vals1c <- get_XH(mod1c)
+  vals1d <- get_XH(mod1d)
+
+  with(vals1a, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data$district_name), type = "l", ylim = c(0,1), col="darkred"))
+  with(vals1b, lines(time/365+FirstYear, true_pr,  lwd=2, col="darkgreen"))
+  with(vals1c, lines(time/365+FirstYear, true_pr, lwd=2,  col="purple4"))
+  with(vals1d, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkorange"))
+  with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
+  with(data, lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+#par(xpd = TRUE, mar = c(5, 4, 4, 2))  # allow plotting outside
+  legend("topleft",  c("max", "min","median","mean"), # Names for the groups   , 
+  col = c("darkred", "darkgreen","purple4","darkorange"),
+  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")      
+ 
+  irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
+  irs_labels <- c("Fludora Fusion", "actellic", "actellic")
+  text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
+  labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
+  abline(v = irs_times, col = "darkred", lty = 1, lwd=2)        
+
+  ## -------------Effect Size--------------------------------------------------------------------------
+  max_eff <- vals1a$true_pr
+  min_eff <- vals1b$true_pr
+  median_eff <- vals1c$true_pr
+  mean_eff <- vals1d$true_pr
+  base <- vals$true_pr
+
+  max_effless <- max_eff[1:(length(max_eff) - 3)]/base
+ 
+ min_effless <- min_eff[1:(length(min_eff)-3 )]/base
+ median_effless <- median_eff[1:(length(median_eff)-3 )]/base
+ mean_effless <- mean_eff[1:(length(mean_eff) - 3)]/base
+ 
+  
+  t_time <- mod_file$outputs$time
+  t_time1 <- mod1a$outputs$time
+  tt <- mod_file$EIRpar$trend_par$tt
+  irs_start <- tt[9]
+  closest_index <- which.min(abs(t_time - irs_start))
+  
+   plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
+  lines(mod_file$outputs$time/365+FirstYear,min_effless , lwd= 2, col="darkgreen")
+  lines(mod_file$outputs$time/365+FirstYear,median_effless, lwd= 2, col="purple4" )
+  lines(mod_file$outputs$time/365+FirstYear,mean_effless, lwd= 2, col="darkorange" )
+  
+  legend("topleft",    #inset=-0.2 ,              # Position of the legend
+  legend = c(
+          paste0(
+  "max_effs: ", sprintf("%.2f", mean(max_effless[closest_index:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(max_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100)," reduction)")
+,
+paste0("min_effs: ", sprintf("%.2f", mean(min_effless[closest_index:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(min_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")
+,
+paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(median_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")"
+),
+ paste0( "mean_effs: ", sprintf("%.2f", mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")),
+  col = c("darkred", "darkgreen","purple4","darkorange"),
+  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
+  # Colors corresponding to the groups
+  irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
+  irs_labels <- c("Fludora Fusion", "actellic", "actellic")
+  text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
+  labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
+  abline(v = irs_times, col = "darkred", lty = 1, lwd=2)    
+
+
+
+  }
+
+```
+
+```{r}
+for(i in c(2,11,75,92,94,106,123,142,145))
+  profile_irs(i, fitted_mod, data_list)
+```
+
+
+
+```{r, fig.height=8, fig.width=11}
+profile_plot(mod_file, get_district_pfpr("Madi-Okollo District"))
+```
+
+```{r}
+#devtools::load_all()
+abim_mod_file$EIRpar$trend_par$tt
+```
+
+```{r, fig.width=8, fig.height=7}
+png("../outputs/tororo.png", width=720, height=600)
+filename <- paste(box_dir, "/models/tororo_district_eir_sis.rds", sep="")
+tororo_mod_file <- readRDS(filename)
+data <- get_district_pfpr("Tororo District")
+profile_plot(tororo_mod_file, data, 2015)
+dev.off(dev.cur())
+```
+
+```{r, fig.width=8, fig.height=7}
+i=92
+district <- district_dir[i,1]
+dir <- district_dir[i,2]
+filename <- paste(box_dir, "models/", dir, "_eir_sis.rds", sep="")
+model <- readRDS(filename)
+data <- get_district_pfpr(district)
+mod_name = paste(website_dir, dir, "/", dir, "_eir.png", sep="")
+profile_plot(model, data, 2015)
+```
+
+```{r}
+
+```
+
+```{r, eval=F}
+for(i in 1:146){
+  district <- district_dir[i,1]
+  dir <- district_dir[i,2]
+  filename <- paste(box_dir, "Models/", dir, "_eir_sis.rds", sep="")
+  model <- readRDS(filename)
+  data <- get_district_pfpr(district)
+  mod_name = paste(website_dir, "/", dir, "_eir.png", sep="")
+  png(mod_name, width=720, height=600)
+  profile_plot(model, data, 2015)
+  dev.off(dev.cur())
+}
+```
