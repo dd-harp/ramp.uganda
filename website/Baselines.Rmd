@@ -1,0 +1,96 @@
+---
+title: "Baselines"
+output: html_document
+---
+
+```{r}
+library(ramp.uganda)
+library(ramptools)
+library(sf)
+library(yaml)
+library(viridisLite)
+```
+
+
+```{r}
+if(!exists("box_dir")) attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+```{r}
+irs_dates <- list() 
+irs_class <- rep(0, 146) 
+max_irs <- rep(0, 146) 
+min_irs <- rep(0, 146) 
+for(i in 1:146){
+  dist_name <- uga_district_shp$name[i]
+  jd <- get_irs_jdates(dist_name)
+  if(length(jd)>0){
+    irs_class[i] = 1 
+    max_irs[i] = max(jd)
+    if(max(jd) < 800) irs_class[i] = 3
+    if(max(jd) < 0) irs_class[i] = 2
+    if(min(jd) > 2200) irs_class[i] = 4
+    min_irs[i] = min(jd) 
+  }
+}
+```
+
+## Last sprayed before 2015
+
+```{r}
+ix2 <- which(irs_class == 2)
+uga_district_shp$name[ix2]
+```
+
+## Last sprayed in 2017
+
+```{r}
+ix3 <- which(irs_class == 3)
+uga_district_shp$name[ix3]
+
+```
+
+## First sprayed after 2020
+
+```{r}
+ix4 <- which(irs_class == 4)
+uga_district_shp$name[ix4]
+```
+
+## At least two years unsprayed at the end 
+
+```{r}
+ix <- which(irs_class == 1)
+tail_years <- 9-floor(max_irs[ix]/365)
+tail_years
+```
+
+These three districts have more than one year of not spraying. 
+
+```{r}
+ixs = which(tail_years > 1) 
+district_dir$district_name[ix][ixs]
+irs_class[ix][ixs] = 5
+```
+
+```{r}
+ix5 <- which(irs_class == 5)
+uga_district_shp$name[ix5]
+```
+
+## Sprayed Most Years 
+
+
+```{r}
+ix1 <- which(irs_class == 1)
+uga_district_shp$name[ix1]
+```
+
+## Plot
+
+```{r, fig.height=7, fig.width=7}
+clrs <- turbo(6)
+clrs <- clrs[c(1,2,1,4,5,6)][irs_class+1]
+plot(ramptools::uga_district_shp$geometry, col = clrs)
+```
+
