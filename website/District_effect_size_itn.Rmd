@@ -81,7 +81,8 @@ profile_itn = function(i, model_list, data_list){
   col = c("darkred", "darkgreen","purple4","darkorange"),
   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")      
  
-  itn_times <- c(FirstYear + 1049/365,FirstYear + 2114/365,FirstYear + 3148/365)
+  #itn_times <- c(FirstYear + 1049/365,FirstYear + 2114/365,FirstYear + 3148/365)
+  itn_times <- c(FirstYear + 776/365,FirstYear + 2175/365,FirstYear + 3285/365)
   itn_labels <- c("ITNs2","ITNs3","ITNs4")
   # itn_times <- c(FirstYear + 2114/365,FirstYear + 3148/365)
   # itn_labels <- c("ITNs3","ITNs4")
@@ -131,7 +132,8 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
   col = c("darkred", "darkgreen","purple4","darkorange"),
   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
   # Colors corresponding to the groups
-  itn_times <- c(FirstYear + 1049/365,FirstYear + 2114/365,FirstYear + 3148/365)
+  #itn_times <- c(FirstYear + 1049/365,FirstYear + 2114/365,FirstYear + 3148/365)
+  itn_times <- c(FirstYear + 776/365,FirstYear + 2175/365,FirstYear + 3285/365)
   itn_labels <- c("ITNs2","ITNs3","ITNs4")
   # itn_times <- c(FirstYear + 2114/365,FirstYear + 3148/365)
   # itn_labels <- c("ITNs3","ITNs4")
@@ -146,8 +148,8 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
 ```
 
 ```{r}
-pdf("South_Central_ITN.pdf")
-for(i in c(53,90,96))
+pdf("West_Nile_ITN.pdf")
+for(i in c(118,128,146))
   profile_itn(i, fitted_mod, data_list)
 dev.off(dev.cur())
 ```
