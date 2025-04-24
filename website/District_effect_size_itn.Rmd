@@ -55,7 +55,7 @@ profile_itn = function(i, model_list, data_list){
   mod_file <- model_list[[i]]
   data <- data_list[[i]]
 
-  ix = c(8,11)
+  ix = c(5,8,11)
   cf_max <- make_cf_base_max(ix, mod_file)
   cf_min <- make_cf_base_min(ix, mod_file)
   cf_median <- make_cf_base_median(ix, mod_file)
@@ -81,10 +81,10 @@ profile_itn = function(i, model_list, data_list){
   col = c("darkred", "darkgreen","purple4","darkorange"),
   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")      
  
-  # itn_times <- c(FirstYear + 776/365,FirstYear + 2175/365,FirstYear + 3209/365)
-  # itn_labels <- c("ITNs2","ITNs3","ITNs4")
-  itn_times <- c(FirstYear + 2114/365,FirstYear + 3148/365)
-  itn_labels <- c("ITNs3","ITNs4")
+  itn_times <- c(FirstYear + 1049/365,FirstYear + 2114/365,FirstYear + 3148/365)
+  itn_labels <- c("ITNs2","ITNs3","ITNs4")
+  # itn_times <- c(FirstYear + 2114/365,FirstYear + 3148/365)
+  # itn_labels <- c("ITNs3","ITNs4")
   text(x = itn_times, y = rep(0.8, length(itn_times)),  # adjust y position as needed
   labels = itn_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
   abline(v = itn_times, col = "darkred", lty = 1, lwd=2)        
@@ -131,10 +131,10 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
   col = c("darkred", "darkgreen","purple4","darkorange"),
   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
   # Colors corresponding to the groups
-  # itn_times <- c(FirstYear + 776/365,FirstYear + 2175/365,FirstYear + 3209/365)
-  # itn_labels <- c("ITNs2","ITNs3","ITNs4")
-  itn_times <- c(FirstYear + 2114/365,FirstYear + 3148/365)
-  itn_labels <- c("ITNs3","ITNs4")
+  itn_times <- c(FirstYear + 1049/365,FirstYear + 2114/365,FirstYear + 3148/365)
+  itn_labels <- c("ITNs2","ITNs3","ITNs4")
+  # itn_times <- c(FirstYear + 2114/365,FirstYear + 3148/365)
+  # itn_labels <- c("ITNs3","ITNs4")
   text(x = itn_times, y = rep(0.8, length(itn_times)),  # adjust y position as needed
   labels = itn_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
   abline(v = itn_times, col = "darkred", lty = 1, lwd=2)    
@@ -146,8 +146,10 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
 ```
 
 ```{r}
+pdf("South_Central_ITN.pdf")
 for(i in c(53,90,96))
   profile_itn(i, fitted_mod, data_list)
+dev.off(dev.cur())
 ```
 
 
