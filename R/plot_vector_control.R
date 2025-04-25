@@ -38,13 +38,14 @@ plot_irs_history = function(district_name, start=2012, end=2026, add=FALSE, clr 
 #' Add IRS History as Vertical Lines
 #'
 #' @param district_name a district name
+#' @param ymax a scaling factor
 #' @param clr a color for the labels
 #' @param Yr0 the start year
 #' @importFrom graphics segments text
 #'
 #' @returns invisible()
 #' @export
-add_irs_history = function(district_name, clr = "#4686FBFF", Yr0=2015){
+add_irs_history = function(district_name, ymax=1, clr="#4686FBFF", Yr0=2015){
   origin = as.Date(paste(Yr0,"-01-01", sep =""))
 
   jd <- get_irs_jdates(district_name, Yr0)
@@ -57,8 +58,8 @@ add_irs_history = function(district_name, clr = "#4686FBFF", Yr0=2015){
 
     for(i in 1:length(jd)){
       points(jd[i], 0, pch = 15, col=clr)
-      segments(jd[i], 0, jd[i], .25, col=clr)
-      text(jd[i], 1, formula[i], srt=90, adj=0, pos=2, col = clr, cex=0.8)
+      segments(jd[i], 0, jd[i], .4*ymax, col=clr)
+      text(jd[i], ymax, formula[i], srt=90, adj=0, pos=2, col = clr, cex=0.8)
     }
   }
 }
@@ -66,13 +67,14 @@ add_irs_history = function(district_name, clr = "#4686FBFF", Yr0=2015){
 #' Add itn History as Vertical Lines
 #'
 #' @param district_name a district name
+#' @param ymax a district name
 #' @param clr a color for the labels
 #' @param Yr0 the start year
 #' @importFrom graphics segments text
 #'
 #' @returns invisible()
 #' @export
-add_itn_history = function(district_name, clr = "#E4460AFF", Yr0=2015){
+add_itn_history = function(district_name, ymax=1, clr = "#E4460AFF", Yr0=2015){
   origin = as.Date(paste(Yr0,"-01-01", sep =""))
 
   jd <- get_itn_jdates(district_name, Yr0)
@@ -84,7 +86,7 @@ add_itn_history = function(district_name, clr = "#E4460AFF", Yr0=2015){
 
     for(i in 1:length(jd)){
       points(jd[i], 0, pch = 21, col=clr)
-      segments(jd[i], 0, jd[i], .5, col=clr)
+      segments(jd[i], 0, jd[i], .5*ymax, col=clr)
     }
   }
 }

@@ -1,16 +1,16 @@
-region_name,region_dir
-Acholi Region,acholi_region
-Ankole Region,ankole_region
-Bugisu Region,bugisu_region
-Bukedi Region,bukedi_region
-Bunyoro Region,bunyoro_region
-Busoga Region,busoga_region
-Kampala Region,kampala_region
-Karamoja Region,karamoja_region
-Kigezi Region,kigezi_region
-Lango Region,lango_region
-North Central Region,north_central_region
-South Central Region,south_central_region
-Teso Region,teso_region
-Tooro Region,tooro_region
-West Nile Region,west_nile_region
+region_name,region_fullname,region_dir
+Acholi, Acholi Region,acholi_region
+Ankole, Ankole Region,ankole_region
+Bugisu, Bugisu Region,bugisu_region
+Bukedi, Bukedi Region,bukedi_region
+Bunyoro, Bunyoro Region,bunyoro_region
+Busoga, Busoga Region,busoga_region
+Kampala, Kampala Region,kampala_region
+Karamoja, Karamoja Region,karamoja_region
+Kigezi, Kigezi Region,kigezi_region
+Lango, Lango Region,lango_region
+North Central, North Central Region,north_central_region
+South Central, South Central Region,south_central_region
+Teso, Teso Region,teso_region
+Tooro, Tooro Region,tooro_region
+West Nile, West Nile Region,west_nile_region

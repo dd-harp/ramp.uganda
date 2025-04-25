@@ -40,13 +40,15 @@ label_region = function(region, xshift=c(), yshift=c()){
 #' Plot a region outline
 #'
 #' @param region the region name
+#' @param lwd the line width
+#' @param clr the border color
 #' @param add replot if add=FALSE
 #'
 #' @returns invisible()
 #' @export
-outline_region = function(region, add=TRUE){
+outline_region = function(region, lwd=2, clr = "black", add=TRUE){
   which(ramptools::uga_region_shp$name == region) ->ix
-  plot(ramptools::uga_region_shp$geometry[ix], lwd=2, add=add)
+  plot(ramptools::uga_region_shp$geometry[ix], border=clr, bg=NULL, lwd=lwd, add=add)
   return(invisible())
 }
 

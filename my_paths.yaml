@@ -1,10 +1,3 @@
-# box_dir: "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/"
-# ramp_uganda_dir: "/Users/smitdave/git/ramp.uganda/"
-# website_dir: "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/web/uganda_intelligence/"
-box_dir: "C:/Users/doree/Box/RAMP/"
-ramp_uganda_dir: "C:/Users/doree/Documents/Github/ramp.uganda/"
-website_dir: "C:/Users/doree/Box/Website/"
-
-#box_dir: "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/"
-#ramp_uganda_dir: "/Users/smitdave/git/ramp.uganda/"
-#website_dir: "/Users/smitdave/Nextcloud/uganda_intelligence/"
+box_dir: "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/"
+ramp_uganda_dir: "/Users/smitdave/git/ramp.uganda/"
+website_dir: "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/web/uganda_intelligence/"

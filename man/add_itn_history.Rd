@@ -4,10 +4,12 @@
 \alias{add_itn_history}
 \title{Add itn History as Vertical Lines}
 \usage{
-add_itn_history(district_name, clr = "#E4460AFF", Yr0 = 2015)
+add_itn_history(district_name, ymax = 1, clr = "#E4460AFF", Yr0 = 2015)
 }
 \arguments{
 \item{district_name}{a district name}
+
+\item{ymax}{a district name}
 
 \item{clr}{a color for the labels}
 
