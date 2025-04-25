@@ -43,19 +43,19 @@ for (i in 1:length(dist_name)) {
 
 ```{r}
 FirstYear <-2015
-irs_time <- list()
+itn_time <- list()
 for (j in dist_name)
-  irs_time[[j]] <- sort(get_irs_jdates(j, 2015))
+  itn_time[[j]] <- sort(get_itn_jdates(j, 2015))
 ```
 
 ## District Baseline
 
 ```{r, fig.height=8, fig.width=11}
-profile_irs = function(i, model_list, data_list){
+profile_itn = function(i, model_list, data_list){
   mod_file <- model_list[[i]]
   data <- data_list[[i]]
 
-  ix = c(10,11,12)
+  ix = c(5,8,11)
   cf_max <- make_cf_base_max(ix, mod_file)
   cf_min <- make_cf_base_min(ix, mod_file)
   cf_median <- make_cf_base_median(ix, mod_file)
@@ -81,11 +81,14 @@ profile_irs = function(i, model_list, data_list){
   col = c("darkred", "darkgreen","purple4","darkorange"),
   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")      
  
-  irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
-  irs_labels <- c("Fludora Fusion", "actellic", "actellic")
-  text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
-  labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
-  abline(v = irs_times, col = "darkred", lty = 1, lwd=2)        
+  #itn_times <- c(FirstYear + 1049/365,FirstYear + 2114/365,FirstYear + 3148/365)
+  itn_times <- c(FirstYear + 776/365,FirstYear + 2175/365,FirstYear + 3285/365)
+  itn_labels <- c("ITNs2","ITNs3","ITNs4")
+  # itn_times <- c(FirstYear + 2114/365,FirstYear + 3148/365)
+  # itn_labels <- c("ITNs3","ITNs4")
+  text(x = itn_times, y = rep(0.8, length(itn_times)),  # adjust y position as needed
+  labels = itn_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
+  abline(v = itn_times, col = "darkred", lty = 1, lwd=2)        
 
   ## -------------Effect Size--------------------------------------------------------------------------
   max_eff <- vals1a$true_pr
@@ -104,8 +107,8 @@ profile_irs = function(i, model_list, data_list){
   t_time <- mod_file$outputs$time
   t_time1 <- mod1a$outputs$time
   tt <- mod_file$EIRpar$trend_par$tt
-  irs_start <- tt[9]
-  closest_index <- which.min(abs(t_time - irs_start))
+  itn_start <- tt[11]
+  closest_index <- which.min(abs(t_time - itn_start))
   
    plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
   lines(mod_file$outputs$time/365+FirstYear,min_effless , lwd= 2, col="darkgreen")
@@ -129,11 +132,14 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
   col = c("darkred", "darkgreen","purple4","darkorange"),
   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
   # Colors corresponding to the groups
-  irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
-  irs_labels <- c("Fludora Fusion", "actellic", "actellic")
-  text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
-  labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
-  abline(v = irs_times, col = "darkred", lty = 1, lwd=2)    
+  #itn_times <- c(FirstYear + 1049/365,FirstYear + 2114/365,FirstYear + 3148/365)
+  itn_times <- c(FirstYear + 776/365,FirstYear + 2175/365,FirstYear + 3285/365)
+  itn_labels <- c("ITNs2","ITNs3","ITNs4")
+  # itn_times <- c(FirstYear + 2114/365,FirstYear + 3148/365)
+  # itn_labels <- c("ITNs3","ITNs4")
+  text(x = itn_times, y = rep(0.8, length(itn_times)),  # adjust y position as needed
+  labels = itn_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
+  abline(v = itn_times, col = "darkred", lty = 1, lwd=2)    
 
 
 
@@ -142,7 +148,10 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
 ```
 
 ```{r}
-for(i in c(2,11,75,92,94,106,123,142,145))
-  profile_irs(i, fitted_mod, data_list)
+pdf("West_Nile_ITN.pdf")
+for(i in c(118,128,146))
+  profile_itn(i, fitted_mod, data_list)
+dev.off(dev.cur())
 ```
+
 

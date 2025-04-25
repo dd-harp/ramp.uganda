@@ -1,0 +1,173 @@
+---
+title: "IRS Baselines"
+output: html_document
+---
+
+```{r}
+library(ramp.uganda)
+library(ramptools)
+library(sf)
+library(yaml)
+library(viridisLite)
+```
+
+
+```{r}
+if(!exists("box_dir")) attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+```{r}
+irs_dates <- list() 
+irs_class <- rep(0, 146) 
+max_irs <- rep(0, 146) 
+min_irs <- rep(0, 146) 
+for(i in 1:146){
+  dist_name <- uga_district_shp$name[i]
+  jd <- get_irs_jdates(dist_name)
+  if(length(jd)>0){
+    irs_class[i] = 1 
+    max_irs[i] = max(jd)
+    if(max(jd) < 800) irs_class[i] = 3
+    if(max(jd) < 0) irs_class[i] = 2
+    if(min(jd) > 2200) irs_class[i] = 4
+    min_irs[i] = min(jd) 
+  }
+}
+```
+
+## Last sprayed before 2015
+
+```{r}
+ix2 <- which(irs_class == 2)
+uga_district_shp$name[ix2]
+```
+
+## Last sprayed in 2017
+
+```{r}
+ix3 <- which(irs_class == 3)
+uga_district_shp$name[ix3]
+
+```
+
+## First sprayed after 2020
+
+```{r}
+ix4 <- which(irs_class == 4)
+uga_district_shp$name[ix4]
+```
+
+## At least two years unsprayed at the end 
+
+```{r}
+ix <- which(irs_class == 1)
+tail_years <- 9-floor(max_irs[ix]/365)
+tail_years
+```
+
+These three districts have more than one year of not spraying. 
+
+```{r}
+ixs = which(tail_years > 1) 
+uga_district_shp$name[ix][ixs]
+irs_class[ix][ixs] = 5
+```
+
+```{r}
+ix5 <- which(irs_class == 5)
+uga_district_shp$name[ix5]
+```
+
+## Sprayed Most Years 
+
+
+```{r}
+ix1 <- which(irs_class == 1)
+uga_district_shp$name[ix1]
+```
+
+## Plot
+
+```{r}
+plot(1:20, rep(0,20), pch = 19, cex=3, col=turbo(20))
+ix <- c(1,6,15,19,3)
+text(ix, rep(0, 5)+.3, 1:5)
+base <- c(grey(0.9), turbo(20)[ix])
+base[3] <- grey(0.9) 
+```
+
+
+```{r, fig.height=15, fig.width=15}
+clrs <- base[irs_class+1]
+plot(ramptools::uga_district_shp$geometry, col = clrs)
+for(i in 1:15){
+  outline_region(region_dir[i,1], add=TRUE, clr = "tan", lwd=4)
+}
+text(34.1, 0, "Continuous IRS", col=base[2], pos=4, cex=1.7)
+text(34.1, -0.2, "IRS ends before 2022", col=base[6], pos=4, cex=1.7)
+text(34.1, -0.4, "IRS starts after 2021", col=base[5], pos=4, cex=1.7)
+text(34.1, -0.6, "IRS in 2017", col=base[4], pos=4, cex=1.7)
+```
+
+```{r, fig.height=7, fig.width=7}
+png("IRSBaseline.png", width=1040, height=1040)
+clrs <- base[irs_class+1]
+plot(ramptools::uga_district_shp$geometry, col = clrs)
+for(i in 1:15){
+  outline_region(region_dir[i,1], add=TRUE, clr = "tan", lwd=4)
+}
+text(34.1, 0, "Continuous IRS", col=base[2], pos=4, cex=1.7)
+text(34.1, -0.2, "IRS ends before 2022", col=base[6], pos=4, cex=1.7)
+text(34.1, -0.4, "IRS starts after 2021", col=base[5], pos=4, cex=1.7)
+text(34.1, -0.6, "IRS in 2017", col=base[4], pos=4, cex=1.7)
+dev.off(dev.cur())
+```
+```{r}
+irs_baseline_class <- list()
+
+irs_baseline_class[[1]] <- list() 
+irs_baseline_class[[1]]$description <- "Continouous IRS" 
+irs_baseline_class[[1]]$N <- length(ix1) 
+irs_baseline_class[[1]]$clr <- base[2] 
+irs_baseline_class[[1]]$start_year <- floor(min_irs[ix1]/365) + 2015
+irs_baseline_class[[1]]$end_year <- ceiling(max_irs[ix1]/365) + 2015
+irs_baseline_class[[1]]$district_names <- uga_district_shp$name[ix1] 
+
+irs_baseline_class[[2]] <- list() 
+irs_baseline_class[[2]]$description <- "IRS end_years before 2022" 
+irs_baseline_class[[2]]$N <- length(ix5) 
+irs_baseline_class[[2]]$clr <- base[6] 
+irs_baseline_class[[2]]$start_year <- floor(min_irs[ix5]/365) + 2015
+irs_baseline_class[[2]]$end_year <- ceiling(max_irs[ix5]/365) + 2015
+irs_baseline_class[[2]]$district_names <- uga_district_shp$name[ix5] 
+
+irs_baseline_class[[4]] <- list() 
+irs_baseline_class[[4]]$description <- "IRS in 2017" 
+irs_baseline_class[[4]]$N <- length(ix3) 
+irs_baseline_class[[4]]$clr <- base[4] 
+irs_baseline_class[[4]]$start_year <- floor(min_irs[ix3]/365) + 2015
+irs_baseline_class[[4]]$end_year <- ceiling(max_irs[ix3]/365) + 2015
+irs_baseline_class[[4]]$district_names <- uga_district_shp$name[ix3] 
+
+irs_baseline_class[[5]] <- list() 
+irs_baseline_class[[5]]$description <- "IRS before 2015" 
+irs_baseline_class[[5]]$N <- length(ix2) 
+irs_baseline_class[[5]]$clr <- turbo(20)[6] 
+irs_baseline_class[[5]]$start_year <- floor(min_irs[ix2]/365) + 2015
+irs_baseline_class[[5]]$end_year <- ceiling(max_irs[ix2]/365) + 2015
+irs_baseline_class[[5]]$district_names <- uga_district_shp$name[ix2] 
+
+irs_baseline_class[[3]] <- list() 
+irs_baseline_class[[3]]$description <- "IRS start_years after 2021" 
+irs_baseline_class[[3]]$N <- length(ix4) 
+irs_baseline_class[[3]]$clr <- base[5] 
+irs_baseline_class[[3]]$start_year <- floor(min_irs[ix4]/365) + 2015
+irs_baseline_class[[3]]$end_year <- ceiling(max_irs[ix4]/365) + 2015
+irs_baseline_class[[3]]$district_names <- uga_district_shp$name[ix4] 
+
+```
+
+```{r, eval=F}
+saveRDS(irs_baseline_class, file = "/Users/smitdave/Nextcloud/websites/uganda_intelligence/uganda/irs_baseline_class.rds")
+```
+

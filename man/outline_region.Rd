@@ -4,10 +4,14 @@
 \alias{outline_region}
 \title{Plot a region outline}
 \usage{
-outline_region(region, add = TRUE)
+outline_region(region, lwd = 2, clr = "black", add = TRUE)
 }
 \arguments{
 \item{region}{the region name}
+
+\item{lwd}{the line width}
+
+\item{clr}{the border color}
 
 \item{add}{replot if add=FALSE}
 }

@@ -4,10 +4,12 @@
 \alias{add_irs_history}
 \title{Add IRS History as Vertical Lines}
 \usage{
-add_irs_history(district_name, clr = "#4686FBFF", Yr0 = 2015)
+add_irs_history(district_name, ymax = 1, clr = "#4686FBFF", Yr0 = 2015)
 }
 \arguments{
 \item{district_name}{a district name}
+
+\item{ymax}{a scaling factor}
 
 \item{clr}{a color for the labels}
 
