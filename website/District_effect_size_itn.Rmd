@@ -19,7 +19,7 @@ attach(yaml::read_yaml("../my_paths.yaml"))
 This sets locations for `Box/RAMP` and `ramp.uganda` 
 
 ```{r, eval=F}
-directory <- paste(box_dir, "models", sep = "") 
+directory <- paste(box_dir, "/models", sep = "") 
 eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
 ```
 
@@ -107,8 +107,28 @@ profile_itn = function(i, model_list, data_list){
   t_time <- mod_file$outputs$time
   t_time1 <- mod1a$outputs$time
   tt <- mod_file$EIRpar$trend_par$tt
-  itn_start <- tt[11]
-  closest_index <- which.min(abs(t_time - itn_start))
+  itn_1 <- 776
+  itn_2 <-2175
+  itn_3 <-3209
+  closest_index1 <- which.min(abs(t_time - itn_1))
+  closest_index2 <- which.min(abs(t_time - itn_2))
+  closest_index3 <- which.min(abs(t_time - itn_3))
+  
+ #########################################################################---------------------------- 
+  
+  Effect_table <- data.frame(
+  ITN_Type = c("ITN2", "ITN3", "ITN4"),
+  max_effect = round(c(mean(max_effless[closest_index1:closest_index2]), mean(max_effless[closest_index2:closest_index3]), mean(max_effless[closest_index3:length(t_time)])),2),
+  min_effect = round(c(mean(min_effless[closest_index1:closest_index2]), mean(min_effless[closest_index3:closest_index3]), mean(min_effless[closest_index3:length(t_time)])),2),
+  median_effect = round(c(mean(median_effless[closest_index1:closest_index2]), mean(median_effless[closest_index3:closest_index3]), mean(median_effless[closest_index3:length(t_time)])),2),
+  mean_effect = round(c(mean(mean_effless[closest_index1:closest_index2]), mean(mean_effless[closest_index3:closest_index3]), mean(mean_effless[closest_index3:length(t_time)])),2),
+  
+  max_percent = round(c((1 - (1 / mean(max_effless[closest_index1:closest_index2]))) * 100, (1 - (1 / mean(max_effless[closest_index2:closest_index3]))) * 100, (1 - (1 / mean(max_effless[closest_index3:length(t_time)]))) * 100),2),
+  min_percent = round(c((1 - (1 / mean(min_effless[closest_index1:closest_index2]))) * 100, (1 - (1 / mean(min_effless[closest_index2:closest_index3]))) * 100, (1 - (1 / mean(min_effless[closest_index3:length(t_time)]))) * 100),2),
+  median_percent = round(c((1 - (1 / mean(median_effless[closest_index1:closest_index2]))) * 100, (1 - (1 / mean(median_effless[closest_index2:closest_index3]))) * 100, (1 - (1 / mean(median_effless[closest_index3:length(t_time)]))) * 100),2),
+  mean_percent = round(c((1 - (1 / mean(mean_effless[closest_index1:closest_index2]))) * 100, (1 - (1 / mean(mean_effless[closest_index2:closest_index3]))) * 100, (1 - (1 / mean(mean_effless[closest_index3:length(t_time)]))) * 100),2))
+
+  
   
    plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
   lines(mod_file$outputs$time/365+FirstYear,min_effless , lwd= 2, col="darkgreen")
@@ -118,17 +138,17 @@ profile_itn = function(i, model_list, data_list){
   legend("topleft",    #inset=-0.2 ,              # Position of the legend
   legend = c(
           paste0(
-  "max_effs: ", sprintf("%.2f", mean(max_effless[closest_index:length(t_time)], na.rm = TRUE)),
-  " (", sprintf("%.2f%%", (1 - (1 / mean(max_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100)," reduction)")
+  "max_effs: ", sprintf("%.2f", mean(max_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(max_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100)," reduction)")
 ,
-paste0("min_effs: ", sprintf("%.2f", mean(min_effless[closest_index:length(t_time)], na.rm = TRUE)),
-  " (", sprintf("%.2f%%", (1 - (1 / mean(min_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")
+paste0("min_effs: ", sprintf("%.2f", mean(min_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(min_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")")
 ,
-paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length(t_time)], na.rm = TRUE)),
-  " (", sprintf("%.2f%%", (1 - (1 / mean(median_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")"
+paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(median_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")"
 ),
- paste0( "mean_effs: ", sprintf("%.2f", mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE)),
-  " (", sprintf("%.2f%%", (1 - (1 / mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")),
+ paste0( "mean_effs: ", sprintf("%.2f", mean(mean_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(mean_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")")),
   col = c("darkred", "darkgreen","purple4","darkorange"),
   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
   # Colors corresponding to the groups
@@ -141,7 +161,11 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
   labels = itn_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
   abline(v = itn_times, col = "darkred", lty = 1, lwd=2)    
 
-
+return(data.frame(
+      district_name = unique(data$district_name),
+      Effect_table
+      )
+    )
 
   }
 
@@ -149,9 +173,21 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
 
 ```{r}
 pdf("West_Nile_ITN.pdf")
-for(i in c(118,128,146))
-  profile_itn(i, fitted_mod, data_list)
-dev.off(dev.cur())
+malaria_itn_Effect <- list()
+
+# Loop over all i values
+for(i in c(118,128,146)) {
+  itn <- profile_itn(i, fitted_mod, data_list)  # Get a data.frame
+  malaria_itn_Effect[[i]] <- itn  # Store each data.frame
+}
+
+# Combine all stored data.frames into one big data.frame
+malaria_itn_eff <- do.call(rbind, malaria_itn_Effect)
+
+# Save to CSV
+write.csv(malaria_itn_eff, "../data/malaria_itn_eff.csv", row.names = FALSE)
+
+dev.off()  # Close PDF
 ```
 
 
