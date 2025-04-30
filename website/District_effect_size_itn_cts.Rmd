@@ -148,8 +148,8 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
 ```
 
 ```{r}
-pdf("West_Nile_ITN.pdf")
-for(i in c(118,128,146))
+pdf("all_districts_itn.pdf")
+for(i in 1:length(itn_dist))
   profile_itn(i, fitted_mod, data_list)
 dev.off(dev.cur())
 ```
