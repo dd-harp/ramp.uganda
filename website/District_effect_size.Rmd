@@ -25,8 +25,8 @@ eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names 
 
 Get pfpr data by district 
 ```{r,eval=F}
-load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
-#load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+#load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
 dist_name <- sort(district_dir$district_name)
 data_list = list()
 for(i in dist_name)
@@ -55,7 +55,7 @@ profile_irs = function(i, model_list, data_list){
   mod_file <- model_list[[i]]
   data <- data_list[[i]]
 
-  ix = c(10,11,12)
+  ix = c(1,2,3,4,5,6,7,8,9,12)
   cf_max <- make_cf_base_max(ix, mod_file)
   cf_min <- make_cf_base_min(ix, mod_file)
   cf_median <- make_cf_base_median(ix, mod_file)
@@ -79,13 +79,14 @@ profile_irs = function(i, model_list, data_list){
 #par(xpd = TRUE, mar = c(5, 4, 4, 2))  # allow plotting outside
   legend("topleft",  c("max", "min","median","mean"), # Names for the groups   , 
   col = c("darkred", "darkgreen","purple4","darkorange"),
-  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")      
+  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
+  add_irs_history(unique(data$district_name))
  
-  irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
-  irs_labels <- c("Fludora Fusion", "actellic", "actellic")
-  text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
-  labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
-  abline(v = irs_times, col = "darkred", lty = 1, lwd=2)        
+  # irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
+  # irs_labels <- c("Fludora Fusion", "actellic", "actellic")
+  # text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
+  # labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
+  # abline(v = irs_times, col = "darkred", lty = 1, lwd=2)        
 
   ## -------------Effect Size--------------------------------------------------------------------------
   max_eff <- vals1a$true_pr
@@ -112,28 +113,29 @@ profile_irs = function(i, model_list, data_list){
   lines(mod_file$outputs$time/365+FirstYear,median_effless, lwd= 2, col="purple4" )
   lines(mod_file$outputs$time/365+FirstYear,mean_effless, lwd= 2, col="darkorange" )
   
-  legend("topleft",    #inset=-0.2 ,              # Position of the legend
-  legend = c(
-          paste0(
-  "max_effs: ", sprintf("%.2f", mean(max_effless[closest_index:length(t_time)], na.rm = TRUE)),
-  " (", sprintf("%.2f%%", (1 - (1 / mean(max_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100)," reduction)")
-,
-paste0("min_effs: ", sprintf("%.2f", mean(min_effless[closest_index:length(t_time)], na.rm = TRUE)),
-  " (", sprintf("%.2f%%", (1 - (1 / mean(min_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")
-,
-paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length(t_time)], na.rm = TRUE)),
-  " (", sprintf("%.2f%%", (1 - (1 / mean(median_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")"
-),
- paste0( "mean_effs: ", sprintf("%.2f", mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE)),
-  " (", sprintf("%.2f%%", (1 - (1 / mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")),
-  col = c("darkred", "darkgreen","purple4","darkorange"),
-  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
+#   legend("topleft",    #inset=-0.2 ,              # Position of the legend
+#   legend = c(
+#           paste0(
+#   "max_effs: ", sprintf("%.2f", mean(max_effless[closest_index:length(t_time)], na.rm = TRUE)),
+#   " (", sprintf("%.2f%%", (1 - (1 / mean(max_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100)," reduction)")
+# ,
+# paste0("min_effs: ", sprintf("%.2f", mean(min_effless[closest_index:length(t_time)], na.rm = TRUE)),
+#   " (", sprintf("%.2f%%", (1 - (1 / mean(min_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")
+# ,
+# paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length(t_time)], na.rm = TRUE)),
+#   " (", sprintf("%.2f%%", (1 - (1 / mean(median_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")"
+# ),
+#  paste0( "mean_effs: ", sprintf("%.2f", mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE)),
+#   " (", sprintf("%.2f%%", (1 - (1 / mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")),
+#   col = c("darkred", "darkgreen","purple4","darkorange"),
+#   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
   # Colors corresponding to the groups
-  irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
-  irs_labels <- c("Fludora Fusion", "actellic", "actellic")
-  text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
-  labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
-  abline(v = irs_times, col = "darkred", lty = 1, lwd=2)    
+  add_irs_history(unique(data$district_name))
+  # irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
+  # irs_labels <- c("Fludora Fusion", "actellic", "actellic")
+  # text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
+  # labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
+  # abline(v = irs_times, col = "darkred", lty = 1, lwd=2)    
 
 
 
@@ -142,7 +144,9 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
 ```
 
 ```{r}
-for(i in c(2,11,75,92,94,106,123,142,145))
+for(i in 143)
   profile_irs(i, fitted_mod, data_list)
+# for(i in c(2,11,75,92,94,106,123,142,145))
+#   profile_irs(i, fitted_mod, data_list)
 ```
 

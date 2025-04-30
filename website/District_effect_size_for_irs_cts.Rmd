@@ -73,7 +73,7 @@ eir_files_irs <- eir_files[matched_indices]
 Get pfpr data by district 
 ```{r,eval=F}
 #load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
-#load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
 #dist_name <-irs_dist
 data_list = list()
 for(i in irs_dist)
@@ -176,7 +176,7 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
 ```
 
 ```{r}
-pdf("irs_districts.pdf")
+pdf("irs_districts_cts.pdf")
 for(i in 1:length(irs_dist))
   profile_irs(i, fitted_mod, data_list)
 dev.off()

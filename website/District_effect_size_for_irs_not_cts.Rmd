@@ -18,8 +18,8 @@ attach(yaml::read_yaml("../my_paths.yaml"))
 
 This sets locations for `Box/RAMP` and `ramp.uganda` 
 ```{r,eval=F}
- load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
-# #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ #load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
  dist_name <- sort(district_dir$district_name)
 # data_list = list()
 # for(i in dist_name)
