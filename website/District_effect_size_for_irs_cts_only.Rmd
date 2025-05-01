@@ -1,0 +1,118 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+``` 
+
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+
+
+
+```{r}
+FirstYear <-2015
+irs_time <- list()
+no_irs <- c()
+
+for (j in dist_name) {
+  dates <- get_irs_jdates(j, FirstYear)
+
+  if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
+    irs_time[[j]] <- sort(dates[dates > 0])
+  } else {
+    no_irs <- c(no_irs, j)
+  }
+}
+irs_time <-  irs_time_full[c(4, 7,8,9,10,11,13,14,15,25,31,34)]
+```
+Get fitted models to pfpr data for all the irs_district
+
+```{r}
+irs_dist <- list()
+for (i in 1:length(irs_time))
+  irs_dist[[i]]<- names(irs_time)[i]
+```
+
+```{r, eval=F}
+directory <- paste(box_dir, "models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+clean_name <- function(name) {
+  tolower(gsub(" ", "_", name))
+}
+cleaned_dists <- sapply(irs_dist, clean_name)
+# Find indices in eir_files that contain each cleaned district name
+matched_indices <- sapply(cleaned_dists, function(dname) {
+  which(grepl(dname, eir_files))
+})
+
+eir_files_irs <- eir_files[matched_indices]
+```
+
+
+Get pfpr data by district 
+```{r,eval=F}
+load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+#load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+#dist_name <-irs_dist
+data_list = list()
+for(i in irs_dist)
+  data_list[[i]] <- get_district_pfpr(i)
+```
+
+
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:length(irs_dist)) {
+  fitted_mod[[i]] <- readRDS(eir_files_irs[i])
+}
+```
+
+
+
+## District Baseline
+
+```{r, fig.height=8, fig.width=11}
+profile_irs = function(i, model_list, data_list){
+  mod_file <- model_list[[i]]
+  data <- data_list[[i]]
+  
+  cf_base <- make_cf_no_base(mod_file)
+  mod1a <- modify_baseline(mod_file, cf_base) 
+  vals <- get_XH(mod_file)
+  vals1a <- get_XH(mod1a)
+  
+  with(vals1a, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data$district_name), type = "l", ylim = c(0,1), col="darkred"))
+  with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
+  with(data, lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+  add_irs_history(unique(data$district_name))
+     
+
+  ## -------------Effect Size--------------------------------------------------------------------------
+  max_eff <- vals1a$true_pr
+  base <- vals$true_pr
+max_effless <- max_eff[1:(length(max_eff) - 3)]/base
+   plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
+  add_irs_history(unique(data$district_name))
+
+  }
+
+```
+
+```{r}
+pdf("irs_districts_cts_only.pdf")
+for(i in 1:length(irs_dist))
+  profile_irs(i, fitted_mod, data_list)
+dev.off()
+```
+
