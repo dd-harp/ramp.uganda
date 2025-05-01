@@ -1,0 +1,116 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+``` 
+
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+
+```{r, eval=F}
+directory <- paste(box_dir, "models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+```
+
+Get pfpr data by district 
+```{r,eval=F}
+#load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+dist_name <- sort(district_dir$district_name)
+data_list = list()
+for(i in dist_name)
+  data_list[[i]] <- get_district_pfpr(i)
+```
+
+Get fitted models to pfpr data for all the 146 district
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:length(dist_name)) {
+  fitted_mod[[i]] <- readRDS(eir_files[i])
+}
+```
+
+```{r}
+FirstYear <-2015
+irs_time <- list()
+for (j in dist_name)
+  irs_time[[j]] <- sort(get_irs_jdates(j, 2015))
+```
+
+## District Baseline
+
+```{r, fig.height=8, fig.width=11}
+profile_irs = function(i, model_list, data_list){
+  mod_file <- model_list[[i]]
+  data <- data_list[[i]]
+
+  cf_max <- make_cf_no_base_max(mod_file)
+  mod1a <- modify_baseline(mod_file, cf_max) 
+  vals <- get_XH(mod_file)
+  vals1a <- get_XH(mod1a)
+
+  with(vals1a, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data$district_name), type = "l", ylim = c(0,1), col="darkred"))
+  with(data, lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+#par(xpd = TRUE, mar = c(5, 4, 4, 2))  # allow plotting outside
+  legend("topleft",  c("max"), # Names for the groups   , 
+  col = c("darkred"),
+  lwd=2, pch=c(NA,16), horiz = FALSE, bty="n") 
+  add_irs_history(unique(data$district_name))
+ 
+  ## -------------Effect Size--------------------------------------------------------------------------
+  max_eff <- vals1a$true_pr
+  base <- vals$true_pr
+
+  max_effless <- max_eff[1:(length(max_eff) - 3)]/base
+ 
+  t_time <- mod_file$outputs$time
+  t_time1 <- mod1a$outputs$time
+  tt <- mod_file$EIRpar$trend_par$tt
+  # irs_start <- tt[9]
+  # closest_index <- which.min(abs(t_time - irs_start))
+  
+   plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
+  
+#   legend("topleft",    #inset=-0.2 ,              # Position of the legend
+#   legend = c(
+#           paste0(
+#   "max_effs: ", sprintf("%.2f", mean(max_effless[closest_index:length(t_time)], na.rm = TRUE)),
+#   " (", sprintf("%.2f%%", (1 - (1 / mean(max_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100)," reduction)")
+# ,
+# paste0("min_effs: ", sprintf("%.2f", mean(min_effless[closest_index:length(t_time)], na.rm = TRUE)),
+#   " (", sprintf("%.2f%%", (1 - (1 / mean(min_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")
+# ,
+# paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length(t_time)], na.rm = TRUE)),
+#   " (", sprintf("%.2f%%", (1 - (1 / mean(median_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")"
+# ),
+#  paste0( "mean_effs: ", sprintf("%.2f", mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE)),
+#   " (", sprintf("%.2f%%", (1 - (1 / mean(mean_effless[closest_index:length(t_time)], na.rm = TRUE))) * 100),")")),
+#   col = c("darkred", "darkgreen","purple4","darkorange"),
+#   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
+  # Colors corresponding to the groups
+  add_irs_history(unique(data$district_name))
+  
+
+
+  }
+
+```
+
+```{r}
+for(i in 143)
+  profile_irs(i, fitted_mod, data_list)
+# for(i in c(2,11,75,92,94,106,123,142,145))
+#   profile_irs(i, fitted_mod, data_list)
+```
+
