@@ -55,7 +55,7 @@ profile_irs = function(i, model_list, data_list){
   mod_file <- model_list[[i]]
   data <- data_list[[i]]
 
-  cf_max <- make_cf_no_base_max(mod_file)
+  cf_max <- make_cf_no_base(mod_file)
   mod1a <- modify_baseline(mod_file, cf_max) 
   vals <- get_XH(mod_file)
   vals1a <- get_XH(mod1a)
