@@ -72,6 +72,7 @@ mod_name = paste(website_dir, dir, "/", dir, "_eir.png", sep="")
 profile_plot(model, data, 2015)
 ```
 
+
 ```{r, eval=F}
 for(i in 1:146){
   district <- district_dir[i,1]

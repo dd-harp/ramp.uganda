@@ -1,0 +1,7 @@
+water_path <- file.path(box_dir, "External Data/uga_shapefiles/UG_Lakes/lakes.shp")
+water_shp <- read_sf(water_path)
+sf_use_s2(use_s2 = FALSE)
+water_shp <- st_transform(water_shp, "WGS84")
+nat_shp <- st_make_valid(st_combine(uga_district_shp))
+uga_water_shp <- st_intersection(water_shp, nat_shp)
+usethis::use_data(uga_water_shp, overwrite=TRUE)

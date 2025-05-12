@@ -11,10 +11,11 @@ library(yaml)
 library(viridisLite)
 ```
 
-
 ```{r}
 if(!exists("box_dir")) attach(yaml::read_yaml("../my_paths.yaml")) 
 ```
+
+## Get Some Dates
 
 ```{r}
 irs_dates <- list() 
@@ -90,38 +91,43 @@ uga_district_shp$name[ix1]
 
 ```{r}
 plot(1:20, rep(0,20), pch = 19, cex=3, col=turbo(20))
-ix <- c(1,6,15,19,3)
+ix <- c(19,6,3,17,14)
 text(ix, rep(0, 5)+.3, 1:5)
 base <- c(grey(0.9), turbo(20)[ix])
 base[3] <- grey(0.9) 
 ```
+```{r}
+water_path <- file.path(box_dir, "External Data/uga_shapefiles/UG_Lakes/lakes.shp")
+water_shp <- read_sf(water_path)
+sf_use_s2(use_s2 = FALSE)
+water_shp <- st_transform(water_shp, "WGS84")
+nat_shp <- st_make_valid(st_combine(uga_district_shp))
+uga_water_shp <- st_intersection(water_shp, nat_shp)
+```
 
 
 ```{r, fig.height=15, fig.width=15}
-clrs <- base[irs_class+1]
-plot(ramptools::uga_district_shp$geometry, col = clrs)
-for(i in 1:15){
-  outline_region(region_dir[i,1], add=TRUE, clr = "tan", lwd=4)
-}
-text(34.1, 0, "Continuous IRS", col=base[2], pos=4, cex=1.7)
-text(34.1, -0.2, "IRS ends before 2022", col=base[6], pos=4, cex=1.7)
-text(34.1, -0.4, "IRS starts after 2021", col=base[5], pos=4, cex=1.7)
-text(34.1, -0.6, "IRS in 2017", col=base[4], pos=4, cex=1.7)
+irs_baselines_plot = function(){
+uga_plot(clrs, "IRS Spraying History")
+legend(c(34.1, 35.5), c(0.15,-0.42), 
+       c("No IRS", 
+         "Continuous IRS since 2015", 
+         "IRS starts after 2021", 
+         "IRS ends before 2022", 
+         "IRS in 2017"), 
+       c("#E6E6E6",  "#A51301FF", "#E14209FF", "#FCB036FF", "#455ED2FF"))
+}       
+irs_baselines_plot() 
 ```
 
+
 ```{r, fig.height=7, fig.width=7}
-png("IRSBaseline.png", width=1040, height=1040)
-clrs <- base[irs_class+1]
-plot(ramptools::uga_district_shp$geometry, col = clrs)
-for(i in 1:15){
-  outline_region(region_dir[i,1], add=TRUE, clr = "tan", lwd=4)
-}
-text(34.1, 0, "Continuous IRS", col=base[2], pos=4, cex=1.7)
-text(34.1, -0.2, "IRS ends before 2022", col=base[6], pos=4, cex=1.7)
-text(34.1, -0.4, "IRS starts after 2021", col=base[5], pos=4, cex=1.7)
-text(34.1, -0.6, "IRS in 2017", col=base[4], pos=4, cex=1.7)
+filename = paste(website_dir, "uganda/IRSBaseline.png", sep="")
+png(filename, width=1040, height=1040)
+irs_baselines_plot()
 dev.off(dev.cur())
 ```
+
 ```{r}
 irs_baseline_class <- list()
 
