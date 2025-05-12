@@ -1,0 +1,17 @@
+district_name,ITN_Type,max_effect,min_effect,median_effect,mean_effect,max_percent,min_percent,median_percent,mean_percent
+Amuru District,ITN4,2.84,0.83,1.44,1.59,64.77,-20.63,30.65,37.3
+Arua City,ITN4,1.72,1.38,1.56,1.56,41.91,27.69,35.9,35.7
+Gulu City,ITN4,1.74,0.5,0.87,0.97,42.67,-102.02,-14.67,-3.59
+Kaabong District,ITN4,3.42,0.39,2.34,2.33,70.8,-159.35,57.24,57
+Karenga District,ITN4,3.4,0.46,2.24,2.17,70.56,-119.59,55.3,53.85
+Average Effect size,,2.624,0.712,1.69,1.724,58.142,-74.78,32.884,36.052
+Amuru District,ITN3,1.4,0.91,1.2,1.27,28.72,-15.97,2.99,6.69
+Arua City,ITN3,1.04,1.23,1.33,1.33,3.81,2,2.93,2.91
+Gulu City,ITN3,1.05,0.66,0.91,0.98,4.51,-3.23,-0.79,-0.21
+Kaabong District,ITN3,1.35,0.59,1.71,1.7,25.92,-35.16,12.8,12.62
+Karenga District,ITN3,1.24,0.65,1.64,1.6,19.43,-38.98,3.92,2.82
+Amuru District,ITN2,1.65,0.97,1.18,1.23,39.33,-2.71,15.31,18.79
+Arua City,ITN2,1,1,1,1,-0.02,-0.01,-0.02,-0.02
+Gulu City,ITN2,1,1,1,1,-0.02,0.02,0,0
+Kaabong District,ITN2,1.12,0.73,1,1,10.5,-36.31,-0.28,-0.42
+Karenga District,ITN2,1.23,0.77,1.06,1.05,18.57,-29.55,5.63,4.71
