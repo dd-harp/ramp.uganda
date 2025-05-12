@@ -62,8 +62,8 @@ eir_files_irs <- eir_files[matched_indices]
 
 Get pfpr data by district 
 ```{r,eval=F}
-load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
-#load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+#load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
 #dist_name <-irs_dist
 data_list = list()
 for(i in irs_dist)
@@ -101,18 +101,49 @@ profile_irs = function(i, model_list, data_list){
   ## -------------Effect Size--------------------------------------------------------------------------
   max_eff <- vals1a$true_pr
   base <- vals$true_pr
-max_effless <- max_eff[1:(length(max_eff) - 3)]/base
+  max_effless <- max_eff[1:(length(max_eff) - 3)]/base
+  
+  ## ------------------ Effect table
+  Effect_table <- data.frame(
+  IRS = c("IRS"),
+  max_effect = round(mean(max_effless),2),
+  max_percent = round((1 - (1 / mean(max_effless))) * 100), 2)
+
    plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
   add_irs_history(unique(data$district_name))
+  abline(h = 1, col = "black", lwd = 2)
+  #text(x = width * 0.05, y = 1 + 10, labels = "No effect", col = "red", cex = 1.2, pos = 4)
 
+  return(data.frame(
+      district_name = unique(data$district_name),
+      Effect_table
+      )
+    )
+  
   }
 
 ```
 
 ```{r}
 pdf("irs_districts_cts_only.pdf")
-for(i in 1:length(irs_dist))
-  profile_irs(i, fitted_mod, data_list)
-dev.off()
+malaria_irs_cts_Effect <- list()
+
+# Loop over all i values
+for(i in 1:length(irs_dist)) {
+  irs <- profile_irs(i, fitted_mod, data_list)  # Get a data.frame
+  malaria_irs_cts_Effect[[i]] <- irs  # Store each data.frame
+}
+
+# Combine all stored data.frames into one big data.frame
+malaria_irs_cts_eff <- do.call(rbind, malaria_irs_cts_Effect)
+
+# Save to CSV
+write.csv(malaria_irs_cts_eff, "../data/malaria_irs_cts_eff.csv", row.names = FALSE)
+
+dev.off()  # Close PDF
+# pdf("irs_districts_cts_only.pdf")
+# for(i in 1:length(irs_dist))
+#   profile_irs(i, fitted_mod, data_list)
+# dev.off()
 ```
 

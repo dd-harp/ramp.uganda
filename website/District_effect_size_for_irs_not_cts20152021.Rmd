@@ -17,41 +17,43 @@ attach(yaml::read_yaml("../my_paths.yaml"))
 ``` 
 
 This sets locations for `Box/RAMP` and `ramp.uganda` 
-
+```{r,eval=F}
+ #load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ dist_name <- sort(district_dir$district_name)
+# data_list = list()
+# for(i in dist_name)
+#   data_list[[i]] <- get_district_pfpr(i)
+```
 
 
 ```{r}
-# FirstYear <- 2015
-# irs_time <- list()
-# 
-# for (j in dist_name) {
-#   val <- get_irs_jdates(j, FirstYear)
-#   
-#   if (!is.null(val) && length(val) > 0 && any(val > 0)) {
-#     irs_time[[j]] <- val[val > 0]
-#   }
-# }
 
 FirstYear <-2015
-irs_time <- list()
+irs_time_full <- list()
 no_irs <- c()
 
 for (j in dist_name) {
   dates <- get_irs_jdates(j, FirstYear)
 
   if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
-    irs_time[[j]] <- sort(dates[dates > 0])
+    irs_time_full[[j]] <- sort(dates[dates > 0])
   } else {
     no_irs <- c(no_irs, j)
   }
 }
+
+irs_time <-  irs_time_full[-c(4, 7,8,9,10,11,13,14,15,25,31,34)]
 ```
-Get fitted models to pfpr data for all the irs_district
+Get fitted models to pfpr data for all the irs_district when not applied continious
 
 ```{r}
 irs_dist <- list()
 for (i in 1:35)
   irs_dist[[i]]<- names(irs_time)[i]
+
+#irs_dist <- irs_dist_full[-c(4, 7,8,9,10,11,13,14,15,25,31,34)]
+irs_dist <- irs_dist[!sapply(irs_dist, is.na)]
 ```
 
 ```{r, eval=F}
@@ -65,15 +67,14 @@ cleaned_dists <- sapply(irs_dist, clean_name)
 matched_indices <- sapply(cleaned_dists, function(dname) {
   which(grepl(dname, eir_files))
 })
-
-eir_files_irs <- eir_files[matched_indices]
+eir_files_irs <- eir_files[matched_indices]#matched_indices]
 ```
 
 
 Get pfpr data by district 
 ```{r,eval=F}
 #load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
-load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+#load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
 #dist_name <-irs_dist
 data_list = list()
 for(i in irs_dist)
@@ -83,7 +84,7 @@ for(i in irs_dist)
 
 ```{r, eval=F}
 fitted_mod <- list()
-for (i in 1:length(irs_dist)) {
+for (i in 1:length(data_list)) {
   fitted_mod[[i]] <- readRDS(eir_files_irs[i])
 }
 ```
@@ -96,11 +97,13 @@ for (i in 1:length(irs_dist)) {
 profile_irs = function(i, model_list, data_list){
   mod_file <- model_list[[i]]
   data <- data_list[[i]]
-
-  ix <- unique(sapply(irs_time[[i]], function(x) {
+  
+ ix <- unique(sapply(irs_time[[i]], function(x) {
   idx <- which(fitted_mod[[i]]$EIRpar$trend_par$tt > x)
   if (length(idx) > 0) return(idx[1]) else return(NA)
-}))
+})) 
+
+  
   cf_max <- make_cf_base_max(ix, mod_file)
   cf_min <- make_cf_base_min(ix, mod_file)
   cf_median <- make_cf_base_median(ix, mod_file)
@@ -176,8 +179,9 @@ paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index:length
 ```
 
 ```{r}
-pdf("irs_districts_cts.pdf")
-for(i in 1:length(irs_dist))
+pdf("irs_not_cts_districts.pdf")
+for(i in 1:length(data_list))
+#for (i in 17)
   profile_irs(i, fitted_mod, data_list)
 dev.off()
 ```
