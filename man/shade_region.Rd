@@ -4,7 +4,7 @@
 \alias{shade_region}
 \title{Plot Uganda Shading a Region}
 \usage{
-shade_region(region)
+shade_region(region, clrs = "#CCCCCC")
 }
 \arguments{
 \item{region}{the region name}

@@ -1,137 +1,147 @@
-district_name,dir,stem
-Abim District,abim_district,abim
-Adjumani District,adjumani_district,adjumani
-Agago District,agago_district,agago
-Alebtong District,alebtong_district,alebtong
-Amolatar District,amolatar_district,amolatar
-Amudat District,amudat_district,amudat
-Amuria District,amuria_district,amuria
-Amuru District,amuru_district,amuru
-Apac District,apac_district,apac
-Arua District,arua_district,arua
-Budaka District,budaka_district,budaka
-Bududa District,bududa_district,bududa
-Bugiri District,bugiri_district,bugiri
-Bugweri District,bugweri_district,bugweri
-Buhweju District,buhweju_district,buhweju
-Buikwe District,buikwe_district,buikwe
-Bukedea District,bukedea_district,bukedea
-Bukomansimbi District,bukomansimbi_district,bukomansimbi
-Bukwo District,bukwo_district,bukwo
-Bulambuli District,bulambuli_district,bulambuli
-Buliisa District,buliisa_district,buliisa
-Bundibugyo District,bundibugyo_district,bundibugyo
-Bunyangabu District,bunyangabu_district,bunyangabu
-Bushenyi District,bushenyi_district,bushenyi
-Busia District,busia_district,busia
-Butaleja District,butaleja_district,butaleja
-Butambala District,butambala_district,butambala
-Butebo District,butebo_district,butebo
-Buvuma District,buvuma_district,buvuma
-Buyende District,buyende_district,buyende
-Dokolo District,dokolo_district,dokolo
-Gomba District,gomba_district,gomba
-Gulu District,gulu_district,gulu
-Hoima District,hoima_district,hoima
-Ibanda District,ibanda_district,ibanda
-Iganga District,iganga_district,iganga
-Isingiro District,isingiro_district,isingiro
-Jinja District,jinja_district,jinja
-Kaabong District,kaabong_district,kaabong
-Kabale District,kabale_district,kabale
-Kabarole District,kabarole_district,kabarole
-Kaberamaido District,kaberamaido_district,kaberamaido
-Kagadi District,kagadi_district,kagadi
-Kakumiro District,kakumiro_district,kakumiro
-Kalaki District,kalaki_district,kalaki
-Kalangala District,kalangala_district,kalangala
-Kaliro District,kaliro_district,kaliro
-Kalungu District,kalungu_district,kalungu
-Kampala District,kampala_district,kampala
-Kamuli District,kamuli_district,kamuli
-Kamwenge District,kamwenge_district,kamwenge
-Kanungu District,kanungu_district,kanungu
-Kapchorwa District,kapchorwa_district,kapchorwa
-Kapelebyong District,kapelebyong_district,kapelebyong
-Karenga District,karenga_district,karenga
-Kasese District,kasese_district,kasese
-Kassanda District,kassanda_district,kassanda
-Katakwi District,katakwi_district,katakwi
-Kayunga District,kayunga_district,kayunga
-Kazo District,kazo_district,kazo
-Kibaale District,kibaale_district,kibaale
-Kiboga District,kiboga_district,kiboga
-Kibuku District,kibuku_district,kibuku
-Kikuube District,kikuube_district,kikuube
-Kiruhura District,kiruhura_district,kiruhura
-Kiryandongo District,kiryandongo_district,kiryandongo
-Kisoro District,kisoro_district,kisoro
-Kitagwenda District,kitagwenda_district,kitagwenda
-Kitgum District,kitgum_district,kitgum
-Koboko District,koboko_district,koboko
-Kole District,kole_district,kole
-Kotido District,kotido_district,kotido
-Kumi District,kumi_district,kumi
-Kwania District,kwania_district,kwania
-Kween District,kween_district,kween
-Kyankwanzi District,kyankwanzi_district,kyankwanzi
-Kyegegwa District,kyegegwa_district,kyegegwa
-Kyenjojo District,kyenjojo_district,kyenjojo
-Kyotera District,kyotera_district,kyotera
-Lamwo District,lamwo_district,lamwo
-Lira District,lira_district,lira
-Luuka District,luuka_district,luuka
-Luwero District,luwero_district,luwero
-Lwengo District,lwengo_district,lwengo
-Lyantonde District,lyantonde_district,lyantonde
-Madi-Okollo District,madi-okollo_district,madi-okollo
-Manafwa District,manafwa_district,manafwa
-Maracha District,maracha_district,maracha
-Masaka District,masaka_district,masaka
-Masindi District,masindi_district,masindi
-Mayuge District,mayuge_district,mayuge
-Mbale District,mbale_district,mbale
-Mbarara District,mbarara_district,mbarara
-Mitooma District,mitooma_district,mitooma
-Mityana District,mityana_district,mityana
-Moroto District,moroto_district,moroto
-Moyo District,moyo_district,moyo
-Mpigi District,mpigi_district,mpigi
-Mubende District,mubende_district,mubende
-Mukono District,mukono_district,mukono
-Nabilatuk District,nabilatuk_district,nabilatuk
-Nakapiripirit District,nakapiripirit_district,nakapiripirit
-Nakaseke District,nakaseke_district,nakaseke
-Nakasongola District,nakasongola_district,nakasongola
-Namayingo District,namayingo_district,namayingo
-Namisindwa District,namisindwa_district,namisindwa
-Namutumba District,namutumba_district,namutumba
-Napak District,napak_district,napak
-Nebbi District,nebbi_district,nebbi
-Ngora District,ngora_district,ngora
-Ntoroko District,ntoroko_district,ntoroko
-Ntungamo District,ntungamo_district,ntungamo
-Nwoya District,nwoya_district,nwoya
-Obongi District,obongi_district,obongi
-Omoro District,omoro_district,omoro
-Otuke District,otuke_district,otuke
-Oyam District,oyam_district,oyam
-Pader District,pader_district,pader
-Pakwach District,pakwach_district,pakwach
-Pallisa District,pallisa_district,pallisa
-Rakai District,rakai_district,rakai
-Rubanda District,rubanda_district,rubanda
-Rubirizi District,rubirizi_district,rubirizi
-Rukiga District,rukiga_district,rukiga
-Rukungiri District,rukungiri_district,rukungiri
-Rwampara District,rwampara_district,rwampara
-Sembabule District,sembabule_district,sembabule
-Serere District,serere_district,serere
-Sheema District,sheema_district,sheema
-Sironko District,sironko_district,sironko
-Soroti District,soroti_district,soroti
-Terego District,terego_district,terego
-Tororo District,tororo_district,tororo
-Wakiso District,wakiso_district,wakiso
-Yumbe District,yumbe_district,yumbe
-Zombo District,zombo_district,zombo
+"","X","district_name","dir","stem","city","in_region"
+"1",1,"Abim District","abim_district","abim",0,"Karamoja"
+"2",2,"Adjumani District","adjumani_district","adjumani",0,"West Nile"
+"3",3,"Agago District","agago_district","agago",0,"Acholi"
+"4",4,"Alebtong District","alebtong_district","alebtong",0,"Lango"
+"5",5,"Amolatar District","amolatar_district","amolatar",0,"Lango"
+"6",6,"Amudat District","amudat_district","amudat",0,"Karamoja"
+"7",7,"Amuria District","amuria_district","amuria",0,"Teso"
+"8",8,"Amuru District","amuru_district","amuru",0,"Acholi"
+"9",9,"Apac District","apac_district","apac",0,"Lango"
+"10",10,"Arua District","arua_district","arua",0,"West Nile"
+"11",11,"Budaka District","budaka_district","budaka",0,"Bukedi"
+"12",12,"Bududa District","bududa_district","bududa",0,"Bugisu"
+"13",13,"Bugiri District","bugiri_district","bugiri",0,"Busoga"
+"14",14,"Bugweri District","bugweri_district","bugweri",0,"Busoga"
+"15",15,"Buhweju District","buhweju_district","buhweju",0,"Ankole"
+"16",16,"Buikwe District","buikwe_district","buikwe",0,"North Central"
+"17",17,"Bukedea District","bukedea_district","bukedea",0,"Teso"
+"18",18,"Bukomansimbi District","bukomansimbi_district","bukomansimbi",0,"South Central"
+"19",19,"Bukwo District","bukwo_district","bukwo",0,"Bugisu"
+"20",20,"Bulambuli District","bulambuli_district","bulambuli",0,"Bugisu"
+"21",21,"Buliisa District","buliisa_district","buliisa",0,"Bunyoro"
+"22",22,"Bundibugyo District","bundibugyo_district","bundibugyo",0,"Tooro"
+"23",23,"Bunyangabu District","bunyangabu_district","bunyangabu",0,"Tooro"
+"24",24,"Bushenyi District","bushenyi_district","bushenyi",0,"Ankole"
+"25",25,"Busia District","busia_district","busia",0,"Bukedi"
+"26",26,"Butaleja District","butaleja_district","butaleja",0,"Bukedi"
+"27",27,"Butambala District","butambala_district","butambala",0,"South Central"
+"28",28,"Butebo District","butebo_district","butebo",0,"Bukedi"
+"29",29,"Buvuma District","buvuma_district","buvuma",0,"North Central"
+"30",30,"Buyende District","buyende_district","buyende",0,"Busoga"
+"31",31,"Dokolo District","dokolo_district","dokolo",0,"Lango"
+"32",32,"Gomba District","gomba_district","gomba",0,"South Central"
+"33",33,"Gulu District","gulu_district","gulu",0,"Acholi"
+"34",34,"Hoima District","hoima_district","hoima",0,"Bunyoro"
+"35",35,"Ibanda District","ibanda_district","ibanda",0,"Ankole"
+"36",36,"Iganga District","iganga_district","iganga",0,"Busoga"
+"37",37,"Isingiro District","isingiro_district","isingiro",0,"Ankole"
+"38",38,"Jinja District","jinja_district","jinja",0,"Busoga"
+"39",39,"Kaabong District","kaabong_district","kaabong",0,"Karamoja"
+"40",40,"Kabale District","kabale_district","kabale",0,"Kigezi"
+"41",41,"Kabarole District","kabarole_district","kabarole",0,"Tooro"
+"42",42,"Kaberamaido District","kaberamaido_district","kaberamaido",0,"Teso"
+"43",43,"Kagadi District","kagadi_district","kagadi",0,"Bunyoro"
+"44",44,"Kakumiro District","kakumiro_district","kakumiro",0,"Bunyoro"
+"45",45,"Kalaki District","kalaki_district","kalaki",0,"Teso"
+"46",46,"Kalangala District","kalangala_district","kalangala",0,"South Central"
+"47",47,"Kaliro District","kaliro_district","kaliro",0,"Busoga"
+"48",48,"Kalungu District","kalungu_district","kalungu",0,"South Central"
+"49",49,"Kampala District","kampala_district","kampala",0,"Kampala"
+"50",50,"Kamuli District","kamuli_district","kamuli",0,"Busoga"
+"51",51,"Kamwenge District","kamwenge_district","kamwenge",0,"Tooro"
+"52",52,"Kanungu District","kanungu_district","kanungu",0,"Kigezi"
+"53",53,"Kapchorwa District","kapchorwa_district","kapchorwa",0,"Bugisu"
+"54",54,"Kapelebyong District","kapelebyong_district","kapelebyong",0,"Teso"
+"55",55,"Karenga District","karenga_district","karenga",0,"Karamoja"
+"56",56,"Kasese District","kasese_district","kasese",0,"Tooro"
+"57",57,"Kassanda District","kassanda_district","kassanda",0,"North Central"
+"58",58,"Katakwi District","katakwi_district","katakwi",0,"Teso"
+"59",59,"Kayunga District","kayunga_district","kayunga",0,"North Central"
+"60",60,"Kazo District","kazo_district","kazo",0,"Ankole"
+"61",61,"Kibaale District","kibaale_district","kibaale",0,"Bunyoro"
+"62",62,"Kiboga District","kiboga_district","kiboga",0,"North Central"
+"63",63,"Kibuku District","kibuku_district","kibuku",0,"Bukedi"
+"64",64,"Kikuube District","kikuube_district","kikuube",0,"Bunyoro"
+"65",65,"Kiruhura District","kiruhura_district","kiruhura",0,"Ankole"
+"66",66,"Kiryandongo District","kiryandongo_district","kiryandongo",0,"Bunyoro"
+"67",67,"Kisoro District","kisoro_district","kisoro",0,"Kigezi"
+"68",68,"Kitagwenda District","kitagwenda_district","kitagwenda",0,"Tooro"
+"69",69,"Kitgum District","kitgum_district","kitgum",0,"Acholi"
+"70",70,"Koboko District","koboko_district","koboko",0,"West Nile"
+"71",71,"Kole District","kole_district","kole",0,"Lango"
+"72",72,"Kotido District","kotido_district","kotido",0,"Karamoja"
+"73",73,"Kumi District","kumi_district","kumi",0,"Teso"
+"74",74,"Kwania District","kwania_district","kwania",0,"Lango"
+"75",75,"Kween District","kween_district","kween",0,"Bugisu"
+"76",76,"Kyankwanzi District","kyankwanzi_district","kyankwanzi",0,"North Central"
+"77",77,"Kyegegwa District","kyegegwa_district","kyegegwa",0,"Tooro"
+"78",78,"Kyenjojo District","kyenjojo_district","kyenjojo",0,"Tooro"
+"79",79,"Kyotera District","kyotera_district","kyotera",0,"South Central"
+"80",80,"Lamwo District","lamwo_district","lamwo",0,"Acholi"
+"81",81,"Lira District","lira_district","lira",0,"Lango"
+"82",82,"Luuka District","luuka_district","luuka",0,"Busoga"
+"83",83,"Luwero District","luwero_district","luwero",0,"North Central"
+"84",84,"Lwengo District","lwengo_district","lwengo",0,"South Central"
+"85",85,"Lyantonde District","lyantonde_district","lyantonde",0,"South Central"
+"86",86,"Madi-Okollo District","madi-okollo_district","madi-okollo",0,"West Nile"
+"87",87,"Manafwa District","manafwa_district","manafwa",0,"Bugisu"
+"88",88,"Maracha District","maracha_district","maracha",0,"West Nile"
+"89",89,"Masaka District","masaka_district","masaka",0,"South Central"
+"90",90,"Masindi District","masindi_district","masindi",0,"Bunyoro"
+"91",91,"Mayuge District","mayuge_district","mayuge",0,"Busoga"
+"92",92,"Mbale District","mbale_district","mbale",0,"Bugisu"
+"93",93,"Mbarara District","mbarara_district","mbarara",0,"Ankole"
+"94",94,"Mitooma District","mitooma_district","mitooma",0,"Ankole"
+"95",95,"Mityana District","mityana_district","mityana",0,"North Central"
+"96",96,"Moroto District","moroto_district","moroto",0,"Karamoja"
+"97",97,"Moyo District","moyo_district","moyo",0,"West Nile"
+"98",98,"Mpigi District","mpigi_district","mpigi",0,"South Central"
+"99",99,"Mubende District","mubende_district","mubende",0,"North Central"
+"100",100,"Mukono District","mukono_district","mukono",0,"North Central"
+"101",101,"Nabilatuk District","nabilatuk_district","nabilatuk",0,"Karamoja"
+"102",102,"Nakapiripirit District","nakapiripirit_district","nakapiripirit",0,"Karamoja"
+"103",103,"Nakaseke District","nakaseke_district","nakaseke",0,"North Central"
+"104",104,"Nakasongola District","nakasongola_district","nakasongola",0,"North Central"
+"105",105,"Namayingo District","namayingo_district","namayingo",0,"Busoga"
+"106",106,"Namisindwa District","namisindwa_district","namisindwa",0,"Bugisu"
+"107",107,"Namutumba District","namutumba_district","namutumba",0,"Busoga"
+"108",108,"Napak District","napak_district","napak",0,"Karamoja"
+"109",109,"Nebbi District","nebbi_district","nebbi",0,"West Nile"
+"110",110,"Ngora District","ngora_district","ngora",0,"Teso"
+"111",111,"Ntoroko District","ntoroko_district","ntoroko",0,"Tooro"
+"112",112,"Ntungamo District","ntungamo_district","ntungamo",0,"Ankole"
+"113",113,"Nwoya District","nwoya_district","nwoya",0,"Acholi"
+"114",114,"Obongi District","obongi_district","obongi",0,"West Nile"
+"115",115,"Omoro District","omoro_district","omoro",0,"Acholi"
+"116",116,"Otuke District","otuke_district","otuke",0,"Lango"
+"117",117,"Oyam District","oyam_district","oyam",0,"Lango"
+"118",118,"Pader District","pader_district","pader",0,"Acholi"
+"119",119,"Pakwach District","pakwach_district","pakwach",0,"West Nile"
+"120",120,"Pallisa District","pallisa_district","pallisa",0,"Bukedi"
+"121",121,"Rakai District","rakai_district","rakai",0,"South Central"
+"122",122,"Rubanda District","rubanda_district","rubanda",0,"Kigezi"
+"123",123,"Rubirizi District","rubirizi_district","rubirizi",0,"Ankole"
+"124",124,"Rukiga District","rukiga_district","rukiga",0,"Kigezi"
+"125",125,"Rukungiri District","rukungiri_district","rukungiri",0,"Kigezi"
+"126",126,"Rwampara District","rwampara_district","rwampara",0,"Ankole"
+"127",127,"Sembabule District","sembabule_district","sembabule",0,"South Central"
+"128",128,"Serere District","serere_district","serere",0,"Teso"
+"129",129,"Sheema District","sheema_district","sheema",0,"Ankole"
+"130",130,"Sironko District","sironko_district","sironko",0,"Bugisu"
+"131",131,"Soroti District","soroti_district","soroti",0,"Teso"
+"132",132,"Terego District","terego_district","terego",0,"West Nile"
+"133",133,"Tororo District","tororo_district","tororo",0,"Bukedi"
+"134",134,"Wakiso District","wakiso_district","wakiso",0,"South Central"
+"135",135,"Yumbe District","yumbe_district","yumbe",0,"West Nile"
+"136",136,"Zombo District","zombo_district","zombo",0,"West Nile"
+"137",137,"Arua City","arua_city","arua_city",1,"West Nile"
+"138",138,"Fort Portal City","fortportal_city","fortportal_city",1,"Tooro"
+"139",139,"Gulu City","gulu_city","gulu_city",1,"Acholi"
+"140",140,"Hoima City","hoima_city","hoima_city",1,"Bunyoro"
+"141",141,"Jinja City","jinja_city","jinja_city",1,"Busoga"
+"142",142,"Lira City","lira_city","lira_city",1,"Lango"
+"143",143,"Masaka City","masaka_city","masaka_city",1,"South Central"
+"144",144,"Mbale City","mbale_city","mbale_city",1,"Bugisu"
+"145",145,"Mbarara City","mbarara_city","mbarara_city",1,"Ankole"
+"146",146,"Soroti City","soroti_city","soroti_city",1,"Teso"

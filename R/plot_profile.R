@@ -85,7 +85,7 @@ profile_eir = function(model, Yr0=2015){
        main = paste("EIR peak =", month, day), lwd=2,
        xlab = "Time",  ylab ="daily EIR", col = "darkblue")
 
-  dname <- model$location
+  dname <- model$placename
   add_irs_history(dname, ymax = max(EIR), Yr0=Yr0)
   add_itn_history(dname, ymax = max(EIR), Yr0=Yr0)
 

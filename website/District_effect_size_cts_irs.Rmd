@@ -55,63 +55,32 @@ profile_irs = function(i, model_list, data_list){
   mod_file <- model_list[[i]]
   data <- data_list[[i]]
 
-  ix = c(1,2,3,4,5,6,7,8,9,12)
-  cf_max <- make_cf_base_max(ix, mod_file)
-  cf_min <- make_cf_base_min(ix, mod_file)
-  cf_median <- make_cf_base_median(ix, mod_file)
-  cf_mean <- make_cf_base_mean(ix, mod_file)
+  cf_max <- make_cf_no_base(mod_file)
   mod1a <- modify_baseline(mod_file, cf_max) 
-  mod1b <- modify_baseline(mod_file, cf_min) 
-  mod1c <- modify_baseline(mod_file, cf_median) 
-  mod1d <- modify_baseline(mod_file, cf_mean) 
   vals <- get_XH(mod_file)
   vals1a <- get_XH(mod1a)
-  vals1b <- get_XH(mod1b)
-  vals1c <- get_XH(mod1c)
-  vals1d <- get_XH(mod1d)
 
   with(vals1a, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data$district_name), type = "l", ylim = c(0,1), col="darkred"))
-  with(vals1b, lines(time/365+FirstYear, true_pr,  lwd=2, col="darkgreen"))
-  with(vals1c, lines(time/365+FirstYear, true_pr, lwd=2,  col="purple4"))
-  with(vals1d, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkorange"))
-  with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
   with(data, lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
 #par(xpd = TRUE, mar = c(5, 4, 4, 2))  # allow plotting outside
-  legend("topleft",  c("max", "min","median","mean"), # Names for the groups   , 
-  col = c("darkred", "darkgreen","purple4","darkorange"),
-  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
+  legend("topleft",  c("max"), # Names for the groups   , 
+  col = c("darkred"),
+  lwd=2, pch=c(NA,16), horiz = FALSE, bty="n") 
   add_irs_history(unique(data$district_name))
  
-  # irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
-  # irs_labels <- c("Fludora Fusion", "actellic", "actellic")
-  # text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
-  # labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
-  # abline(v = irs_times, col = "darkred", lty = 1, lwd=2)        
-
   ## -------------Effect Size--------------------------------------------------------------------------
   max_eff <- vals1a$true_pr
-  min_eff <- vals1b$true_pr
-  median_eff <- vals1c$true_pr
-  mean_eff <- vals1d$true_pr
   base <- vals$true_pr
 
   max_effless <- max_eff[1:(length(max_eff) - 3)]/base
  
- min_effless <- min_eff[1:(length(min_eff)-3 )]/base
- median_effless <- median_eff[1:(length(median_eff)-3 )]/base
- mean_effless <- mean_eff[1:(length(mean_eff) - 3)]/base
- 
-  
   t_time <- mod_file$outputs$time
   t_time1 <- mod1a$outputs$time
   tt <- mod_file$EIRpar$trend_par$tt
-  irs_start <- tt[9]
-  closest_index <- which.min(abs(t_time - irs_start))
+  # irs_start <- tt[9]
+  # closest_index <- which.min(abs(t_time - irs_start))
   
    plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
-  lines(mod_file$outputs$time/365+FirstYear,min_effless , lwd= 2, col="darkgreen")
-  lines(mod_file$outputs$time/365+FirstYear,median_effless, lwd= 2, col="purple4" )
-  lines(mod_file$outputs$time/365+FirstYear,mean_effless, lwd= 2, col="darkorange" )
   
 #   legend("topleft",    #inset=-0.2 ,              # Position of the legend
 #   legend = c(
@@ -131,12 +100,7 @@ profile_irs = function(i, model_list, data_list){
 #   lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n") 
   # Colors corresponding to the groups
   add_irs_history(unique(data$district_name))
-  # irs_times <- c(FirstYear + 2861/365, FirstYear + 3256/365, FirstYear + 3622/365)
-  # irs_labels <- c("Fludora Fusion", "actellic", "actellic")
-  # text(x = irs_times, y = rep(0.8, length(irs_times)),  # adjust y position as needed
-  # labels = irs_labels, pos=3, cex = 0.8,srt = 90, col = "blue")
-  # abline(v = irs_times, col = "darkred", lty = 1, lwd=2)    
-
+  
 
 
   }

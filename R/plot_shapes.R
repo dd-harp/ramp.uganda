@@ -1,15 +1,61 @@
 
+#' Standardized Plot for Uganda Districts
+#'
+#' @param clrs The color(s) for the district
+#' @param ttl The Plot Title
+#'
+#' @returns invisible()
+#' @export
+uga_districts_plot = function(clrs = "#E6E6E6", ttl="Default Uganda by District"){
+  plot(ramptools::uga_district_shp$geometry, col = clrs, main = ttl)
+  plot(uga_water_shp$geometry, col = "skyblue", border="skyblue", add=TRUE)
+  plot(ramptools::uga_district_shp$geometry, add=TRUE)
+  plot(ramptools::uga_region_shp$geometry, add=TRUE, lwd=3)
+  return(invisible())
+}
+
+#' Standardized Plot for Uganda Regions
+#'
+#' @param clrs The color(s) for the district
+#' @param ttl The Plot Title
+#'
+#' @returns invisible()
+#' @export
+uga_regions_plot= function(clrs = "#E6E6E6", ttl="Default Uganda by District"){
+  plot(ramptools::uga_region_shp$geometry, col=clrs, lwd=3)
+  plot(uga_water_shp$geometry, col = "skyblue", border="skyblue", add=TRUE)
+  plot(ramptools::uga_district_shp$geometry, add=TRUE)
+  return(invisible())
+}
+
 #' Plot Uganda Shading a Region
 #'
 #' @param region the region name
 #'
 #' @returns invisible()
 #' @export
-shade_region = function(region){
-  which(ramptools::uga_region_shp$name == region) ->ix
-  clrs = rep("white", 15)
-  clrs[ix] <- "#808080"
-  plot(ramptools::uga_region_shp$geometry, col = clrs)
+shade_region = function(region, clrs = "#CCCCCC"){
+  which(ramptools::uga_region_shp$name == region)->ix
+  plot(ramptools::uga_region_shp$geometry[ix], col = clrs, add=TRUE)
+  return(invisible())
+}
+
+#' Plot a district in red within its region
+#'
+#' @param district the district name
+#'
+#' @returns invisible()
+#' @export
+make_district_icon = function(district){
+  ix = which(district_dir$district_name == district)
+  region = district_dir$in_region[ix]
+  ttl <- paste(district, "in", region)
+  plot(ramptools::uga_district_shp$geometry, col = "#F2F2F2", main = ttl)
+  shade_region(region, "#808080")
+  plot(uga_water_shp$geometry, col = "skyblue", border="skyblue", add=TRUE)
+  plot(ramptools::uga_district_shp$geometry, add=TRUE)
+  plot(ramptools::uga_region_shp$geometry, add=TRUE, lwd=3)
+  shade_district(district, "darkred")
   return(invisible())
 }
 
@@ -58,18 +104,8 @@ outline_region = function(region, lwd=2, clr = "black", add=TRUE){
 #'
 #' @returns invisible()
 #' @export
-shade_district = function(district){
-  ix =  which(ramptools::loc_table$district_name == district)
-  region =  unique(ramptools::loc_table$region_name[ix])
-  clrs = rep("white", 146)
-  ix = which(ramptools::loc_table$region_name == region)
-  other = unique(ramptools::loc_table$district[ix])
-  ix = which(ramptools::uga_district_shp$name %in% other)
-  clrs[ix] <- "#808080"
-  which(ramptools::uga_district_shp$name == district) ->ix
-  clrs[ix] <- "red"
-  mtl = paste(district, "in", region)
-  plot(ramptools::uga_district_shp$geometry, col = clrs, main=mtl)
-  outline_region(region)
+shade_district = function(district, clr = "darkred"){
+  ix =  which(ramptools::uga_district_shp$name == district)
+  plot(ramptools::uga_district_shp$geometry[ix], col=clr, add=TRUE)
   return(invisible())
 }
