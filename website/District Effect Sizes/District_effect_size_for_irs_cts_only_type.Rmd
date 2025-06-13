@@ -13,7 +13,7 @@ library(ramp.xds)
 library(dplyr)
 library(ramp.uganda)
 library(ramp.work)
-attach(yaml::read_yaml("../my_paths.yaml")) 
+attach(yaml::read_yaml("../../my_paths.yaml")) 
 ``` 
 
 This sets locations for `Box/RAMP` and `ramp.uganda` 
@@ -41,16 +41,17 @@ for (j in dist_name) {
   }
 }
 #irs_time <-  irs_time_full[c(4, 7,8,9,10,11,13,14,15,25,31,34)]
-irs_time <- irs_time_full[c(34)]
+irs_time <- irs_time_full[c(34)]# for a single district Torroro
 ```
-Get fitted models to pfpr data for all the irs_district
 
+ Extract the district names from the irs_time data
 ```{r}
 irs_dist <- list()
 for (i in 1:length(irs_time))
   irs_dist[[i]]<- names(irs_time)[i]
 ```
 
+Get fitted models to pfpr data for all the districts
 ```{r, eval=F}
 directory <- paste(box_dir, "models", sep = "") 
 eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
@@ -67,7 +68,7 @@ eir_files_irs <- eir_files[matched_indices]
 ```
 
 
-Get pfpr data by district 
+Get pfpr data by irs district 
 ```{r,eval=F}
 load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
 #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
@@ -77,7 +78,7 @@ for(i in irs_dist)
   data_list[[i]] <- get_district_pfpr(i)
 ```
 
-
+Get the fitted models for only irs_districts
 ```{r, eval=F}
 fitted_mod <- list()
 for (i in 1:length(irs_dist)) {
@@ -162,8 +163,8 @@ max_effless <- max_eff[1:(length(max_eff) - 3)]/base
 
 ```{r}
 # pdf("irs_districts_cts_only.pdf")
-# for(i in 1:length(irs_dist))
-#   profile_irs(i, fitted_mod, data_list)
+ for(i in 1:length(irs_dist))
+  profile_irs(i, fitted_mod, data_list)
 # dev.off()
 ```
 

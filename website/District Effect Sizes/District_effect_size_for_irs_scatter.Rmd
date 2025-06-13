@@ -13,7 +13,7 @@ library(ramp.xds)
 library(dplyr)
 library(ramp.uganda)
 library(ramp.work)
-attach(yaml::read_yaml("../my_paths.yaml")) 
+attach(yaml::read_yaml("../../my_paths.yaml")) 
 ``` 
 
 This sets locations for `Box/RAMP` and `ramp.uganda` 
@@ -21,9 +21,9 @@ This sets locations for `Box/RAMP` and `ramp.uganda`
 
 ```{r}
 library(dplyr)
-files <- list.files(path = "../data/IRS/", pattern = "*.csv", full.names = TRUE)
+files <- list.files(path = "../../data/IRS/", pattern = "*.csv", full.names = TRUE)
 combined_data <- bind_rows(lapply(files, read.csv))
-write.csv(combined_data, "../data/IRS/merged_irs_eff.csv", row.names = FALSE)
+write.csv(combined_data, "../../data/IRS/merged_irs_eff.csv", row.names = FALSE)
 ```
 
 

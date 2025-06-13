@@ -14,11 +14,9 @@ library(ramp.xds)
 library(dplyr)
 library(ramp.uganda)
 library(ramp.work)
-library(ramp.control)
 attach(yaml::read_yaml("../../my_paths.yaml")) 
 ``` 
 
-load district data from district dir
 ```{r,eval=F}
  load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
 # #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
@@ -27,68 +25,93 @@ load district data from district dir
 
 
 
-Get ITN timelines for all districts that recieved ITN and select only those values that are positive for Post-2015
 ```{r}
 FirstYear <-2015
-itn_time <- list()
+irs_time_full <- list()
+no_irs <- c()
+
 for (j in dist_name) {
-  dates <- get_itn_jdates(j, FirstYear)
+  dates <- get_irs_jdates(j, FirstYear)
 
   if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
-    itn_time[[j]] <- sort(dates[dates > 0])
-  } 
+    irs_time_full[[j]] <- sort(dates[dates > 0])
+  } else {
+    no_irs <- c(no_irs, j)
+  }
 }
+#irs_time <-  irs_time_full[c(4, 7,8,9,10,11,13,14,15,25,31,34)]
+irs_time <- irs_time_full#[c(34)]# for a single district Torroro
 ```
 
+ Extract the district names from the irs_time data
+```{r}
+irs_dist <- list()
+for (i in 1:length(irs_time))
+  irs_dist[[i]]<- names(irs_time)[i]
+```
 
-load files with fitted models from the box directory
+Get fitted models to pfpr data for all the districts
 ```{r, eval=F}
 directory <- paste(box_dir, "models", sep = "") 
 eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+clean_name <- function(name) {
+  tolower(gsub(" ", "_", name))
+}
+cleaned_dists <- sapply(irs_dist, clean_name)
+# Find indices in eir_files that contain each cleaned district name
+matched_indices <- sapply(cleaned_dists, function(dname) {
+  which(grepl(dname, eir_files))
+})
+
+eir_files_irs <- eir_files[matched_indices]
 ```
 
-
-Get pfpr data by district 
+Get pfpr data by irs district 
 ```{r,eval=F}
+load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+#load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+#dist_name <-irs_dist
 data_list = list()
-for(i in dist_name)
+for(i in irs_dist)
   data_list[[i]] <- get_district_pfpr(i)
 ```
 
-Get fitted models to pfpr data for all the itn district
+
+Get fitted models to pfpr data for all the irs district
 ```{r, eval=F}
 fitted_mod <- list()
-for (i in 1:length(dist_name)) {
-  fitted_mod[[i]] <- readRDS(eir_files[i])
+for (i in 1:length(irs_dist)) {
+  fitted_mod[[i]] <- readRDS(eir_files_irs[i])
   fitted_mod[[i]]$nHostSpecies <- 1
 fitted_mod[[i]]$nVectorSpecies <- 1
 }
+vals <- get_XH(fitted_mod[[1]])
+  with(vals, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data_list[[1]]$district_name), type = "l", ylim = c(0,1), col="darkred"))
+  #with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
+  with(data_list[[1]], lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+  add_irs_history(unique(data_list[[1]]$district_name))
 ```
 
+
+# mean effect by IRS type
 ```{r}
-percent_eff <- read.csv(file="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/malaria_type_itn_eff_2023.csv")
-percent_eff$mean_percent[percent_eff$mean_percent < 0] <- 0
-
-```
-
-mean effect by ITN type
-```{r}
-itn_file_only <- read.csv(file ="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv")
-average_eff <- aggregate(mean_percent ~ ITN_Type, data = itn_file_only, FUN = mean)
+irs_file <- read.csv(file="C:/Users/Admin/Box/RAMP/data/effect_sizes/IRS/merged_ cts_and_after_2021_irs_eff.csv")
+average_eff <- aggregate(mean_percent ~ irs_Type, data = irs_file, FUN = mean)
 ```
 
 
- Profile for obtaining plots and effect sizes
+# Profile for obtaining plots and effect sizes
 
 ```{r, fig.height=8, fig.width=11}
-profile_itn = function(i, model_list, data_list){
+profile_irs = function(i, model_list, data_list){
   mod_file <- model_list[[i]]
   data <- data_list[[i]]
 
   #---------------------------------------------------------------------------------------------------
+#  ix = c(4,5)
   #get indices from the tt in the trend corresponding to the value after the itn was given out.
-  ix <- unique(sapply(itn_time[[i]], function(x) {
-  idx <- which(fitted_mod[[i]]$EIRpar$trend_par$tt > x)
+ix <- unique(sapply(irs_time[[i]], function(x) {
+idx <- which(fitted_mod[[i]]$EIRpar$trend_par$tt > x)
   if (length(idx) == 0) {
   return(NA)
 } else if (length(idx) >= i) {
@@ -98,8 +121,7 @@ profile_itn = function(i, model_list, data_list){
 }
 }))
     ##--------------------------------------------------------------------------------------------------
- 
-   cf_max <- make_cf_base_max(ix, mod_file)
+  cf_max <- make_cf_base_max(ix, mod_file)
   cf_min <- make_cf_base_min(ix, mod_file)
   cf_median <- make_cf_base_median(ix, mod_file)
   cf_mean <- make_cf_base_mean(ix, mod_file)
@@ -128,61 +150,51 @@ profile_itn = function(i, model_list, data_list){
  # Set layout to 2x2 grid
 par(mfrow = c(2, 2), mar = c(4, 4, 3, 1), oma = c(0, 0, 2, 0))  # Outer margin at top for legend
 
-coverage <- c(0.3,0.5,0.8,1)
-for (j in coverage) {
+for (j in 1:length(average_eff$mean_percent)) {
 
   # === Decay and PR calculation ===
-  #coverage <- 0.3
-  itn_type_eff <- 0.9
-  effect_itn_start <- j*itn_type_eff
-  effect_itn_end <- 0.01
+  effect_irs_start <- average_eff$mean_percent[[j]] / 100
+  effect_irs_end <- 0.01
   decay_start <- 2023
-  decay_end <- 2026
+  decay_end <- 2024
   t0 <- (decay_start + decay_end) / 2
-  t01 <- (decay_start + 3 + decay_end + 3) / 2
+  t01 <- (decay_start + 1 + decay_end + 1) / 2
   k <- 1.5
 
   effect_decay <- function(t, e0, e1, k_eff, t0_eff) {
-   e1 + (e0 - e1) / (1 + exp(k_eff * (t - t0_eff)))
+    e1 + (e0 - e1) / (1 + exp(k_eff * (t - t0_eff)))
   }
-  
- # cov_opts <- list(
-  #F_season =  function(t, e0, e1, k_eff, t0_eff) {
-  #  e1 + (e0 - e1) / (1 + exp(k_eff * (t - t0_eff)))
-#})
 
-
+#  logistic_pr_with_effect_decay <- function(t, pr0, e0, e1, k_eff, t0_eff, k_pr, t0_pr) {
+#    effect_t <- effect_decay(t, e0, e1, k_eff, t0_eff)
+  #  pr0 * (1 - (effect_t / (1 + exp(-k_pr * (t - t0_pr)))))
+  #}
   logistic_pr_with_effect_decay <- function(t, pr0, e0, e1, k_eff, t0_eff, k_pr, t0_pr) {
     effect_t <- effect_decay(t, e0, e1, k_eff, t0_eff)
     pr0 * (1 - (effect_t / (1 + exp(-k_pr * (t - t0_pr)))))
   }
-#itn_mod <- setup_bednets(mod_file,
-#     coverage_name = "func", coverage_opts = cov_opts, 
-#     effectsizes_name = "lemenach")
 
-#xds_solve(itn_mod, 1830, dt=15) -> itn_mod
-  
-  pr_itn <- logistic_pr_with_effect_decay(time_years, vals_for$true_pr, effect_itn_start, effect_itn_end, k, t0, k, t0)
-  pr_itn_2026 <- logistic_pr_with_effect_decay(time_years, pr_itn, effect_itn_start, effect_itn_end, k, t01, k, t01)
+  pr_irs <- logistic_pr_with_effect_decay(time_years, vals_for$true_pr, effect_irs_start, effect_irs_end, k, t0, k, t0)
+  pr_irs_2024 <- logistic_pr_with_effect_decay(time_years, pr_irs, effect_irs_start, effect_irs_end, k, t01, k, t01)
 
   df <- data.frame(
     Year = time_years,
     Original_PR = vals_for$true_pr,
-    itn_PR = round(pr_itn, 4),
-    itn_PR_2026 = round(pr_itn_2026, 4)
+    irs_PR = round(pr_irs, 4),
+    irs_PR_2024 = round(pr_irs_2024, 4)
   )
   df <- df[df$Year >= 2020,]
-  df_first <- df[df$Year >= 2023 & df$Year <= 2026, ]
-  df_sec   <- df[df$Year >= 2025.8, ]
+  df_first <- df[df$Year >= 2023 & df$Year <= 2024, ]
+  df_sec   <- df[df$Year >= 2023.8, ]
 
   # === Plot for each ITN type ===
   plot(df$Year, df$Original_PR, type = "l", lwd = 2, col = "blue",
        ylim = c(0, 1),
        ylab = "Parasite Rate (PR)", xlab = "Year",
-       main = paste(unique(data$district_name), "-", "cov=", j*100,"%"))
+       main = paste(unique(data$district_name), "-", average_eff$irs_Type[[j]]))
 
-  lines(df$Year, df$itn_PR, col = "darkred", lwd = 2)
-  lines(df$Year, df$itn_PR_2026, col = "green", lwd = 2)
+  lines(df$Year, df$irs_PR, col = "darkred", lwd = 2)
+  lines(df$Year, df$irs_PR_2024, col = "green", lwd = 2)
   with(data, lines(jdate / 365 + FirstYear, pfpr, pch = 16, type = "o", col = "darkblue"))
 
   # Optional: Pause every 4 plots
@@ -228,11 +240,11 @@ if (length(average_eff$mean_percent) %% 4 != 0) {
 ```
 
 ```{r}
-##pdf("itn_scenario_time_decay_cov.pdf")
+pdf("irs_scenario_time_decay.pdf")
 #for(i in 1:length(itn_time))
-for(i in 15)
-  profile_itn(i, fitted_mod, data_list)
-#dev.off(dev.cur())
+for(i in 1:length(irs_time))
+  profile_irs(i, fitted_mod, data_list)
+dev.off(dev.cur())
 ```
 
 ```{r}
