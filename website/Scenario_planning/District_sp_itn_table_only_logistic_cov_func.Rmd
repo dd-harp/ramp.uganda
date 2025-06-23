@@ -20,8 +20,8 @@ attach(yaml::read_yaml("../../my_paths.yaml"))
 
 load district data from district dir
 ```{r,eval=F}
- load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
-# #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ #load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
  dist_name <- sort(district_dir$district_name)
 ```
 
@@ -61,25 +61,36 @@ fitted_mod <- list()
 for (i in 1:length(dist_name)) {
   fitted_mod[[i]] <- readRDS(eir_files[i])
   fitted_mod[[i]]$nHostSpecies <- 1
-fitted_mod[[i]]$nVectorSpecies <- 1
+  fitted_mod[[i]]$nVectorSpecies <- 1
 
 }
+```
+
+
+```{r, eval=F}
 valsf <- get_XH(fitted_mod[[2]])
 with(valsf, plot(fitted_mod[[2]]$outputs$time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data_list[[2]]$district_name), type = "l", ylim = c(0,1), col="darkred"))
   #with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
   with(data_list[[2]], lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
-  add_irs_history(unique(data_list[[1]]$district_name))
+  add
+```
+
+
+```{r, eval=F}
+add_irs_history(unique(data_list[[1]]$district_name))
 ```
 
 ```{r}
-percent_eff <- read.csv(file="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/malaria_type_itn_eff_2023.csv")
+#percent_eff <- read.csv(file="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/malaria_type_itn_eff_2023.csv")
+percent_eff <- read.csv(file="C:/Users/doree/Box/RAMP/data/effect_sizes/ITN/malaria_type_itn_eff_2023.csv")
 percent_eff$mean_percent[percent_eff$mean_percent < 0] <- 0
 
 ```
 
 mean effect by ITN type
 ```{r}
-itn_file_only <- read.csv(file ="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv")
+#itn_file_only <- read.csv(file ="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv")
+itn_file_only <- read.csv(file ="C:/Users/doree/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv")
 average_eff <- aggregate(mean_percent ~ ITN_Type, data = itn_file_only, FUN = mean)
 ```
 

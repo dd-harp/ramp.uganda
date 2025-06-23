@@ -17,7 +17,8 @@ library(knitr)
 
 
 ## ----read pfpr data---------------------------------------------------------------------------------
-tprdata <- read.csv(file='C:/Users/Admin/Documents/Doreen/district_level_pfpr_time_series.csv')
+#tprdata <- read.csv(file='C:/Users/Admin/Documents/Doreen/district_level_pfpr_time_series.csv')
+tprdata <- read.csv(file='C:/Users/doree/Documents/Doreen/district_level_pfpr_time_series.csv')
 #pfpr <- tprdata$pfpr_pred
 #agg = tprdata%>%group_by(district_name,  year,month)%>%summarize(pfpr.mean = mean(pfpr),.groups = 'drop')
 id_name = tprdata$district_name
