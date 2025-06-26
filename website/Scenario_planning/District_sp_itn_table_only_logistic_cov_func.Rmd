@@ -99,67 +99,68 @@ average_eff <- aggregate(mean_percent ~ ITN_Type, data = itn_file_only, FUN = me
 
 ```{r, fig.height=8, fig.width=11}
 profile_itn = function(i, model_list, data_list){
-  mod_file <- fitted_mod[[2]]#model_list[[i]]
-  data <- data_list[[2]]
+  mod_file <- model_list[[i]]
+  data <- data_list[[i]]
 
    ##--------------------------------------------------------------------------------------------------
   mod_for_cast <- last_to_inits(mod_file)
   mod_for_cast<- forecast_spline_Lambda(mod_for_cast, 5,x_last=1)
   tt <- seq(0,ceiling(max(data$jdate)/365)*365+(5*365) ,length.out=200)
   mod_for_cast <- setup_other_variables(mod_for_cast) 
-   mod_for_cast <- xds_solve(mod_for_cast, Tmax =365 )
+   mod_for_cast <- xds_solve(mod_for_cast, Tmax =max(tt) )
 
   ## Get outputs for the diffferent models
   vals_for <- get_XH(mod_for_cast)
 
  # Time cutoff for effect to start
-  vals_for <- as.data.frame(vals_for)
-   time_years <- vals_for$time/365+FirstYear
+  
  # Set layout to 2x2 grid
 par(mfrow = c(2, 2), mar = c(4, 4, 3, 1), oma = c(0, 0, 2, 0))  # Outer margin at top for legend
 
 mod_file <- last_to_inits(mod_file)
 
- cov_opts <- list(
-  mean = 0.5, 
-  F_season = function(t)
-  {ifelse(t < 0, 0, (sin(2*pi*(t-365/4) / 365) + 1))}
-)
- #  cov_opts <- list(
- # F_season =  function(t, e0, e1, k_eff, t0_eff) {
-  #  e1 + (e0 - e1) / (1 + exp(k_eff * (t - t0_eff)))
-  #})
+ #cov_opts <- list(
+#  mean = 0.5, 
+  #F_season = function(t)
+ # {ifelse(t < 0, 0, (sin(2*pi*(t-365/4) / 365) + 1))}
+#)
+  cov_opts <- list(
+ F_season =  function(t, e0, e1, k_eff, t0_eff) {
+    e1 + (e0 - e1) / (1 + exp(k_eff * (t - t0_eff)))
+  })
 
 mod_file<- setup_other_variables(mod_file) 
-itn_mod <- setup_bednets(mod_file,
-     coverage_name = "func", coverage_opts = cov_opts, 
-     effectsizes_name = "lemenach")
+itn_mod1 <- setup_bednets(mod_file,
+     coverage_name = "none", coverage_opts = cov_opts, 
+     effectsizes_name = "none")
 
-xds_solve(itn_mod, 1830, dt=15) -> itn_mod
+xds_solve(itn_mod1, max(tt)) -> itn_mod1
   
-  vals_cov <- get_XH(itn_mod)
-
+  vals_cov <- get_XH(itn_mod1)
+vals_for <- as.data.frame(vals_for)
+   time_years <- mod_for_cast$outputs$time/365+FirstYear
+   vals_cov<- as.data.frame(vals_cov)
   df <- data.frame(
     Year = time_years,
     Original_PR = vals_for$true_pr,
-    itn_PR = round(vals_cov$true_pr, 4),
-    #itn_PR_2026 = round(pr_itn_2026, 4)
+    itn_PR = round(vals_for$true_pr, 4)
+    #irs_PR_2024 = round(vals_cov$true_pr, 4)
   )
   df <- df[df$Year >= 2020,]
-  df_first <- df[df$Year >= 2023 & df$Year <= 2026, ]
-  df_sec   <- df[df$Year >= 2025.8, ]
+  #df_first <- df[df$Year >= 2023 & df$Year <= 2026, ]
+  #df_sec   <- df[df$Year >= 2025.8, ]
 
   # === Plot for each ITN type ===
   plot(df$Year, df$Original_PR, type = "l", lwd = 2, col = "blue",
        ylim = c(0, 1),
        ylab = "Parasite Rate (PR)", xlab = "Year",
-       main = paste(unique(data$district_name), "-", "cov=", j*100,"%"))
+       main = paste(unique(data$district_name), "-", "cov=", 0.3*100,"%"))
 
   lines(df$Year, df$itn_PR, col = "darkred", lwd = 2)
   #lines(df$Year, df$itn_PR_2026, col = "green", lwd = 2)
   with(data, lines(jdate / 365 + FirstYear, pfpr, pch = 16, type = "o", col = "darkblue"))
 
-}
+
 
 }
 ```

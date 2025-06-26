@@ -90,11 +90,11 @@ for (i in 1:length(irs_dist)) {
 fitted_mod[[i]]$nVectorSpecies <- 1
 
 }
-valsf <- get_XH(fitted_mod[[1]])
-with(valsf, plot(fitted_mod[[1]]$outputs$time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data_list[[1]]$district_name), type = "l", ylim = c(0,1), col="darkred"))
+valsf <- get_XH(fitted_mod[[2]])
+with(valsf, plot(fitted_mod[[2]]$outputs$time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data_list[[2]]$district_name), type = "l", ylim = c(0,1), col="darkred"))
   #with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
-  with(data_list[[1]], lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
-  add_irs_history(unique(data_list[[1]]$district_name))
+  with(data_list[[2]], lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+  add_irs_history(unique(data_list[[2]]$district_name))
 ```
 
 
@@ -134,7 +134,7 @@ mod_file <- setup_other_variables(mod_file)
 multi4 = setup_irs_multiround(opts = test_irs)
 F4r <- make_function(multi4)
 #simple <- setup_irs_effectsizes_simple(mod_file)
-mod_irs <- setup_irs(mod_file, effectsizes_name = "simple", coverage_name = "func", coverage_opts = list(mx=1, trend_par = multi4))
+mod_irs <- setup_irs(mod_for_cast, effectsizes_name = "none", coverage_name = "func", coverage_opts = list(mx=1, trend_par = multi4))
 #mod_irs <- xds_solve(mod_irs, Tmax=365*8, dt=1)
 
 

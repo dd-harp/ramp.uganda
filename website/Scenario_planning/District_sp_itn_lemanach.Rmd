@@ -44,7 +44,7 @@ for (j in dist_name) {
 load files with fitted models from the box directory
 ```{r, eval=F}
 directory <- paste(box_dir, "models", sep = "") 
-Lambda_files <- list.files(path = directory, pattern = "*_Lambda_sis.rds", full.names = TRUE)
+Lambda_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
 ```
 
 
@@ -76,53 +76,33 @@ with(valsf, plot(fitted_mod[[3]]$outputs$time/365+FirstYear, true_pr, ylab = "PR
 
 ```{r, fig.height=8, fig.width=11}
 profile_itn = function(i, model_list, data_list){
-mod_file <- model_list[[i]]
-data <- data_list[[i]]
+
+mod_file <- fitted_mod[[1]]#model_list[[i]]
+data <- data_list[[1]]
 
 mod_for_cast <- last_to_inits(mod_file)
 mod_for_cast$nHostSpecies <- 1
 mod_for_cast$nVectorSpecies <- 1
 mod_for_cast <- setup_other_variables(mod_for_cast)
-mod_for_cast <- forecast_spline_Lambda(mod_for_cast, 5, x_last = 1)
+mod_for_cast <- forecast_spline_EIR(mod_for_cast, 5, x_last = 1)
 tt <- seq(0, ceiling(max(data$jdate) / 365) * 365 + (5 * 365), length.out = 200)
-
-mod_for_cast <- xds_solve(mod_for_cast, Tmax = max(tt))
+#- xds_solve_cohort(mod, times=tt)
+mod_for_cast <- xds_solve_cohort(mod_for_cast, times=tt)
 
 vals_for <- get_XH(mod_for_cast)
 time_years <- mod_for_cast$outputs$time / 365 + FirstYear
 t <- time_years
 
-#base_mod <- model_list[[i]]  # Reset base model for each iteration
-coverage <- c(0.3, 0.5, 0.8, 1)
-par(mfrow = c(2, 2), mar = c(4, 4, 3, 1), oma = c(0, 0, 2, 0))
+itn_mod <- last_to_inits(mod_for_cast)
 
-for (c in coverage) {
-  itn_effect <- 0.9
-  itn_start <- itn_effect*c
-  itn_end <- 0.01
-  decay_start <- 2023
-  decay_end <- 2026
-  t0 <- (decay_start + decay_end) / 2
-  k <- 1.5
-
-    effect_decay <- function(t, e0, e1, k_eff, t0_eff) {
-    e1 + (e0 - e1) / (1 + exp(k_eff * (t - t0_eff)))
-  }
-
-cov_opts <- list(
-  effect_decay(t, e0 = itn_start, e1 = itn_end, k_eff = k, t0_eff = t0)
-)
-
-coverage_func <- function(t) rep(c, length(t))
-coverage_opts <- list(coverage_func(t))
-itn_mod1 <- setup_bednets(
-  mod_for_cast,
-  coverage_name = "func",
-  coverage_opts = coverage_opts,
-  effectsizes_name = "func",
-  effectsizes_opts = cov_opts
-  )
-mod_for_cast_cov <- xds_solve(itn_mod1, max(tt))
+F_season = function(t)
+    {ifelse(t < 0, 0, (sin(2*pi*(t-365/4) / 365) + 1))}
+cover_par <- list(trend_par = makepar_F_sharkfin())
+itn_mod <- setup_bednets(itn_mod, 
+                         coverage_name = "func", 
+                         coverage_opts = cover_par, 
+                         effectsizes_name = "lemenach")
+mod_for_cast_cov <- xds_solve_cohort(itn_mod, times = tt)
 vals_cov <- get_XH(mod_for_cast_cov)
 
   df <- data.frame(
@@ -134,16 +114,16 @@ vals_cov <- get_XH(mod_for_cast_cov)
 
   plot(df$Year, df$Original_PR, type = "l", lwd = 2, col = "blue",
        ylim = c(0, 1), ylab = "Parasite Rate (PR)", xlab = "Year",
-       main = paste(unique(data$district_name), "-", "cov=", c * 100, "%"))
+       main = paste(unique(data$district_name), "-"))
 
   lines(df$Year, df$itn_PR, col = "darkred", lwd = 2)
-  with(data, lines(jdate / 365 + FirstYear, pfpr, type = "o", col = "darkblue"))
-}
+  with(data, lines(jdate / 365 + FirstYear, pfpr, type = "o", pch= 16,col = "darkblue"))
+
 
 }
 ```
 
 ```{r}
-for(i in 1:6)
+for(i in 1)
   profile_itn(i, fitted_mod, data_list)
 ```
