@@ -354,8 +354,8 @@ display: none;
 
 
 <pre class="r"><code>library(ramp.xds)
-library(ramp.work)
 library(ramp.control)
+library(ramp.work)
 #library(ramp.uganda)
 devtools::load_all()</code></pre>
 <pre><code>## ℹ Loading ramp.uganda</code></pre>
@@ -368,6 +368,8 @@ ix = which(district_dir$district_name == dname)
 dirname = district_dir$dir[ix]
 dirname</code></pre>
 <pre><code>## [1] &quot;terego_district&quot;</code></pre>
+<p>Read in the time series data:</p>
+<pre class="r"><code>prts &lt;- get_district_pfpr(dname)</code></pre>
 <pre class="r"><code>filename = paste(box_dir, &quot;models/&quot;, dirname, &quot;_Lambda_sis.rds&quot;, sep=&quot;&quot;)
 filename</code></pre>
 <pre><code>## [1] &quot;/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/models/terego_district_Lambda_sis.rds&quot;</code></pre>
@@ -380,6 +382,9 @@ filename</code></pre>
   model$nHostSpecies = 1 
   model$Xpar[[1]]$F_treat = F_zero
   model &lt;- setup_other_variables(model)
+  model &lt;- setup_MYZpar(&quot;SI&quot;, model, 1, MYZopts = model$MYZpar[[1]])
+  model &lt;- setup_MYZinits(model, 1, MYZopts = get_MYZinits(model, 1))
+  model &lt;- make_indices(model) 
   return(model)
 }
 model &lt;- update_model(model)</code></pre>
@@ -414,23 +419,26 @@ bednet_rounds</code></pre>
 ## [1] &quot;pbo&quot; &quot;pbo&quot; &quot;pbo&quot;</code></pre>
 <div id="set-up-the-rounds" class="section level2">
 <h2>Set Up the Rounds</h2>
-<pre class="r"><code>work_mod &lt;- setup_irs(model, 
-                      coverage_name=&quot;multiround&quot;, 
-                      coverage_opts=irs_rounds, 
-                      effect_sizes_name = &quot;simple&quot;)
+<p>This m</p>
+<pre class="r"><code>model &lt;- setup_irs(model, coverage_name=&quot;multiround&quot;, coverage_opts=irs_rounds, effect_sizes_name = &quot;simple&quot;)
 
-work_mod &lt;- setup_bednets(work_mod, 
-                          coverage_name = &quot;multiround&quot;, 
-                          coverage_opts = bednet_rounds, 
-                          effect_sizes_name = &quot;lemenach&quot;)</code></pre>
-<pre class="r"><code>work_mod &lt;- make_vc_event_list(work_mod)
-work_mod$vc_events$summary</code></pre>
-<pre><code>##   time ix    type conflict
-## 1  776  4 bednets    FALSE
-## 2 2175  8 bednets    FALSE
-## 3 2861 10     irs    FALSE
-## 4 3240 11 bednets     TRUE
-## 5 3256 11     irs     TRUE</code></pre>
+model &lt;- setup_bednets(model, coverage_name = &quot;multiround&quot;, coverage_opts = bednet_rounds, effect_sizes_name = &quot;lemenach&quot;)</code></pre>
+<pre class="r"><code>recon &lt;- reconstruct_baseline(model, prts$pfpr, prts$jdate, irs_rounds, bednet_rounds, &quot;mean&quot;)</code></pre>
+<pre><code>## i 
+## 1 
+## [1] &quot;effect size&quot;
+## i 
+## 2 
+## [1] &quot;effect size&quot;
+## i 
+## 3 
+## [1] &quot;effect size&quot;
+## i 
+## 4 
+## [1] &quot;effect size&quot;
+## i 
+## 5 
+## [1] &quot;effect size&quot;</code></pre>
 </div>
 
 

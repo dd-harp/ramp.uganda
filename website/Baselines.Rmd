@@ -88,4 +88,20 @@ model <- setup_bednets(model, coverage_name = "multiround", coverage_opts = bedn
 recon <- reconstruct_baseline(model, prts$pfpr, prts$jdate, irs_rounds, bednet_rounds, "mean")
 ```
 
+```{r}
+xds_plot_PR(recon)
+```
+```{r}
+baseline <- setup_irs(recon, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
 
+baseline <- setup_bednets(baseline, coverage_name = "multiround", coverage_opts = bednet_rounds, effect_sizes_name = "lemenach")
+```
+
+```{r}
+baseline <- xds_solve(baseline, 3650, 10)
+```
+
+```{r}
+xds_plot_PR(recon)
+xds_plot_PR(baseline, add=T)
+```
