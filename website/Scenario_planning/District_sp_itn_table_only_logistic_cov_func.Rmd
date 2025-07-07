@@ -1,0 +1,174 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+load libraries 
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+library(ramp.control)
+attach(yaml::read_yaml("../../my_paths.yaml")) 
+``` 
+
+load district data from district dir
+```{r,eval=F}
+ #load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ dist_name <- sort(district_dir$district_name)
+```
+
+
+
+Get ITN timelines for all districts that recieved ITN and select only those values that are positive for Post-2015
+```{r}
+FirstYear <-2015
+itn_time <- list()
+for (j in dist_name) {
+  dates <- get_itn_jdates(j, FirstYear)
+
+  if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
+    itn_time[[j]] <- sort(dates[dates > 0])
+  } 
+}
+```
+
+
+load files with fitted models from the box directory
+```{r, eval=F}
+directory <- paste(box_dir, "models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_Lambda_sis.rds", full.names = TRUE)
+```
+
+
+Get pfpr data by district 
+```{r,eval=F}
+data_list = list()
+for(i in dist_name)
+  data_list[[i]] <- get_district_pfpr(i)
+```
+
+Get fitted models to pfpr data for all the itn district
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:length(dist_name)) {
+  fitted_mod[[i]] <- readRDS(eir_files[i])
+  fitted_mod[[i]]$nHostSpecies <- 1
+  fitted_mod[[i]]$nVectorSpecies <- 1
+
+}
+```
+
+
+```{r, eval=F}
+valsf <- get_XH(fitted_mod[[2]])
+with(valsf, plot(fitted_mod[[2]]$outputs$time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data_list[[2]]$district_name), type = "l", ylim = c(0,1), col="darkred"))
+  #with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
+  with(data_list[[2]], lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+  add
+```
+
+
+```{r, eval=F}
+add_irs_history(unique(data_list[[1]]$district_name))
+```
+
+```{r}
+#percent_eff <- read.csv(file="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/malaria_type_itn_eff_2023.csv")
+percent_eff <- read.csv(file="C:/Users/doree/Box/RAMP/data/effect_sizes/ITN/malaria_type_itn_eff_2023.csv")
+percent_eff$mean_percent[percent_eff$mean_percent < 0] <- 0
+
+```
+
+mean effect by ITN type
+```{r}
+#itn_file_only <- read.csv(file ="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv")
+itn_file_only <- read.csv(file ="C:/Users/doree/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv")
+average_eff <- aggregate(mean_percent ~ ITN_Type, data = itn_file_only, FUN = mean)
+```
+
+
+ Profile for obtaining plots and effect sizes
+
+```{r, fig.height=8, fig.width=11}
+profile_itn = function(i, model_list, data_list){
+  mod_file <- model_list[[i]]
+  data <- data_list[[i]]
+
+   ##--------------------------------------------------------------------------------------------------
+  mod_for_cast <- last_to_inits(mod_file)
+  mod_for_cast<- forecast_spline_Lambda(mod_for_cast, 5,x_last=1)
+  tt <- seq(0,ceiling(max(data$jdate)/365)*365+(5*365) ,length.out=200)
+  mod_for_cast <- setup_other_variables(mod_for_cast) 
+   mod_for_cast <- xds_solve(mod_for_cast, Tmax =max(tt) )
+
+  ## Get outputs for the diffferent models
+  vals_for <- get_XH(mod_for_cast)
+
+ # Time cutoff for effect to start
+  
+ # Set layout to 2x2 grid
+par(mfrow = c(2, 2), mar = c(4, 4, 3, 1), oma = c(0, 0, 2, 0))  # Outer margin at top for legend
+
+mod_file <- last_to_inits(mod_file)
+
+ #cov_opts <- list(
+#  mean = 0.5, 
+  #F_season = function(t)
+ # {ifelse(t < 0, 0, (sin(2*pi*(t-365/4) / 365) + 1))}
+#)
+  cov_opts <- list(
+ F_season =  function(t, e0, e1, k_eff, t0_eff) {
+    e1 + (e0 - e1) / (1 + exp(k_eff * (t - t0_eff)))
+  })
+
+mod_file<- setup_other_variables(mod_file) 
+itn_mod1 <- setup_bednets(mod_file,
+     coverage_name = "none", coverage_opts = cov_opts, 
+     effectsizes_name = "none")
+
+xds_solve(itn_mod1, max(tt)) -> itn_mod1
+  
+  vals_cov <- get_XH(itn_mod1)
+vals_for <- as.data.frame(vals_for)
+   time_years <- mod_for_cast$outputs$time/365+FirstYear
+   vals_cov<- as.data.frame(vals_cov)
+  df <- data.frame(
+    Year = time_years,
+    Original_PR = vals_for$true_pr,
+    itn_PR = round(vals_for$true_pr, 4)
+    #irs_PR_2024 = round(vals_cov$true_pr, 4)
+  )
+  df <- df[df$Year >= 2020,]
+  #df_first <- df[df$Year >= 2023 & df$Year <= 2026, ]
+  #df_sec   <- df[df$Year >= 2025.8, ]
+
+  # === Plot for each ITN type ===
+  plot(df$Year, df$Original_PR, type = "l", lwd = 2, col = "blue",
+       ylim = c(0, 1),
+       ylab = "Parasite Rate (PR)", xlab = "Year",
+       main = paste(unique(data$district_name), "-", "cov=", 0.3*100,"%"))
+
+  lines(df$Year, df$itn_PR, col = "darkred", lwd = 2)
+  #lines(df$Year, df$itn_PR_2026, col = "green", lwd = 2)
+  with(data, lines(jdate / 365 + FirstYear, pfpr, pch = 16, type = "o", col = "darkblue"))
+
+
+
+}
+```
+
+```{r}
+#pdf("itn_scenario_time_decay_cov.pdf")
+#for(i in 1:length(itn_time))
+for(i in 1)
+  profile_itn(i, fitted_mod, data_list)
+#dev.off(dev.cur())
+```

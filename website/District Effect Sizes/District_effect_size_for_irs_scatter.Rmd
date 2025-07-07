@@ -1,0 +1,60 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../../my_paths.yaml")) 
+``` 
+
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+
+
+```{r}
+library(dplyr)
+files <- list.files(path = "../../data/IRS/", pattern = "*.csv", full.names = TRUE)
+combined_data <- bind_rows(lapply(files, read.csv))
+write.csv(combined_data, "../../data/IRS/merged_irs_eff.csv", row.names = FALSE)
+```
+
+
+```{r}
+library(ggplot2)
+irs_data<- read.csv(file= "../data/IRS/merged_irs_eff.csv")
+ggplot(irs_data, aes(x = mean_base, y = mean_percent, color = irs_Type)) +
+  geom_point(size = 2) +
+ # geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +  # Horizontal line at y = 1
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +    # Horizontal line at y = 0
+  geom_vline(xintercept = 0, linetype = "solid", color = "black") +    # Vertical line at x = 0
+  scale_color_manual(values = c("IRS Continuous" = "darkblue", "IRS after 2021" = "red", "IRS before 2021" = "green", "IRS in 2017" = "purple")) +  
+  labs(title = "Average Reduction of PfPr due to IRS by District",
+       x = "Average Baseline",
+       y = "% Reduction in Pfpr",
+       color = "IRS Type") +
+  theme_minimal()
+```
+
+
+
+```{r}
+library(ggplot2)
+irs_data <- read.csv(file="../data/IRS/merged_irs_eff.csv")
+ggplot(irs_data, aes(x = mean_base, y = mean_percent, color = irs_Type)) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("IRS Continious" = "darkblue", "IRS after 2021" = "red", "IRS before 2021" = "green", "IRS in 2017" = "purple")) +  
+  labs(title = "Average Effect sizes  of IRS by District ",
+       x = "Average Baseline",
+       y = "Effect size",
+       color = "IRStype",
+       ) +
+  theme_minimal()
+```

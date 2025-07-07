@@ -1,0 +1,185 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+load libraries 
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../../my_paths.yaml")) 
+``` 
+
+load district data from district dir
+```{r,eval=F}
+ load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+# #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ dist_name <- sort(district_dir$district_name)
+```
+
+
+
+Get ITN timelines for all districts that recieved ITN and select only those values that are positive for Post-2015
+```{r}
+FirstYear <-2023
+itn_time <- list()
+for (j in dist_name) {
+  dates <- get_itn_jdates(j, FirstYear)
+
+  if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
+    itn_time[[j]] <- sort(dates[dates > 0])
+  } 
+}
+```
+
+
+load files with fitted models from the box directory
+```{r, eval=F}
+directory <- paste(box_dir, "models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+```
+
+
+Get pfpr data by district 
+```{r,eval=F}
+data_list = list()
+for(i in dist_name)
+  data_list[[i]] <- get_district_pfpr(i)
+```
+
+Get fitted models to pfpr data for all the itn district
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:length(dist_name)) {
+  fitted_mod[[i]] <- readRDS(eir_files[i])
+}
+```
+
+```{r}
+percent_eff <- read.csv(file="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/malaria_type_itn_eff_2023.csv")
+percent_eff$mean_percent[percent_eff$mean_percent < 0] <- 0
+
+```
+
+mean effect by ITN type
+```{r}
+itn_file_only <- read.csv(file ="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv")
+average_eff <- aggregate(mean_percent ~ ITN_Type, data = itn_file_only, FUN = mean)
+```
+
+
+ Profile for obtaining plots and effect sizes
+
+```{r, fig.height=8, fig.width=11}
+profile_itn = function(i, model_list, data_list){
+  mod_file <- model_list[[i]]
+  data <- data_list[[i]]
+
+  #---------------------------------------------------------------------------------------------------
+  #get indices from the tt in the trend corresponding to the value after the itn was given out.
+  ix <- unique(sapply(itn_time[[i]], function(x) {
+  idx <- which(fitted_mod[[i]]$EIRpar$trend_par$tt > x)
+  if (length(idx) == 0) {
+  return(NA)
+} else if (length(idx) >= i) {
+  return(idx[i])
+} else {
+  return(tail(idx, 1))
+}
+}))
+    ##--------------------------------------------------------------------------------------------------
+  cf_max <- make_cf_base_max(ix, mod_file)
+  cf_min <- make_cf_base_min(ix, mod_file)
+  cf_median <- make_cf_base_median(ix, mod_file)
+  cf_mean <- make_cf_base_mean(ix, mod_file)
+  mod1a <- modify_baseline(mod_file, cf_max) 
+  mod1b <- modify_baseline(mod_file, cf_min) 
+  mod1c <- modify_baseline(mod_file, cf_median) 
+  mod1d <- modify_baseline(mod_file, cf_mean) 
+  mod_for_cast <- last_to_inits(mod1a)
+  mod_for_cast<- forecast_spline_EIR(mod_for_cast, 5,x_last=0)
+  tt <- seq(0, ceiling(max(data$jdate)/365)*365+(5*365),length.out=200)
+  #tt <-  seq(0, (10*365),length.out=200)
+  mod_for_cast <- xds_solve_cohort(mod_for_cast, times=tt)
+
+  ## Get outputs for the diffferent models
+  vals <- get_XH(mod_file)
+  vals1a <- get_XH(mod1a)
+  vals1b <- get_XH(mod1b)
+  vals1c <- get_XH(mod1c)
+  vals1d <- get_XH(mod1d)
+  vals_for <- get_XH(mod_for_cast)
+
+ # Time cutoff for effect to start
+  vals_for <- as.data.frame(vals_for)
+  spec_time <- data$jdate[length(data$jdate)]
+
+# Define max effect size (e.g., 47.962%)
+  max_effect <- 47.962 / 100
+
+# Optional: Normalize true_pr between 0 and 1
+  norm_pr <- (vals_for$true_pr - min(vals_for$true_pr)) / 
+            (max(vals_for$true_pr) - min(vals_for$true_pr))
+
+# Create a scaling factor: higher when prevalence is lower
+  scaling_factor <- 1 - norm_pr  # higher when true_pr is low
+
+# Calculate dynamic effect: increasing as pr declines
+  dynamic_effect <- max_effect * scaling_factor
+
+# Adjust prevalence after spec_time only
+  vals_for_cast <- vals_for %>%
+    mutate(
+      true_pr = ifelse(
+        time > spec_time,
+        true_pr * (1 - dynamic_effect),
+        true_pr
+      )
+   )
+ 
+ ## Plot outputs    
+ with(vals_for, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data$district_name), type = "l", ylim = c(0,1), col="darkred"))
+ with(vals_for_cast, lines(time/365+ FirstYear, true_pr, lwd=2,col="blue") )
+ with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
+  with(data, lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+  add_irs_history(unique(data$district_name))
+    
+  }
+
+```
+
+```{r}
+pdf("itn_scenario.pdf")
+for(i in 1:length(dist_name))
+  profile_itn(i, fitted_mod, data_list)
+dev.off(dev.cur())
+```
+
+```{r}
+pdf("PBO_districts_cts_only.pdf")
+malaria_itn_Effect <- list()
+Royal_guard  <- c(75,145,106,123,2,94,92,11,142,1,105,77,117,110,111,6,33)
+Permanent_dual <- c(8,35,10,60,44)
+Interceptor <- c(146,118,128,26,114,23,46,24,61,57,134,131,133,45,72)
+PBO <- setdiff(1:length(dist_name), c(Royal_guard,Permanent_dual,Interceptor))
+for(i in Royal_guard) {
+#for (i in setdiff(1:length(dist_name), c(10,27,33,35.37,42,86,95,98,99,101,140)))  {
+  itn <- profile_itn(i, fitted_mod, data_list)  
+  malaria_itn_Effect[[i]] <- itn  # Store each data.frame
+}
+dev.off()
+# Combine all stored data.frames into one big data.frame
+malaria_itn_eff <- do.call(rbind, malaria_itn_Effect)
+# Save to CSV
+write.csv(malaria_itn_eff, "../data/PBO_itn_eff.csv", row.names = FALSE)
+```
+
+
+

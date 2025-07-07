@@ -1,0 +1,210 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+``` 
+
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+
+
+```{r}
+library(dplyr)
+itn_file <- read.csv(file="C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/updated_itn_eff.csv" )
+
+#write.csv(itn_file, "C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv", row.names = FALSE)
+FirstYear <-2023
+irs_time_full <- list()
+no_irs <- c()
+
+for (j in dist_name) {
+  dates <- get_irs_jdates(j, 2023)
+
+  if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
+    irs_time_full[[j]] <- sort(dates[dates > 0])
+  } else {
+    no_irs <- c(no_irs, j)
+  }
+}
+
+irs_dist <- list()
+for (i in 1:length(irs_time_full))
+  irs_dist[[i]]<- names(irs_time_full)[i]
+#irs_time <-  irs_time_full[c(1,6,22,23,24,26,33,35)]
+
+```
+
+```{r}
+itn_districts <- itn_file$district_name
+irs_districts <- irs_dist
+filtered_itn_districts <- setdiff(itn_districts, irs_districts)
+itn_only <- itn_file %>%filter(district_name %in% filtered_itn_districts)
+itn_only$mean_percent[itn_only$mean_percent < 0] <- 0
+write.csv(itn_only, "C:/Users/Admin/Box/RAMP/data/effect_sizes/ITN/only_itn_eff.csv", row.names = FALSE)
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(itn_only, aes(x = mean_base, y = mean_percent, color = ITN_Type)) +
+  geom_point(aes(shape = IRS_status), size = 2) +
+ # geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "darkred") +
+  geom_vline(xintercept = 0, linetype = "solid", color = "darkred") +
+  scale_color_manual(values = c("PBO" = "darkblue", 
+                                "Royal Guard" = "red", 
+                                "Interceptor" = "green", 
+                                "Permanent Dual" = "purple")) +
+  scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +
+  facet_wrap(~ ITN_Type + IRS_status) +
+  labs(title = "% Reduction of 2023 ITNs by Type",
+       x = "Average Baseline",
+       y = "Effect Size",
+       color = "ITN Type",
+       shape = "IRS Status") +
+  theme_minimal()
+```
+
+```{r}
+
+# Define district names manually for each group
+group_a_districts <-itn_only %>%   filter(ITN_Type == "Permanent Dual") %>%    pull(district_name)
+group_b_districts <- itn_only %>%   filter(ITN_Type == "Royal Guard") %>%    pull(district_name)
+group_c_districts <- itn_only %>%   filter(ITN_Type == "Interceptor") %>%    pull(district_name) 
+group_d_districts <- itn_only %>%   filter(ITN_Type == "PBO") %>%    pull(district_name)
+
+ #Assign group labels
+#itn_only$district_group <- NA
+
+itn_only$district_group[itn_only$district_name %in% group_a_districts] <- "Group A"
+itn_only$district_group[itn_only$district_name %in% group_b_districts] <- "Group B"
+itn_only$district_group[itn_only$district_name %in% group_c_districts] <- "Group C"
+itn_only$district_group[itn_only$district_name %in% group_d_districts] <- "Group D"
+
+# Remove rows without group (optional, in case some districts weren't assigned)
+itn_only <- itn_only %>% filter(!is.na(district_group))
+
+
+group_a <- filter(itn_only, district_group == "Group A")
+group_b <- filter(itn_only, district_group == "Group B")
+group_c <- filter(itn_only, district_group == "Group C")
+group_d <- filter(itn_only, district_group == "Group D")
+
+
+plot_group <- function(data, group_label) {
+  ggplot(data, aes(x = mean_base, y = mean_percent, color = district_name, shape = ITN_Type)) +
+    geom_point(size = 2) +
+    geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+    #geom_vline(xintercept = data$irs_pt_time[1]-1, linetype = "solid", color = "darkred") +
+    labs(
+      title = paste("% Reduction by District and   ITN Type –", group_label),
+      x = "Average baseline",
+      y = "% Reduction of PfPR",
+      color = "District",
+      shape = "IRS Type"
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      plot.title = element_text(size = 14, face = "bold")
+    )
+}
+
+# Plot each group
+plot_group(group_a, "Permanent Dual")
+plot_group(group_b, "Royal Guard")
+plot_group(group_c, "Group C")
+plot_group(group_d, "Group D")
+```
+
+
+
+```{r}
+library(ggplot2)
+library(ggrepel)
+
+plot_group <- function(data, group_label) {
+  ggplot(data, aes(x = mean_base, y = mean_percent, color = ITN_Type)) +
+    geom_point(size = 2, color="red") +
+    geom_text_repel(aes(label = district_name), color = "blue", size = 3, max.overlaps = 100) +
+    #geom_text(aes(label = district_name), color= "blue", hjust = 1.1, size = 3, check_overlap = TRUE) +
+    geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+    labs(
+      title = paste("% Reduction by ITN Type –", group_label),
+      x = "Average baseline",
+      y = "% Reduction of PfPR",
+      color = "ITN Type"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold")
+    )
+}
+plot_group(group_c, "Interceptor")
+plot_group(group_d, "Group D")
+```
+
+```{r}
+library(plotly)
+group_d <- filter(itn_only, district_group == "Group D")
+gg <- ggplot(group_d, aes(x = mean_base, y = mean_percent, color = district_name, shape = ITN_Type)) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+  labs(
+    title = paste("% Reduction by District and ITN Type –", "Group D"),
+    x = "Average baseline",
+    y = "% Reduction of PfPR",
+    color = "District",
+    shape = "ITN Type"
+  ) +
+  theme_minimal()
+
+ggplotly(gg)
+# Convert to plotly object
+p <- ggplotly(gg)
+
+# Save as an interactive HTML file
+htmlwidgets::saveWidget(p, file = "ITN_PBO_interactive.html")
+
+```
+
+
+
+
+```{r}
+library(plotly)
+
+gg <- ggplot(itn_only, aes(x = mean_base, y = mean_percent, color = district_name, shape = ITN_Type)) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+  labs(
+    title = paste("% Reduction by District and ITN Type" ),
+    x = "Average baseline",
+    y = "% Reduction of PfPR",
+    color = "District",
+    shape = "ITN Type"
+  ) +
+  theme_minimal()
+
+ggplotly(gg)
+#htmlwidgets::saveWidget(p, file = "group_plot_interactive.html")
+# Convert to plotly object
+q <- ggplotly(gg)
+
+# Save as an interactive HTML file
+htmlwidgets::saveWidget(q, file = "ITN_only_interactive.html")
+
+```
+
+
