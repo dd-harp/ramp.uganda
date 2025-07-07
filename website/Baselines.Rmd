@@ -1,0 +1,107 @@
+---
+title: "Baselines"
+output: html_document
+---
+
+```{r}
+library(ramp.xds)
+library(ramp.control)
+library(ramp.work)
+#library(ramp.uganda)
+devtools::load_all()
+attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+There is a SimBA webpage that explains the rationale.  This is a step-by-step guide. 
+
+First, we specify a district name:
+
+```{r}
+dname = "Terego District"
+ix = which(district_dir$district_name == dname)
+dirname = district_dir$dir[ix]
+dirname
+```
+
+Read in the time series data: 
+
+```{r}
+prts <- get_district_pfpr(dname)
+```
+
+```{r}
+filename = paste(box_dir, "models/", dirname, "_Lambda_sis.rds", sep="")
+filename
+```
+
+Read it in: 
+
+```{r}
+model <- readRDS(filename)
+```
+
+This fixes function fixes it so it works with all the changes made to `ramp.xds` 
+
+```{r}
+update_model = function(model){
+  model$nVectorSpecies = 1 
+  model$nHostSpecies = 1 
+  model$Xpar[[1]]$F_treat = F_zero
+  model <- setup_other_variables(model)
+  model <- setup_MYZpar("SI", model, 1, MYZopts = model$MYZpar[[1]])
+  model <- setup_MYZinits(model, 1, MYZopts = get_MYZinits(model, 1))
+  model <- make_indices(model) 
+  return(model)
+}
+model <- update_model(model)
+```
+
+
+```{r}
+model <- xds_solve(model)
+```
+
+This model has been fitted to the data. We need to setup the interventions: 
+
+```{r}
+make_irs_rounds(dname) -> irs_rounds
+irs_rounds
+```
+
+```{r}
+make_bednet_rounds(dname) -> bednet_rounds
+bednet_rounds
+```
+## Set Up the Rounds 
+
+
+This m
+
+```{r}
+model <- setup_irs(model, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
+
+model <- setup_bednets(model, coverage_name = "multiround", coverage_opts = bednet_rounds, effect_sizes_name = "lemenach")
+```
+
+
+```{r}
+recon <- reconstruct_baseline(model, prts$pfpr, prts$jdate, irs_rounds, bednet_rounds, "mean")
+```
+
+```{r}
+xds_plot_PR(recon)
+```
+```{r}
+baseline <- setup_irs(recon, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
+
+baseline <- setup_bednets(baseline, coverage_name = "multiround", coverage_opts = bednet_rounds, effect_sizes_name = "lemenach")
+```
+
+```{r}
+baseline <- xds_solve(baseline, 3650, 10)
+```
+
+```{r}
+xds_plot_PR(recon)
+xds_plot_PR(baseline, clrs = "darkred", add=T)
+```
