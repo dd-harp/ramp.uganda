@@ -30,7 +30,11 @@ prts <- get_district_pfpr(dname)
 ```
 
 ```{r}
-filename = paste(box_dir, "models/", dirname, "_Lambda_sis.rds", sep="")
+models_path = "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/models/"
+```
+
+```{r}
+filename = paste(models_path, dirname, "_Lambda_sis.rds", sep="")
 filename
 ```
 
@@ -84,9 +88,18 @@ model <- setup_bednets(model, coverage_name = "multiround", coverage_opts = bedn
 ```
 
 
-```{r}
+```{r, eval=F}
 recon <- reconstruct_baseline(model, prts$pfpr, prts$jdate, irs_rounds, bednet_rounds, "mean")
 ```
+
+```{r, eval=F}
+saveRDS(recon, "recon.rds") 
+```
+
+```{r}
+readRDS("recon.rds") -> recon
+```
+
 
 ```{r}
 xds_plot_PR(recon)
