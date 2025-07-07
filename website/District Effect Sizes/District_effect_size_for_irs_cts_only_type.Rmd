@@ -1,0 +1,244 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../../my_paths.yaml")) 
+``` 
+
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+
+```{r,eval=F}
+ load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+# #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ dist_name <- sort(district_dir$district_name)
+```
+
+
+
+```{r}
+FirstYear <-2015
+irs_time_full <- list()
+no_irs <- c()
+
+for (j in dist_name) {
+  dates <- get_irs_jdates(j, FirstYear)
+
+  if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
+    irs_time_full[[j]] <- sort(dates[dates > 0])
+  } else {
+    no_irs <- c(no_irs, j)
+  }
+}
+#irs_time <-  irs_time_full[c(4, 7,8,9,10,11,13,14,15,25,31,34)]
+irs_time <- irs_time_full[c(34)]# for a single district Torroro
+```
+
+ Extract the district names from the irs_time data
+```{r}
+irs_dist <- list()
+for (i in 1:length(irs_time))
+  irs_dist[[i]]<- names(irs_time)[i]
+```
+
+Get fitted models to pfpr data for all the districts
+```{r, eval=F}
+directory <- paste(box_dir, "models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+clean_name <- function(name) {
+  tolower(gsub(" ", "_", name))
+}
+cleaned_dists <- sapply(irs_dist, clean_name)
+# Find indices in eir_files that contain each cleaned district name
+matched_indices <- sapply(cleaned_dists, function(dname) {
+  which(grepl(dname, eir_files))
+})
+
+eir_files_irs <- eir_files[matched_indices]
+```
+
+
+Get pfpr data by irs district 
+```{r,eval=F}
+load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+#load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+#dist_name <-irs_dist
+data_list = list()
+for(i in irs_dist)
+  data_list[[i]] <- get_district_pfpr(i)
+```
+
+Get the fitted models for only irs_districts
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:length(irs_dist)) {
+  fitted_mod[[i]] <- readRDS(eir_files_irs[i])
+}
+```
+
+
+
+## District Baseline
+
+```{r, fig.height=8, fig.width=11}
+profile_irs = function(i, model_list, data_list){
+  mod_file <-  fitted_mod[[1]]# model_list[[i]]
+  data <- data_list[[1]]
+  
+  cf_base <- make_cf_no_base(mod_file)
+  mod1a <- modify_baseline(mod_file, cf_base) 
+  vals <- get_XH(mod_file)
+  vals1a <- get_XH(mod1a)
+  
+  with(vals1a, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data$district_name), type = "l", ylim = c(0,1), col="darkred"))
+  with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
+  with(data, lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+  add_irs_history(unique(data$district_name))
+  
+    ## -------------Effect Size--------------------------------------------------------------------------
+  
+  max_eff <- vals1a$true_pr
+  max_eff1 <- max_eff[1:(length(max_eff) - 3)]
+  base <- vals$true_pr
+  max_effless <- max_eff1/base
+  
+  ## ------------------ Effect table
+  t_time <- fitted_mod[[1]]$outputs$time
+  irs_tt <- irs_time[[1]]
+  closest_indices <- sapply(irs_tt, function(x) which.min(abs(t_time- x)))
+  time_end <- sapply(closest_indices, function(k) (t_time[k] + 270))
+  closest_indice1 <- sapply(time_end, function(x) which.min(abs(t_time- x)))
+ # irs_types <- c("Actellic","Actellic","Actellic","Fludora Fusion","Fludora Fusion","Sumishield","Actellic","Actellic")
+#  irs_types <- c( "Fludora Fusion","Sumishield","Actellic","Prallethrin")
+irs_types <- c("Bendiocarb","Bendiocarb","Actellic","Actellic","Actellic","Actellic", "Fludora Fusion","Fludora Fusion","Sumishield","Actellic","Actellic" )
+ #  irs_types <- c("Bendiocarb","Actellic","Actellic","Actellic","Fludora Fusion", "Fludora Fusion","Fludora Fusion","Actellic","Actellic" )
+  
+  Effect_table <- data.frame(
+  irs_Type = irs_types, 
+  irs_pt_time = floor(FirstYear+ irs_time[[i]]/365),
+   max_effect = NA, 
+  min_effect = NA, 
+  median_effect = NA,
+  #mean_effect1 = sapply(closest_indices, function(k) round(mean(max_eff[k:k+1]/base[k:k+1]),2))
+ mean_effect =  mapply(function(k, j) round(mean(max_eff1[k:j]/base[k:j]), 2), closest_indices, closest_indice1),
+
+ max_percent = NA,
+ min_percent = NA,
+ median_percent = NA,
+ mean_percent =   mapply(function(k, j) round(((1 - (1 / mean(max_eff1[k:j]/base[k:j]))) * 100), 2), closest_indices, closest_indice1),
+
+ max_base = NA,
+ min_base = NA,
+ median_base = NA,
+ mean_base =  mapply(function(k, j) round(mean(base[k:j]), 2), closest_indices, closest_indice1))
+  
+
+  ## -------------Effect Size--------------------------------------------------------------------------
+  max_eff <- vals1a$true_pr
+  base <- vals$true_pr
+max_effless <- max_eff[1:(length(max_eff) - 3)]/base
+   plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
+  add_irs_history(unique(data$district_name))
+  add_itn_history(unique(data$district_name))
+  return(data.frame(
+      district_name = unique(data$district_name),
+      Effect_table
+      )
+    )
+  
+
+  }
+
+```
+
+```{r}
+# pdf("irs_districts_cts_only.pdf")
+ for(i in 1:length(irs_dist))
+  profile_irs(i, fitted_mod, data_list)
+# dev.off()
+```
+
+```{r}
+#pdf("all_districts_2023_type.pdf")
+malaria_irs_Effect <- list()
+for (i in 1) {
+#for (i in setdiff(1:length(dist_name), c(10,27,33,35.37,42,86,95,98,99,101,140)))  {
+  irs <- profile_irs(i, fitted_mod, data_list)  
+  malaria_irs_Effect[[i]] <- irs  # Store each data.frame
+}
+#dev.off()
+# Combine all stored data.frames into one big data.frame
+malaria_irs_eff <- do.call(rbind, malaria_irs_Effect)
+# Save to CSV
+write.csv(malaria_irs_eff, "../data/IRS/IRS_cts/Tororo.csv", row.names = FALSE)
+```
+
+
+
+```{r}
+files1 <- list.files(path = "../data/IRS/IRS_cts", pattern = "*.csv", full.names = TRUE)
+combined_data <- do.call(rbind, lapply(files1, read.csv))
+write.csv(combined_data, "../data/IRS/IRS_cts/merged_irs_eff.csv", row.names = FALSE)
+```
+
+
+```{r}
+library(ggplot2)
+cts_data <- read.csv(file= "../data/IRS/IRS_cts/merged_irs_eff.csv")
+ggplot(cts_data, aes(x = irs_pt_time, y = mean_effect,
+                 color = irs_Type, shape = district_name)) +
+  geom_point(size = 2) +
+     geom_hline(yintercept = 0, linetype = "solid", color = "black") +    # Horizontal line at y = 0
+  geom_vline(xintercept = 2014, linetype = "solid", color = "black") +    # Vertical line at x = 0
+  geom_hline(yintercept = 1, linetype = "dashed", color = "brown") +
+   scale_color_manual(values = c("Actellic" = "darkblue", "Bendiocarb" = "red", "Sumishield" = "green", "Fludora Fusion" = "purple")) +
+  scale_shape_manual(values = c("Pallisa District" = 15, "Amolatar District" = 16)) +
+  labs(title = "Effect sizes of ITN by District and IRS status",
+       x = "Time",  # Changed from "Average Baseline"
+       y = "Effect size",
+       color = "IRS type",
+       shape = "IRS Districts") +
+  theme_minimal()
+
+
+
+```
+```{r}
+ggplot(cts_data, aes(x = irs_pt_time, y = mean_effect, color = irs_Type, group = district_name)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "brown") +
+  facet_wrap(~ district_name, ncol = 1) +  # Separate plot per district
+  labs(title = "Effect sizes of ITN by District and IRS Type over Time",
+       x = "Time",
+       y = "Effect size",
+       color = "IRS Type") +
+  theme_minimal()
+
+```
+
+```{r}
+ggplot(cts_data, aes(x = irs_pt_time, y = mean_effect, fill = irs_Type)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  facet_wrap(~ district_name) +
+   geom_hline(yintercept = 0, linetype = "solid", color = "black") +    # Horizontal line at y = 0
+  geom_vline(xintercept = 2014, linetype = "solid", color = "black") +   
+  geom_hline(yintercept = 1, linetype = "dashed", color = "brown") +
+  labs(title = "Effect sizes of ITN by District and IRS Type",
+       x = "Time",
+       y = "Effect size",
+       fill = "IRS Type") +
+  theme_minimal()
+
+```
+

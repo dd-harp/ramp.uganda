@@ -25,8 +25,8 @@ eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names 
 
 Get pfpr data by district 
 ```{r,eval=F}
-#load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
-load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+#load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
 dist_name <- sort(district_dir$district_name)
 data_list = list()
 for(i in dist_name)

@@ -19,8 +19,8 @@ attach(yaml::read_yaml("../my_paths.yaml"))
 
 load district data from district dir
 ```{r,eval=F}
- load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
-# #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ #load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
  dist_name <- sort(district_dir$district_name)
 ```
 

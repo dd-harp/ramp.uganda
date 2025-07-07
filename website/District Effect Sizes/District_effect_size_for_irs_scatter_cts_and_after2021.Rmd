@@ -1,0 +1,224 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+``` 
+
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+
+
+```{r}
+library(dplyr)
+files <- list.files(path = "../data/IRS/IRS_cts/", pattern = "*.csv", full.names = TRUE)
+combined_data <- bind_rows(lapply(files, read.csv))
+write.csv(combined_data, "../data/IRS/IRS_cts/irs_after_2021/merged_irs_eff.csv", row.names = FALSE)
+```
+
+
+```{r}
+library(ggplot2)
+irs_data1<- read.csv(file= "../data/IRS/IRS_cts/irs_after_2021/merged_irs_eff.csv")
+ggplot(irs_data1, aes(x =irs_pt_time, y = mean_percent, color = district_name, shape = irs_Type)) +
+  geom_point(size = 2) +
+  #geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +  # Horizontal line at y = 1
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +    # Horizontal line at y = 0
+  geom_vline(xintercept = 2014, linetype = "solid", color = "darkred") +    # Vertical line at x = 0
+  #scale_color_manual(values = c("PBO" = "darkblue", "Royal Guard" = "red", "Interceptor" = "green", "Permanent Dual" = "purple")) +
+  #scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +
+  labs(title = " Effect by District and Type",
+       x = "Average Baseline",
+       y = "% reduction of Pfpr",
+       color = "IRS Districts",
+       shape = "IRS Types") +
+  theme_minimal()
+```
+
+
+```{r}
+plot_group <- function(data, group_label) {
+  ggplot(data, aes(x = irs_pt_time, y = mean_percent, color = district_name, shape = irs_Type)) +
+    geom_point(size = 2) +
+    geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+    geom_vline(xintercept = 2014, linetype = "solid", color = "darkred") +
+    scale_x_continuous(
+      breaks = seq(min(data$irs_pt_time, na.rm = TRUE), max(data$irs_pt_time, na.rm = TRUE), by = 1)
+    ) +
+    labs(
+      title = paste("Effect by District and Type –", group_label),
+      x = "Year",
+      y = "% Reduction of PfPR",
+      color = "District",
+      shape = "IRS Type"
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      plot.title = element_text(size = 14, face = "bold")
+    )
+}
+
+
+
+```
+
+```{r}
+# Define district names manually for each group
+irs_data_group <- read.csv("../data/IRS/IRS_cts/irs_after_2021/irs_effect_by_type.csv")
+group_a_districts <- c("Obongi District", "Adjumani District", "Terego District",  "Madi-Okollo District", "Maracha District" , "Moyo District" , "Arua District", "Yumbe District"  )           # example names
+group_b_districts <- c("Tororo District", "Butaleja District",  "Bugiri District", "Namutumba District", "Butebo District", "Pallisa District", "Budaka District")
+group_c_districts <- c("Dokolo District", "Kaberamaido District" , "Amolatar District"  ,"Kalaki District","Kalaki District")
+
+# Assign group labels
+#irs_data_group$district_group <- NA
+
+irs_data_group$district_group[irs_data_group$district_name %in% group_a_districts] <- "Group A"
+irs_data_group$district_group[irs_data_group$district_name %in% group_b_districts] <- "Group B"
+irs_data_group$district_group[irs_data_group$district_name %in% group_c_districts] <- "Group C"
+
+# Remove rows without group (optional, in case some districts weren't assigned)
+irs_data_group <- irs_data_group %>% filter(!is.na(district_group))
+
+
+group_a <- filter(irs_data_group, district_group == "Group A")
+group_b <- filter(irs_data_group, district_group == "Group B")
+group_c <- filter(irs_data_group, district_group == "Group C")
+
+plot_group <- function(data, group_label) {
+  ggplot(data, aes(x = irs_pt_time, y = mean_percent, color = district_name, shape = irs_Type)) +
+    geom_point(size = 2) +
+    geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+    geom_vline(xintercept = 2014, linetype = "solid", color = "darkred") +
+    scale_x_continuous(
+      breaks = seq(min(data$irs_pt_time, na.rm = TRUE), max(data$irs_pt_time, na.rm = TRUE), by = 1)
+    ) +
+    labs(
+      title = paste("Effect by District and Type –", group_label),
+      x = "Year",
+      y = "% Reduction of PfPR",
+      color = "District",
+      shape = "IRS Type"
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      plot.title = element_text(size = 14, face = "bold")
+    )
+}
+
+
+# Plot each group
+plot_group(group_a, "since 2021")
+plot_group(group_b, "Continuous IRS")
+plot_group(group_c, "Lango & Teso region")
+
+```
+
+
+
+
+```{r}
+library(ggplot2)
+library(ggplot2)
+library(dplyr)
+
+# Load the data
+irs_data_all <- read.csv(file = "../data/IRS/IRS_cts/irs_after_2021/merged_irs_eff.csv")
+
+# Summarize the average reduction by IRS Type and year
+irs_summary <- irs_data_all %>%
+  group_by(irs_Type, irs_pt_time) %>%
+  summarise(avg_reduction = mean(mean_percent, na.rm = TRUE)) %>%
+  ungroup()
+
+# Plot
+ggplot(irs_summary, aes(x = irs_pt_time, y = avg_reduction, color = irs_Type)) +
+  geom_point(size = 3) +
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+  geom_vline(xintercept = 2015, linetype = "solid", color = "darkred") +
+  scale_x_continuous(
+    breaks = seq(min(irs_summary$irs_pt_time, na.rm = TRUE), max(irs_summary$irs_pt_time, na.rm = TRUE), by = 1)
+  ) +
+  labs(
+    title = "Average % Reduction of PfPR by IRS Type and Year",
+    x = "Year",
+    y = "Average % Reduction of PfPR",
+    color= "IRS Type",
+  ) +
+  theme_minimal()
+
+
+```
+
+```{r}
+library(lubridate)  # If not already loaded
+irs_merged <- read.csv(file= "../data/IRS/IRS_cts/IRS_after_2021/irs_effect_by_type.csv")
+irs_merged$year <- irs_merged$irs_pt_time  # Extract year from dates
+irs_merged <- irs_merged[irs_merged$year >= 2021, ]  # Keep only rows from 2021 onward
+write.csv(irs_merged, "../data/IRS/IRS_cts/irs_after_2021/merged_2021_irs_eff.csv", row.names = FALSE)
+```
+
+
+
+
+```{r}
+irs_data2<- read.csv(file= "../data/IRS/IRS_cts/IRS_after_2021/irs_after_2021_eff.csv")
+irs_data2$mean_percent[irs_data2$mean_percent < 0] <- 0
+
+ggplot(irs_data2, aes(x =irs_pt_time, y = mean_percent, color = district_name, shape = irs_Type)) +
+  geom_point(size = 2) +
+  #geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +  # Horizontal line at y = 1
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +    # Horizontal line at y = 0
+  geom_vline(xintercept = 2021, linetype = "solid", color = "darkred") +    # Vertical line at x = 0
+  #scale_color_manual(values = c("PBO" = "darkblue", "Royal Guard" = "red", "Interceptor" = "green", "Permanent Dual" = "purple")) +
+  #scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +
+  labs(title = " Effect by District and Type",
+       x = "Average Baseline",
+       y = "% reduction of Pfpr",
+       color = "IRS Districts",
+       shape = "IRS Types") +
+  theme_minimal()
+```
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Read and clean the data
+irs_data1 <- read.csv("../data/IRS/IRS_cts/irs_after_2021/irs_effect_by_type.csv")
+irs_data1$mean_percent[irs_data1$mean_percent < 0] <- 0
+
+# Summarize average by type and year
+avg_data <- irs_data1 %>%
+  group_by(irs_pt_time, irs_Type) %>%
+  summarise(avg_percent = mean(mean_percent, na.rm = TRUE), .groups = "drop")
+
+# Plot
+ggplot(avg_data, aes(x = irs_pt_time, y = avg_percent, fill = irs_Type)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Average % Reduction in PfPR by IRS Type and Year",
+    x = "Year",
+    y = "Average % Reduction",
+    fill = "IRS Type"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(size = 10)
+  )
+
+
+```

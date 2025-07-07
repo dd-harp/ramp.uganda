@@ -1,0 +1,240 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+load libraries 
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+``` 
+
+load district data from district dir
+```{r,eval=F}
+ load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+# #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ dist_name <- sort(district_dir$district_name)
+```
+
+
+
+Get irs timelines for all districts that recieved irs and select only those values that are positive for Post-2015
+```{r}
+FirstYear <-2015
+irs_time_full <- list()
+no_irs <- c()
+
+for (j in dist_name) {
+  dates <- get_irs_jdates(j, FirstYear)
+
+  if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
+    irs_time_full[[j]] <- sort(dates[dates > 0])
+  } else {
+    no_irs <- c(no_irs, j)
+  }
+}
+#irs_time <-  irs_time_full[c(2,5,12,16,18,19,20,27,29,30)]# irs in 2017
+ irs_time <- irs_time_full[c(3,21,28,32)] # irs end before 2021
+# irs_time <- irs_time_full[c(1,6,17,22,23,24,26,33,35)] # irs after 2021
+
+
+irs_dist <- list()
+for (i in 1:length(irs_time))
+  irs_dist[[i]]<- names(irs_time)[i]
+
+#irs_dist <- irs_dist_full[-c(4, 7,8,9,10,11,13,14,15,25,31,34)]
+irs_dist <- irs_dist[!sapply(irs_dist, is.na)]
+```
+
+
+```{r, eval=F}
+directory <- paste(box_dir, "models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+```
+
+
+Get pfpr data by district 
+```{r,eval=F}
+data_list = list()
+for(i in irs_dist)
+  data_list[[i]] <- get_district_pfpr(i)
+```
+
+Get fitted models to pfpr data for all the irs district
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:length(irs_dist)) {
+  fitted_mod[[i]] <- readRDS(eir_files[i])
+}
+```
+
+ Profile for obtaining plots and effect sizes
+
+```{r, fig.height=8, fig.width=11}
+profile_irs = function(i, model_list, data_list){
+  mod_file <- model_list[[i]]
+  data <- data_list[[i]]
+
+  #---------------------------------------------------------------------------------------------------
+  #get indices from the tt in the trend corresponding to the value after the irs was given out.
+  ix <- unique(sapply(irs_time[[i]], function(x) {
+  idx <- which(fitted_mod[[i]]$EIRpar$trend_par$tt > x)
+  if (length(idx) > 0) return(idx[1]) else return(NA)
+}))
+  ##--------------------------------------------------------------------------------------------------
+  cf_max <- make_cf_base_max(ix, mod_file)
+  cf_min <- make_cf_base_min(ix, mod_file)
+  cf_median <- make_cf_base_median(ix, mod_file)
+  cf_mean <- make_cf_base_mean(ix, mod_file)
+  mod1a <- modify_baseline(mod_file, cf_max) 
+  mod1b <- modify_baseline(mod_file, cf_min) 
+  mod1c <- modify_baseline(mod_file, cf_median) 
+  mod1d <- modify_baseline(mod_file, cf_mean) 
+  vals <- get_XH(mod_file)
+  vals1a <- get_XH(mod1a)
+  vals1b <- get_XH(mod1b)
+  vals1c <- get_XH(mod1c)
+  vals1d <- get_XH(mod1d)
+
+  with(vals1a, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data$district_name), type = "l", ylim = c(0,1), col="darkred"))
+  with(vals1b, lines(time/365+FirstYear, true_pr,  lwd=2, col="darkgreen"))
+  with(vals1c, lines(time/365+FirstYear, true_pr, lwd=2,  col="purple4"))
+  with(vals1d, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkorange"))
+  with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
+  with(data, lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+  legend("topleft",  c("max baseline", "min baseline","median baseline","mean baseline"),  
+  col = c("darkred", "darkgreen","purple4","darkorange"),
+  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")      
+  add_irs_history(unique(data$district_name))
+  add_itn_history(unique(data$district_name))
+
+  ## -------------Effect Size--------------------------------------------------------------------------
+  max_eff <- vals1a$true_pr
+  min_eff <- vals1b$true_pr
+  median_eff <- vals1c$true_pr
+  mean_eff <- vals1d$true_pr
+  base <- vals$true_pr
+ 
+ 
+   max_effless <- max_eff[1:(length(max_eff) - 3)]/base
+ 
+ min_effless <- min_eff[1:(length(min_eff)-3 )]/base
+ median_effless <- median_eff[1:(length(median_eff)-3 )]/base
+ mean_effless <- mean_eff[1:(length(mean_eff) - 3)]/base
+ #----------------------------------------------------------------------------------------------------
+ # computing irs _effect size for every three years
+  t_time <- mod_file$outputs$time
+  irs_3 <- irs_time[[i]][1]
+  closest_index3 <- which.min(abs(t_time - irs_3))
+  irs_end <- irs_time[[i]][length(irs_time[[i]])]
+  closest_index <- which.min(abs(t_time - irs_end))
+
+
+  
+  # create a data frame for the effect sizes
+  
+  Effect_table <- data.frame(
+  irs_Type = c("IRS before 2021" ),
+  max_effect = round(c( mean(max_effless[closest_index3:closest_index])),2),
+  min_effect = round(c( mean(min_effless[closest_index3:closest_index])),2),
+  median_effect = round(c(mean(median_effless[closest_index3:closest_index])),2),
+  mean_effect = round(c( mean(mean_effless[closest_index3:closest_index])),2),
+  
+  max_percent = round(c((1 - (1 / mean(max_effless[closest_index3:closest_index]))) * 100),2),
+  min_percent = round(c((1 - (1 / mean(min_effless[closest_index3:closest_index]))) * 100),2),
+  median_percent = round(c((1 - (1 / mean(median_effless[closest_index3:closest_index]))) * 100),2),
+  mean_percent = round(c( (1 - (1 / mean(mean_effless[closest_index3:closest_index]))) * 100),2),
+  
+  max_base = round(c( mean(max_eff[closest_index3:closest_index])),2),
+  min_base = round(c( mean(min_eff[closest_index3:closest_index])),2),
+  median_base = round(c(mean(median_eff[closest_index3:closest_index])),2),
+  mean_base = round(c( mean(mean_eff[closest_index3:closest_index])),2))
+  
+  #-------------------------------------------------------------------------------------------------
+  # ploting effect sizes
+   plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
+  lines(mod_file$outputs$time/365+FirstYear,min_effless , lwd= 2, col="darkgreen")
+  lines(mod_file$outputs$time/365+FirstYear,median_effless, lwd= 2, col="purple4" )
+  lines(mod_file$outputs$time/365+FirstYear,mean_effless, lwd= 2, col="darkorange" )
+
+  legend("topleft",    #inset=-0.2 ,              # Position of the legend
+  legend = c(
+          paste0(
+  "max_effs: ", sprintf("%.2f", mean(max_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(max_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100)," reduction)")
+,
+paste0("min_effs: ", sprintf("%.2f", mean(min_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(min_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")")
+,
+paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(median_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")"
+),
+ paste0( "mean_effs: ", sprintf("%.2f", mean(mean_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(mean_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")")),
+  col = c("darkred", "darkgreen","purple4","darkorange"),
+  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")
+  add_irs_history(unique(data$district_name))
+  add_itn_history(unique(data$district_name))
+return(data.frame(
+      district_name = unique(data$district_name),
+      Effect_table
+      )
+    )
+
+
+
+  }
+
+```
+
+
+```{r}
+#pdf("all_districts_2023_type.pdf")
+malaria_irs_Effect <- list()
+for (i in 1:length(irs_dist)) {
+#for (i in setdiff(1:length(dist_name), c(10,27,33,35.37,42,86,95,98,99,101,140)))  {
+  irs <- profile_irs(i, fitted_mod, data_list)  
+  malaria_irs_Effect[[i]] <- irs  # Store each data.frame
+}
+#dev.off()
+# Combine all stored data.frames into one big data.frame
+malaria_irs_eff <- do.call(rbind, malaria_irs_Effect)
+# Save to CSV
+write.csv(malaria_irs_eff, "../data/IRS/irs_before_2021.csv", row.names = FALSE)
+```
+
+
+
+```{r}
+files <- list.files(path = "../data/IRS/", pattern = "*.csv", full.names = TRUE)
+combined_data <- do.call(rbind, lapply(files, read.csv))
+write.csv(combined_data, "../data/IRS/merged_irs_eff.csv", row.names = FALSE)
+```
+
+
+
+
+
+```{r}
+library(ggplot2)
+irs_irs_data <- read.csv(file="../data/ITN/updated_irs_eff.csv")
+ggplot(itn_irs_data, aes(x = mean_base, y = mean_effect, color = ITN_Type, shape = IRS_status)) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("PBO" = "darkblue", "Royal Guard" = "red", "Interceptor" = "green", "Permanent Dual" = "purple")) +  
+  scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +  
+  labs(title = "Effect sizes  of ITN by District and IRS status",
+       x = "Average Baseline",
+       y = "Effect size",
+       color = "ITN type",
+       shape = "IRS Districts") +
+  theme_minimal()
+```
+
