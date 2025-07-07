@@ -44,7 +44,7 @@ for (j in dist_name) {
 load files with fitted models from the box directory
 ```{r, eval=F}
 directory <- paste(box_dir, "models", sep = "") 
-eir_files <- list.files(path = directory, pattern = "*_Lambda_sis.rds", full.names = TRUE)
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
 ```
 
 
@@ -59,7 +59,7 @@ Get fitted models to pfpr data for all the itn district
 ```{r, eval=F}
 fitted_mod <- list()
 for (i in 1:length(dist_name)) {
-  fitted_mod[[i]] <- readRDS(Lambda_files[i])
+  fitted_mod[[i]] <- readRDS(eir_files[i])
   fitted_mod[[i]]$nHostSpecies <- 1
 fitted_mod[[i]]$nVectorSpecies <- 1
 
@@ -92,7 +92,7 @@ ix <- unique(sapply(itn_time[[i]], function(x) {
   mod1b <- modify_baseline(mod_file, cf_min) 
   mod1c <- modify_baseline(mod_file, cf_median) 
   mod1d <- modify_baseline(mod_file, cf_mean) 
-  mod1d <- setup_other_variables(mod1d)
+  mod1a <- setup_other_variables(mod1a)
   vals <- get_XH(mod_file)
   vals1a <- get_XH(mod1a)
   vals1b <- get_XH(mod1b)
@@ -100,14 +100,14 @@ ix <- unique(sapply(itn_time[[i]], function(x) {
   vals1d <- get_XH(mod1d)
 
 
-mod_for_cast <- last_to_inits(mod1d)
+mod_for_cast <- last_to_inits(mod1a)
 mod_for_cast$nHostSpecies <- 1
 mod_for_cast$nVectorSpecies <- 1
 mod_for_cast <- setup_other_variables(mod_for_cast)
-mod_for_cast <- forecast_spline_Lambda(mod_for_cast, 5, x_last = 1)
-tt <- seq(0, ceiling(max(data$jdate) / 365) * 365 + (5 * 365), length.out = 200)
+mod_for_cast <- forecast_spline_EIR(mod_for_cast, 5, x_last = 1)
+tt <- seq(ceiling(max(data$jdate) / 365) * 365, ceiling(max(data$jdate) / 365) * 365+(5 * 365), length.out = 200)
 
-mod_for_cast <- xds_solve(mod_for_cast, Tmax = max(tt))
+mod_for_cast <- xds_solve_cohort(mod_for_cast, times = tt)
 
 vals_for <- get_XH(mod_for_cast)
 time_years <- mod_for_cast$outputs$time / 365 + FirstYear
@@ -125,7 +125,7 @@ for (c in coverage) {
   decay_start <- 2023
   decay_end <- 2024
   t0 <- (decay_start + decay_end) / 2
-  k <- 0.1
+  k <- 1.5
 
     effect_decay <- function(t, e0, e1, k_eff, t0_eff) {
     e1 + (e0 - e1) / (1 + exp(k_eff * (t - t0_eff)))
@@ -161,9 +161,9 @@ for (c in coverage) {
 ```
 
 ```{r}
-#pdf("itn_scenario_time_decay_cov.pdf")
-#for(i in 1:length(itn_time))
-for(i in 5)
+pdf("itn_scenario_time_decay_cov_baseline.pdf")
+for(i in 1:length(itn_time))
+#for(i in 5)
   profile_itn(i, fitted_mod, data_list)
-#dev.off(dev.cur())
+dev.off(dev.cur())
 ```

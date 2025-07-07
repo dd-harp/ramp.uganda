@@ -79,6 +79,22 @@ profile_itn = function(i, model_list, data_list){
 mod_file <- model_list[[i]]
 data <- data_list[[i]]
 
+cf_max <- make_cf_base_max(ix, mod_file)
+  cf_min <- make_cf_base_min(ix, mod_file)
+  cf_median <- make_cf_base_median(ix, mod_file)
+  cf_mean <- make_cf_base_mean(ix, mod_file)
+  mod1a <- modify_baseline(mod_file, cf_max) 
+  mod1b <- modify_baseline(mod_file, cf_min) 
+  mod1c <- modify_baseline(mod_file, cf_median) 
+  mod1d <- modify_baseline(mod_file, cf_mean) 
+  mod1a <- setup_other_variables(mod1a)
+  vals <- get_XH(mod_file)
+  vals1a <- get_XH(mod1a)
+  vals1b <- get_XH(mod1b)
+  vals1c <- get_XH(mod1c)
+  vals1d <- get_XH(mod1d)
+
+
 mod_for_cast <- last_to_inits(mod_file)
 mod_for_cast$nHostSpecies <- 1
 mod_for_cast$nVectorSpecies <- 1
