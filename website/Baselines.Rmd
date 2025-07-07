@@ -103,5 +103,5 @@ baseline <- xds_solve(baseline, 3650, 10)
 
 ```{r}
 xds_plot_PR(recon)
-xds_plot_PR(baseline, add=T)
+xds_plot_PR(baseline, clrs = "darkred", add=T)
 ```
