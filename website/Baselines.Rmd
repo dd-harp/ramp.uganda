@@ -17,7 +17,7 @@ There is a SimBA webpage that explains the rationale.  This is a step-by-step gu
 First, we specify a district name:
 
 ```{r}
-dname = "Terego District"
+dname = "Kagadi District"
 ix = which(district_dir$district_name == dname)
 dirname = district_dir$dir[ix]
 dirname
@@ -55,6 +55,7 @@ update_model = function(model){
   model <- setup_MYZpar("SI", model, 1, MYZopts = model$MYZpar[[1]])
   model <- setup_MYZinits(model, 1, MYZopts = get_MYZinits(model, 1))
   model <- make_indices(model) 
+  model$Umatrix <- recon$calU 
   return(model)
 }
 model <- update_model(model)
@@ -91,7 +92,6 @@ model <- setup_bednets(model, coverage_name = "multiround", coverage_opts = bedn
 ```{r, eval=F}
 recon <- reconstruct_baseline(model, prts$pfpr, prts$jdate, irs_rounds, bednet_rounds, "mean")
 ```
-
 ```{r, eval=F}
 saveRDS(recon, "recon.rds") 
 ```
@@ -102,7 +102,7 @@ readRDS("recon.rds") -> recon
 
 
 ```{r}
-xds_plot_PR(recon)
+profile_pr(recon, prts, 2015) 
 ```
 ```{r}
 baseline <- setup_irs(recon, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
@@ -117,4 +117,6 @@ baseline <- xds_solve(baseline, 3650, 10)
 ```{r}
 xds_plot_PR(recon)
 xds_plot_PR(baseline, clrs = "darkred", add=T)
+segments(3240, 0, 3240, 1)
+segments(2175, 0, 2175, 1)
 ```

@@ -1,0 +1,76 @@
+---
+title: "Pipeline"
+output: html_document
+---
+
+```{r}
+library(ramp.xds)
+library(ramp.work)
+library(ramp.library)
+#library(ramp.uganda)
+devtools::load_all()
+```
+
+## Define a model family 
+
+```{r base_mod}
+Lo <- list(
+   Lambda = 1,  
+   season_par = makepar_F_sin(), 
+   trend_par = makepar_F_spline(c(0:9)*365, rep(1,10))
+) 
+  
+sip_base <- xds_setup(Xname = "SIP", MYZname = "SI", HPop=220000, Lopts = Lo)
+sip_base <- xds_solve(sip_base, 3650, 3650)
+sip_base <- last_to_inits(sip_base)
+```
+
+
+```{r save_base_mod}
+saveRDS(sip_base, "sip_base.rds")
+```
+
+```{r prts}
+i = 132
+prts <- get_district_pfpr_i(i)
+```
+
+
+```{r viz}
+with(prts, {
+  plot(jdate, pfpr, ylim = c(0,0.65), main = "Terego District", xlab = "Julian Date (day 1 is Jan 1, 2015)", ylab = "PR") 
+  lines(jdate, pfpr)
+})
+```
+
+```{r}
+sip_base <- readRDS("sip_base.rds")
+
+pipeline_i = function(i, model, impute="mean"){
+  this_district <- district_dir[i,]
+  district_name <- this_district$district_name
+  dir_name <- this_district$dir
+  prts <- get_district_pfpr(district_name)
+  irs_rounds <- make_irs_rounds(district_name)
+  bednet_rounds <- make_bednet_rounds(district_name)
+  print("history") 
+  history0 <- pr2Lambda_history(prts$pfpr, prts$jdate, model)
+  print("baseline") 
+  history1 <- reconstruct_baseline(history0, 
+                                   prts$pfpr, prts$jdate, 
+                                   irs_rounds, bednet_rounds, 
+                                   impute) 
+   
+  return(list(district_name = district_name, 
+              dir_name = dir_name, 
+              prts = prts, 
+              irs_rounds = irs_rounds, 
+              model = model,
+              history=history)) 
+}
+```
+
+```{r}
+pipeline_i(i, sip_base)
+```
+
