@@ -1,0 +1,211 @@
+---
+title: "Baselines"
+output: html_document
+---
+
+```{r}
+library(ramp.xds)
+library(ramp.control)
+library(ramp.work)
+#library(ramp.uganda)
+devtools::load_all()
+attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+There is a SimBA webpage that explains the rationale.  This is a step-by-step guide. 
+
+First, we specify a district name:
+
+```{r}
+dname = "Kole District"
+ix = which(district_dir$district_name == dname)
+dirname = district_dir$dir[ix]
+dirname
+```
+
+Read in the time series data: 
+
+```{r}
+prts <- get_district_pfpr(dname)
+```
+
+```{r}
+models_path = "/Users/doree/Box/RAMP/models/"
+```
+
+```{r}
+filename = paste(models_path, dirname, "_Lambda_sis.rds", sep="")
+filename
+```
+
+Read it in: 
+
+```{r}
+model <- readRDS(filename)
+```
+
+This fixes function fixes it so it works with all the changes made to `ramp.xds` 
+
+```{r}
+update_model = function(model){
+  model$nVectorSpecies = 1 
+  model$nHostSpecies = 1 
+  model$Xpar[[1]]$F_treat = F_zero
+  model <- setup_other_variables(model)
+  model <- setup_MYZpar("SI", model, 1, MYZopts = model$MYZpar[[1]])
+  model <- setup_MYZinits(model, 1, MYZopts = get_MYZinits(model, 1))
+  model <- make_indices(model) 
+  return(model)
+}
+model <- update_model(model)
+```
+
+
+```{r}
+model <- xds_solve(model)
+```
+
+This model has been fitted to the data. We need to setup the interventions: 
+
+```{r}
+make_irs_rounds(dname) -> irs_rounds
+irs_rounds
+```
+
+```{r}
+make_bednet_rounds(dname) -> bednet_rounds
+bednet_rounds
+```
+## Set Up the Rounds 
+
+
+This m
+
+```{r}
+model <- setup_irs(model, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
+
+model <- setup_bednets(model, coverage_name = "multiround", coverage_opts = bednet_rounds, effect_sizes_name = "lemenach")
+```
+
+
+```{r, eval=F}
+recon_Kole <- reconstruct_baseline(model, prts$pfpr, prts$jdate, irs_rounds, bednet_rounds, "mean")
+```
+
+```{r, eval=F}
+saveRDS(recon_Kole, "recon_Kole.rds") 
+```
+
+```{r}
+readRDS("recon_Kole.rds") -> recon_Kole
+```
+
+
+```{r}
+xds_plot_PR(recon_Kole)
+```
+```{r}
+baseline_Kole <- setup_irs(recon_Kole, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
+
+baseline_Kole <- setup_bednets(baseline_Kole, coverage_name = "multiround", coverage_opts = bednet_rounds, effect_sizes_name = "lemenach")
+```
+
+```{r}
+baseline_Kole <- xds_solve(baseline_Kole, 3650, 10)
+```
+
+```{r}
+xds_plot_PR(recon_Kole)
+xds_plot_PR(baseline_Kole, clrs = "darkred", add=T)
+```
+```{r}
+baseline_focast <- baseline_Kole
+baseline_focast$nHostSpecies <- 1
+baseline_focast$nVectorSpecies <- 1
+baseline_focast <- setup_other_variables(baseline_focast)
+baseline_focast <- forecast_spline_Lambda(baseline_focast, 5, x_last = 1)
+#tt <- seq(0, ceiling(max(data$jdate) / 365) * 365 + (5 * 365), length.out = 200)
+baseline_focast <- xds_solve(baseline_focast, 5475,15)
+```
+
+
+```{r}
+xds_plot_PR(baseline_focast, clrs = "darkred")
+```
+
+
+```{r}
+make_irs_rounds(dname) -> irs_rounds
+irs_rounds1 <- irs_rounds
+irs_rounds1$coverage <- c(0.2,0.2,0.2,0.2)
+irs_rounds1$t_init <- c(3285,3650,4105,4380)
+irs_rounds1$type <- c("actellic","actellic","actellic", "actellic")
+
+
+forecast_Kole_itn_irs <- setup_irs(baseline_focast, coverage_name="multiround", coverage_opts=irs_rounds1, effect_sizes_name = "simple")
+forecast_Kole_irs <- setup_irs(baseline_focast, coverage_name="multiround", coverage_opts=irs_rounds1, effect_sizes_name = "simple")
+
+forecast_Kole_irs <-xds_solve(forecast_Kole_irs,5475,15)
+
+```
+
+
+
+```{r}
+make_bednet_rounds(dname) -> bednet_rounds
+bednets_rounds1 <- bednet_rounds
+bednets_rounds1$coverage <- c(0.2,0.5)
+bednets_rounds1$t_init <- c(4015,5110)
+bednets_rounds1$type <- c("pbo","pbo")
+
+forecast_Kole_itn_irs <- setup_bednets(forecast_Kole_itn_irs, coverage_name = "multiround", coverage_opts = bednets_rounds1, effect_sizes_name = "lemenach")
+forecast_Kole_itn <- setup_bednets(baseline_focast, coverage_name = "multiround", coverage_opts = bednets_rounds1, effect_sizes_name = "lemenach")
+
+forecast_Kole_itn_irs <- xds_solve(forecast_Kole_itn_irs,5475,15)
+forecast_Kole_itn <-xds_solve(forecast_Kole_itn,5475,15)
+
+```
+
+```{r}
+FirstYear <- 2015
+vals_forecast_itn_irs <- get_XH(forecast_Kole_itn_irs)
+vals_base_focast <- get_XH(baseline_focast)
+vals_forecast_irs <- get_XH(forecast_Kole_irs)
+vals_forecast_itn <- get_XH(forecast_Kole_itn)
+
+index_itn <- which(baseline_focast$outputs$time == 4110)
+base_itn <- vals_base_focast$true_pr[index_itn:length(vals_base_focast$true_pr)]
+forecast_itn <- vals_forecast_itn$true_pr[index_itn:length(vals_forecast_itn$true_pr)]
+percent_reduction_itn <- ((base_itn - forecast_itn) / base_itn) * 100
+mean_percent_reduction_itn <- mean(percent_reduction_itn, na.rm = TRUE)# (excluding any NaN/Inf from division by zero)
+
+index_irs <- which(baseline_focast$outputs$time == 3285)
+base_irs <- vals_base_focast$true_pr[index_irs:length(vals_base_focast$true_pr)]
+forecast_irs <- vals_forecast_irs$true_pr[index_irs:length(vals_forecast_irs$true_pr)]
+percent_reduction_irs <- ((base_irs - forecast_irs) / base_irs) * 100
+mean_percent_reduction_irs <- mean(percent_reduction_irs, na.rm = TRUE)# (excluding any NaN/Inf from division by zero)
+
+base_itn_irs <- vals_base_focast$true_pr[index_irs:length(vals_base_focast$true_pr)]
+forecast_itn_irs <- vals_forecast_itn_irs$true_pr[index_irs:length(vals_forecast_itn_irs$true_pr)]
+percent_reduction_itn_irs <- ((base_itn_irs - forecast_itn_irs) / base_itn_irs) * 100
+mean_percent_reduction_itn_irs <- mean(percent_reduction_itn_irs, na.rm = TRUE)# (excluding any NaN/Inf from division by zero)
+
+
+ plot(baseline_focast$outputs$time/365 + FirstYear, vals_base_focast$true_pr, type = "l", lwd = 2, col = "blue",
+       ylim = c(0, 1), ylab = "Parasite Rate (PR)", xlab = "Year",
+      main = paste(dname))
+ lines(forecast_Kole_itn$outputs$time/365 + FirstYear, vals_forecast_itn$true_pr, col="darkorange", lwd=2)
+#lines(forecast_Kole_irs$outputs$time/365 + FirstYear, vals_forecast_irs$true_pr, col="purple4", lwd=2)
+lines(forecast_Kole_itn_irs$outputs$time/365 + FirstYear, vals_forecast_itn_irs$true_pr, col="darkred", lwd=2)
+#with(prts, lines(jdate / 365 + FirstYear, pfpr, type = "o", pch= 16,col = "darkblue"))
+
+legend_label1 <- paste0("Two ITNs (", round(mean_percent_reduction_itn, 1), "% reduction)")
+legend_label2 <- paste0("Two ITNs and Four IRS (", round(mean_percent_reduction_itn_irs, 1), "% reduction)")
+
+legend("topright",           # Position
+       legend = c("baseline",legend_label1, legend_label2),  # Labels
+       col = c("blue", "darkorange","darkred"),           # Line colors
+       lty = 1,                          # Line type
+       lwd = 2)        
+```
+```
