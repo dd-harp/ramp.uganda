@@ -1,0 +1,358 @@
+---
+title: "Working with Models"
+output: html_document
+---
+
+[`ramp.uganda`](../index.html)
+
+***
+
+load libraries 
+This sets locations for `Box/RAMP` and `ramp.uganda` 
+```{r}
+library(ramp.xds)
+library(dplyr)
+library(ramp.uganda)
+library(ramp.work)
+attach(yaml::read_yaml("../my_paths.yaml")) 
+``` 
+
+load district data from district dir
+```{r,eval=F}
+ load("C:/Users/Admin/Documents/ramp.uganda/data/district_dir.rda")
+# #load("C:/Users/doree/Documents/Github/ramp.uganda/data/district_dir.rda")
+ dist_name <- sort(district_dir$district_name)
+```
+
+
+
+Get ITN timelines for all districts that recieved ITN and select only those values that are positive for Post-2015
+```{r}
+FirstYear <-2015
+itn_time <- list()
+for (j in dist_name) {
+  dates <- get_itn_jdates(j, FirstYear)
+
+  if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
+    itn_time[[j]] <- sort(dates[dates > 0])
+  } 
+}
+```
+
+
+load files with fitted models from the box directory
+```{r, eval=F}
+directory <- paste(box_dir, "models", sep = "") 
+eir_files <- list.files(path = directory, pattern = "*_eir_sis.rds", full.names = TRUE)
+```
+
+
+Get pfpr data by district 
+```{r,eval=F}
+data_list = list()
+for(i in dist_name)
+  data_list[[i]] <- get_district_pfpr(i)
+```
+
+Get fitted models to pfpr data for all the itn district
+```{r, eval=F}
+fitted_mod <- list()
+for (i in 1:length(dist_name)) {
+  fitted_mod[[i]] <- readRDS(eir_files[i])
+}
+```
+
+ Profile for obtaining plots and effect sizes
+
+```{r, fig.height=8, fig.width=11}
+profile_itn = function(i, model_list, data_list){
+  mod_file <- model_list[[i]]
+  data <- data_list[[i]]
+
+  #---------------------------------------------------------------------------------------------------
+  #get indices from the tt in the trend corresponding to the value after the itn was given out.
+  ix <- unique(sapply(itn_time[[i]], function(x) {
+  idx <- which(fitted_mod[[i]]$EIRpar$trend_par$tt > x)
+  if (length(idx) > 0) return(idx[1]) else return(NA)
+}))
+  ##--------------------------------------------------------------------------------------------------
+  cf_max <- make_cf_base_max(ix, mod_file)
+  cf_min <- make_cf_base_min(ix, mod_file)
+  cf_median <- make_cf_base_median(ix, mod_file)
+  cf_mean <- make_cf_base_mean(ix, mod_file)
+  mod1a <- modify_baseline(mod_file, cf_max) 
+  mod1b <- modify_baseline(mod_file, cf_min) 
+  mod1c <- modify_baseline(mod_file, cf_median) 
+  mod1d <- modify_baseline(mod_file, cf_mean) 
+  vals <- get_XH(mod_file)
+  vals1a <- get_XH(mod1a)
+  vals1b <- get_XH(mod1b)
+  vals1c <- get_XH(mod1c)
+  vals1d <- get_XH(mod1d)
+
+  with(vals1a, plot(time/365+FirstYear, true_pr, ylab = "PR",lwd=2, xlab = "Time", main=unique(data$district_name), type = "l", ylim = c(0,1), col="darkred"))
+  with(vals1b, lines(time/365+FirstYear, true_pr,  lwd=2, col="darkgreen"))
+  with(vals1c, lines(time/365+FirstYear, true_pr, lwd=2,  col="purple4"))
+  with(vals1d, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkorange"))
+  with(vals, lines(time/365+FirstYear, true_pr, lwd=2,  col="darkblue"))
+  with(data, lines(jdate/365+FirstYear, pfpr, pch=16,type = "o", col="darkblue"))
+  legend("topleft",  c("max baseline", "min baseline","median baseline","mean baseline"),  
+  col = c("darkred", "darkgreen","purple4","darkorange"),
+  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")      
+  add_itn_history(unique(data$district_name))
+  add_irs_history(unique(data$district_name))
+
+  ## -------------Effect Size--------------------------------------------------------------------------
+  max_eff <- vals1a$true_pr
+  min_eff <- vals1b$true_pr
+  median_eff <- vals1c$true_pr
+  mean_eff <- vals1d$true_pr
+  base <- vals$true_pr
+ 
+ 
+   max_effless <- max_eff[1:(length(max_eff) - 3)]/base
+ 
+ min_effless <- min_eff[1:(length(min_eff)-3 )]/base
+ median_effless <- median_eff[1:(length(median_eff)-3 )]/base
+ mean_effless <- mean_eff[1:(length(mean_eff) - 3)]/base
+ #----------------------------------------------------------------------------------------------------
+ # computing itn _effect size for every three years
+  t_time <- mod_file$outputs$time
+  itn_3 <- itn_time[[i]][length(itn_time[[i]])]
+  closest_index3 <- which.min(abs(t_time - itn_3))
+
+
+  
+  # create a data frame for the effect sizes
+  
+  Effect_table <- data.frame(
+  ITN_Type = c("Royal Guard" ),
+  max_effect = round(c( mean(max_effless[closest_index3:length(t_time)])),2),
+  min_effect = round(c( mean(min_effless[closest_index3:length(t_time)])),2),
+  median_effect = round(c(mean(median_effless[closest_index3:length(t_time)])),2),
+  mean_effect = round(c( mean(mean_effless[closest_index3:length(t_time)])),2),
+  
+  max_percent = round(c((1 - (1 / mean(max_effless[closest_index3:length(t_time)]))) * 100),2),
+  min_percent = round(c((1 - (1 / mean(min_effless[closest_index3:length(t_time)]))) * 100),2),
+  median_percent = round(c((1 - (1 / mean(median_effless[closest_index3:length(t_time)]))) * 100),2),
+  mean_percent = round(c( (1 - (1 / mean(mean_effless[closest_index3:length(t_time)]))) * 100),2),
+  
+  max_base = round(c( mean(max_eff[closest_index3:length(t_time)])),2),
+  min_base = round(c( mean(min_eff[closest_index3:length(t_time)])),2),
+  median_base = round(c(mean(median_eff[closest_index3:length(t_time)])),2),
+  mean_base = round(c( mean(mean_eff[closest_index3:length(t_time)])),2))
+  
+  #-------------------------------------------------------------------------------------------------
+  # ploting effect sizes
+   plot(mod_file$outputs$time/365+FirstYear,max_effless, type= "l",lwd= 2, col="darkred" , main=unique(data$district_name), xlab = "Time", ylab = "Effect Sizes", ylim = c(0, max(max_effless)) )
+  lines(mod_file$outputs$time/365+FirstYear,min_effless , lwd= 2, col="darkgreen")
+  lines(mod_file$outputs$time/365+FirstYear,median_effless, lwd= 2, col="purple4" )
+  lines(mod_file$outputs$time/365+FirstYear,mean_effless, lwd= 2, col="darkorange" )
+
+  legend("topleft",    #inset=-0.2 ,              # Position of the legend
+  legend = c(
+          paste0(
+  "max_effs: ", sprintf("%.2f", mean(max_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(max_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100)," reduction)")
+,
+paste0("min_effs: ", sprintf("%.2f", mean(min_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(min_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")")
+,
+paste0("median_effs: ", sprintf("%.2f", mean(median_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(median_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")"
+),
+ paste0( "mean_effs: ", sprintf("%.2f", mean(mean_effless[closest_index3:length(t_time)], na.rm = TRUE)),
+  " (", sprintf("%.2f%%", (1 - (1 / mean(mean_effless[closest_index3:length(t_time)], na.rm = TRUE))) * 100),")")),
+  col = c("darkred", "darkgreen","purple4","darkorange"),
+  lwd=2, pch=c(NA,NA,NA,NA,16), horiz = FALSE, bty="n")
+  add_itn_history(unique(data$district_name))
+  add_irs_history(unique(data$district_name))
+return(data.frame(
+      district_name = unique(data$district_name),
+      Effect_table
+      )
+    )
+
+
+
+  }
+
+```
+
+```{r}
+#pdf("itn_districts.pdf")
+for(i in 1)
+  profile_itn(i, fitted_mod, data_list)
+#dev.off(dev.cur())
+```
+
+```{r}
+#pdf("all_districts_2023_type.pdf")
+malaria_itn_Effect <- list()
+Royal_guard  <- c(75,145,106,123,2,94,92,11,142,1,105,77,117,110,111,6,33)
+Permanent_dual <- c(8,10,60,35,44)
+Interceptor <- c(146,118,128,26,114,23,46,24,61,57,134,131,133,45,72)
+#cities <- c(10,33,35,37,42,86,95,99,101,140,98,27)
+ PBO <- setdiff(1:length(dist_name), c(Royal_guard,Permanent_dual,Interceptor))
+
+for (i in Royal_guard) {
+#for (i in setdiff(1:length(dist_name), c(10,27,33,35.37,42,86,95,98,99,101,140)))  {
+  itn <- profile_itn(i, fitted_mod, data_list)  
+  malaria_itn_Effect[[i]] <- itn  # Store each data.frame
+}
+#dev.off()
+# Combine all stored data.frames into one big data.frame
+malaria_itn_eff <- do.call(rbind, malaria_itn_Effect)
+# Save to CSV
+write.csv(malaria_itn_eff, "../data/ITN/ITN_2023/district_2023_itn_eff_royal.csv", row.names = FALSE)
+```
+
+
+
+```{r}
+files1 <- list.files(path = "../data/ITN/ITN_2023", pattern = "*.csv", full.names = TRUE)
+combined_data <- do.call(rbind, lapply(files1, read.csv))
+write.csv(combined_data, "../data/ITN/ITN_2023/merged_itn_eff.csv", row.names = FALSE)
+```
+
+```{r}
+FirstYear <-2015
+irs_time_full <- list()
+no_irs <- c()
+
+for (j in dist_name) {
+  dates <- get_irs_jdates(j, 2023)
+
+  if (!is.null(dates) && length(dates) > 0 && any(dates > 0)) {
+    irs_time_full[[j]] <- sort(dates[dates > 0])
+  } else {
+    no_irs <- c(no_irs, j)
+  }
+}
+irs_time <-  irs_time_full
+
+irs_dist <- list()
+for (i in 1:length(irs_time))
+  irs_dist[[i]]<- names(irs_time)[i]
+
+#irs_dist <- irs_dist_full[-c(4, 7,8,9,10,11,13,14,15,25,31,34)]
+irs_dist <- irs_dist[!sapply(irs_dist, is.na)]
+```
+
+```{r}
+dist_itn_data <- read.csv(file="../data/ITN/ITN_2023/merged_itn_eff.csv")
+dist_itn_data$IRS_status <- ifelse(dist_itn_data$district %in% irs_dist, "IRS", "No IRS")
+write.csv(dist_itn_data, "../data/ITN/ITN_2023/updated_itn_eff.csv", row.names = FALSE)
+```
+
+
+
+```{r}
+library(ggplot2)
+itn_irs_data <- read.csv(file="../data/ITN/ITN_2023/updated_itn_eff.csv")
+ggplot(itn_irs_data, aes(x = mean_base, y = mean_percent, color = ITN_Type, shape = IRS_status)) +
+  geom_point(size = 2) +
+  #geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +  # Horizontal line at y = 1
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +    # Horizontal line at y = 0
+  geom_vline(xintercept = 0, linetype = "solid", color = "darkred") +    # Vertical line at x = 0
+  scale_color_manual(values = c("PBO" = "darkblue", "Royal Guard" = "red", "Interceptor" = "green", "Permanent Dual" = "purple")) +  
+  scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +  
+  labs(title = "Effect sizes  of ITN by District and IRS status",
+       x = "Average Baseline",
+       y = "Effect size",
+       color = "ITN type",
+       shape = "IRS Districts") +
+  theme_minimal()
+```
+```{r}
+itn_irs_data <- read.csv(file="../data/ITN/ITN_2023/updated_itn_eff.csv")
+ggplot(itn_irs_data, aes(x = mean_base, y = mean_percent, color = ITN_Type, shape = IRS_status)) +
+  geom_point(size = 2) +
+  #geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +  # Reference line at y = 1
+  geom_hline(yintercept = 0, linetype = "solid", color = "darkred") +      # Reference line at y = 0
+  geom_vline(xintercept = 0, linetype = "solid", color = "darkred") +      # Reference line at x = 0
+  scale_color_manual(values = c(
+    "PBO" = "darkblue",
+    "Royal Guard" = "red",
+    "Interceptor" = "green",
+    "Permanent Dual" = "purple"
+  )) +  
+  scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +  
+  facet_wrap(~ ITN_Type) +  # Creates a separate panel for each ITN type
+  labs(
+    title = "Effect sizes of ITN by District and IRS Status",
+    x = "Average Baseline",
+    y = "Effect Size",
+    color = "ITN Type",
+    shape = "IRS Districts"
+  ) +
+  theme_minimal()
+
+```
+```{r}
+itn_irs_data <- read.csv(file="../data/ITN/ITN_2023/updated_itn_eff.csv")
+ggplot(itn_irs_data, aes(x = mean_base, y = mean_effect, color = ITN_Type)) +
+  geom_point(aes(shape = IRS_status), size = 2) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+  geom_vline(xintercept = 0, linetype = "solid", color = "gray") +
+  scale_color_manual(values = c(
+    "PBO" = "darkblue",
+    "Royal Guard" = "red",
+    "Interceptor" = "green",
+    "Permanent Dual" = "purple"
+  )) +
+  scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +
+  labs(title = "Effect sizes of ITN by District and IRS status",
+       x = "Average Baseline",
+       y = "Effect size",
+       color = "ITN Type",
+       shape = "IRS Status") +
+  facet_grid(IRS_status ~ ITN_Type) +  # Separate by both variables
+  theme_minimal()
+
+```
+```{r}
+itn_irs_data <- read.csv(file="../data/ITN/ITN_2023/updated_itn_eff.csv")
+ggplot(itn_irs_data, aes(x = mean_base, y = mean_effect, color = ITN_Type)) +
+  geom_point(aes(shape = IRS_status), size = 2) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +  # y = 1 reference
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +      # y = 0 baseline
+  geom_vline(xintercept = 0, linetype = "solid", color = "gray") +      # x = 0 baseline
+  scale_color_manual(values = c("PBO" = "darkblue", 
+                                "Royal Guard" = "red", 
+                                "Interceptor" = "green", 
+                                "Permanent Dual" = "purple")) +
+  scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +
+  facet_grid(ITN_Type ~ IRS_status) +  # Facet by ITN type and IRS status
+  labs(title = "Effect Sizes of ITN by ITN Type and IRS Status",
+       x = "Average Baseline",
+       y = "Effect Size",
+       color = "ITN Type",
+       shape = "IRS Status") +
+  theme_minimal()
+
+```
+
+```{r}
+itn_irs_data <- read.csv(file="../data/ITN/ITN_2023/updated_itn_eff.csv")
+ggplot(itn_irs_data, aes(x = mean_base, y = mean_percent, color = ITN_Type)) +
+  geom_point(aes(shape = IRS_status), size = 2) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "darkred") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "gray") +
+  geom_vline(xintercept = 0, linetype = "solid", color = "gray") +
+  scale_color_manual(values = c("PBO" = "darkblue", 
+                                "Royal Guard" = "red", 
+                                "Interceptor" = "green", 
+                                "Permanent Dual" = "purple")) +
+  scale_shape_manual(values = c("IRS" = 17, "No IRS" = 16)) +
+  facet_wrap(~ ITN_Type + IRS_status) +
+  labs(title = "Effect Sizes of ITNs by Type and IRS Status",
+       x = "Average Baseline",
+       y = "Effect Size",
+       color = "ITN Type",
+       shape = "IRS Status") +
+  theme_minimal()
+
+```
+
