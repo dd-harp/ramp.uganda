@@ -19,8 +19,11 @@ get_district_pfpr = function(district){
 #' @returns a data frame
 #' @export
 get_district_pfpr_i = function(i){
-  district <- ramp.uganda::district_dir[i,1]
-  return(get_district_pfpr(district))
+  this_one <- ramp.uganda::district_dir[i,]
+  district <- this_one$district_name
+  dir_name <- this_one$dir
+  prts <- get_one_district(00)
+  return()
 }
 
 #' Get a District PfPR, by Index

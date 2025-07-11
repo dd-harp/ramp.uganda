@@ -8,13 +8,13 @@
 make_irs_rounds = function(dname, t_end=3352){
   ix = which(ramp.uganda::uga_irs$district == dname)
   if(length(ix)==0)
-    return(list(dname = dname, t_init = c(), coverage = c(), type = c()))
+    return(list(dname = dname, t_init = 0, coverage = 0, type = "none"))
 
   t_init = get_irs_jdates(dname)
   ix_in = which(t_init  < t_end & t_init >0)
 
   if(length(ix_in)==0)
-    return(list(dname = dname, t_init = c(), coverage = c(), type = c()))
+    return(list(dname = dname, t_init = 0, coverage = 0, type = "none"))
 
   d_irs <- ramp.uganda::uga_irs[ix,]
   nRounds <- length(ix)
