@@ -7,7 +7,7 @@ output: html_document
 library(ramp.xds)
 library(ramp.control)
 library(ramp.work)
-#library(ramp.uganda)
+library(ramp.uganda)
 devtools::load_all()
 attach(yaml::read_yaml("../my_paths.yaml")) 
 ```
@@ -83,7 +83,7 @@ bednet_rounds
 This m
 
 ```{r}
-model <- setup_irs(model, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
+#model <- setup_irs(model, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
 
 model <- setup_bednets(model, coverage_name = "multiround", coverage_opts = bednet_rounds, effect_sizes_name = "lemenach")
 ```
@@ -92,6 +92,7 @@ model <- setup_bednets(model, coverage_name = "multiround", coverage_opts = bedn
 ```{r, eval=F}
 recon <- reconstruct_baseline(model, prts$pfpr, prts$jdate, irs_rounds, bednet_rounds, "mean")
 ```
+
 ```{r, eval=F}
 saveRDS(recon, "recon.rds") 
 ```

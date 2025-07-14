@@ -7,7 +7,7 @@ output: html_document
 library(ramp.xds)
 library(ramp.control)
 library(ramp.work)
-#library(ramp.uganda)
+library(ramp.uganda)
 devtools::load_all()
 attach(yaml::read_yaml("../my_paths.yaml")) 
 ```
