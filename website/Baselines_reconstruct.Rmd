@@ -26,7 +26,7 @@ ix <- which(district_dir$district_name %in% dname)
 dirname <- district_dir$dir[ix]
 
 # Build file paths
-models_path <- "/Users/Admin/Box/RAMP/models/"
+models_path <- "/Users/doree/Box/RAMP/models/"
 filename <- paste0(models_path, dirname, "_Lambda_sis.rds")
 
 # Load models
