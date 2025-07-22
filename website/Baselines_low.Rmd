@@ -1,0 +1,230 @@
+---
+title: "Baselines"
+output: html_document
+---
+
+```{r}
+library(ramp.xds)
+library(ramp.control)
+library(ramp.work)
+library(ramp.library)
+library(ramp.uganda)
+devtools::load_all()
+attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+There is a SimBA webpage that explains the rationale.  This is a step-by-step guide. 
+
+First, we specify a district name:
+
+```{r}
+# Set district names
+dname <- c("Abim District")#, "Sheema District", "Ntungamo District")
+prts1 <- setNames(lapply(dname, get_district_pfpr), dname)
+```
+
+
+
+```{r}
+FirstYear <- 2015
+
+for (d in dname) {
+  cat("Processing:", d , "\n")
+  
+  # Read in reconstruction
+  recon_d <- readRDS(paste0("recon_", gsub(" ", "_", d), ".rds"))
+  baseline <- recon_d
+  
+  # Forecast baseline
+  baseline_forecast <- forecast_spline_Lambda(baseline, 5, x_last = 1)
+  baseline_forecast <- xds_solve(baseline_forecast, 5475, 15)
+
+  # Modify IRS + ITN rounds
+  irs_rounds <- make_irs_rounds(dname = d)
+  irs_rounds1 <- irs_rounds
+  irs_rounds1$coverage <- c(0.2, 0.2)
+  irs_rounds1$t_init <- c(4015, 4380)
+  irs_rounds1$type <- c("actellic", "actellic")
+
+  bednet_rounds <- make_bednet_rounds(dname = d)
+  bednet_rounds1 <- bednet_rounds
+  bednet_rounds1$coverage <- c(0.2, 0.5)
+  bednet_rounds1$t_init <- c(4015, 5110)
+  bednet_rounds1$type <- c("pbo", "pbo")
+
+  # Apply interventions separately
+  # ITN only
+  baseline_itn_only <- setup_bednets(baseline_forecast, coverage_name = "multiround", coverage_opts = bednet_rounds1, effect_sizes_name = "lemenach")
+  forecast_itn_only <- setup_irs(baseline_itn_only, coverage_name = "multiround", coverage_opts = irs_rounds, effect_sizes_name = "simple")
+  forecast_itn_only <- xds_solve(forecast_itn_only, 5475, 15)
+
+  # IRS only
+  baseline_irs_only <- setup_bednets(baseline_forecast, coverage_name = "multiround", coverage_opts = bednet_rounds, effect_sizes_name = "lemenach")
+  forecast_irs_only <- setup_irs(baseline_irs_only, coverage_name = "multiround", coverage_opts = irs_rounds1, effect_sizes_name = "simple")
+  forecast_irs_only <- xds_solve(forecast_irs_only, 5475, 15)
+
+  # ITN + IRS
+  baseline_combined <- setup_bednets(baseline_forecast, coverage_name = "multiround", coverage_opts = bednet_rounds1, effect_sizes_name = "lemenach")
+  forecast_combined <- setup_irs(baseline_combined, coverage_name = "multiround", coverage_opts = irs_rounds1, effect_sizes_name = "simple")
+  forecast_combined <- xds_solve(forecast_combined, 5475, 15)
+
+  # Extract outputs
+  vals_base <- get_XH(baseline_forecast)
+  vals_itn <- get_XH(forecast_itn_only)
+  vals_irs <- get_XH(forecast_irs_only)
+  vals_combined <- get_XH(forecast_combined)
+
+  # Plot
+  plot(baseline_forecast$outputs$time / 365 + FirstYear, vals_base$true_pr, type = "l", lwd = 2, col = "blue",
+       ylim = c(0, 1), ylab = "Parasite Rate (PR)", xlab = "Year",
+       main = paste0("Forecast for ", d))
+  lines(baseline_forecast$outputs$time/ 365 + FirstYear, vals_itn$true_pr, col = "darkorange", lwd = 2)
+  lines(baseline_forecast$outputs$time / 365 + FirstYear, vals_irs$true_pr, col = "purple4", lwd = 2)
+  lines(baseline_forecast$outputs$time / 365 + FirstYear, vals_combined$true_pr, col = "darkred", lwd = 2)
+  
+  with(prts1[[d]], lines(jdate / 365 + FirstYear, pfpr, type = "o", pch = 16, col = "darkblue"))
+  
+  add_irs_history(d)
+  add_itn_history(d)
+  
+  # Optionally save each forecast
+  #saveRDS(forecast_combined, paste0("forecast_", gsub(" ", "_", d), ".rds"))
+}
+```
+
+
+```{r}
+readRDS("recon_Bukwo_District.rds") -> recon_Bukwo
+```
+
+
+
+```{r}
+baseline <- recon_Bukwo
+baseline_focast <- forecast_spline_Lambda(baseline, 5, x_last = 1)
+#tt <- seq(0, ceiling(max(data$jdate) / 365) * 365 + (5 * 365), length.out = 200)
+baseline_focast <- xds_solve(baseline_focast, 5475,15)
+```
+
+
+```{r}
+xds_plot_PR(baseline_focast, clrs = "darkred")
+```
+
+
+```{r}
+make_irs_rounds(dname="Bukwo District") -> irs_rounds
+irs_rounds1 <- irs_rounds
+irs_rounds1$coverage <- c(0.2,0.2)
+irs_rounds1$t_init <- c(4015,4380)
+irs_rounds1$type <- c("actellic","actellic")
+
+make_bednet_rounds(dname="Bukwo District") -> bednet_rounds
+bednets_rounds1 <- bednet_rounds
+bednets_rounds1$coverage <- c(0.2,0.5)
+bednets_rounds1$t_init <- c(4015,5110)
+bednets_rounds1$type <- c("pbo","pbo")
+
+
+baseline_focast_itn<- setup_bednets(baseline_focast, coverage_name="multiround", coverage_opts=bednets_rounds1, effect_sizes_name = "lemenach")
+baseline_forecast_VC <- setup_irs(baseline_focast_itn, coverage_name="multiround", coverage_opts=irs_rounds1, effect_sizes_name = "simple")
+
+baseline_forecast_VC<-xds_solve(baseline_forecast_VC,5475,15)
+
+```
+
+
+
+```{r}
+#make_irs_rounds(dname) -> irs_rounds
+irs_rounds1 <- irs_rounds
+irs_rounds1$coverage <- c(0.2,0.2)
+irs_rounds1$t_init <- c(4015,4380)
+irs_rounds1$type <- c("actellic","actellic")
+
+baseline_focast_irs_only<- setup_bednets(baseline_focast, coverage_name="multiround", coverage_opts=bednet_rounds, effect_sizes_name = "lemenach")
+baseline_forecast_irs_only <- setup_irs(baseline_focast_irs_only, coverage_name="multiround", coverage_opts=irs_rounds1, effect_sizes_name = "simple")
+
+baseline_forecast_irs_only<-xds_solve(baseline_forecast_irs_only,5475,15)
+
+```
+
+```{r}
+
+#make_bednet_rounds(dname) -> bednet_rounds
+bednets_rounds_only<- bednet_rounds
+bednets_rounds_only$coverage <- c(0.2,0.5)
+bednets_rounds_only$t_init <- c(4015,5110)
+bednets_rounds_only$type <- c("pbo","pbo")
+
+
+baseline_focast_itn_only<- setup_bednets(baseline_focast, coverage_name="multiround", coverage_opts=bednets_rounds_only, effect_sizes_name = "lemenach")
+baseline_forecast_itn_only <- setup_irs(baseline_focast_itn_only, coverage_name="multiround", coverage_opts=irs_rounds, effect_sizes_name = "simple")
+
+baseline_forecast_itn_only<-xds_solve(baseline_forecast_itn_only,5475,15)
+
+```
+
+
+
+
+
+```{r}
+FirstYear <- 2015
+vals_forecast_VC <- get_XH(baseline_forecast_VC)
+vals_base_focast <- get_XH(baseline_focast)
+vals_forecast_irs <- get_XH(baseline_forecast_irs_only)
+vals_forecast_itn <- get_XH(baseline_forecast_itn_only)
+# 
+# index_itn <- which(baseline_focast$outputs$time == 4015)
+# base_itn <- vals_base_focast$true_pr[index_itn:length(vals_base_focast$true_pr)]
+# forecast_itn <- vals_forecast_itn$true_pr[index_itn:length(vals_forecast_itn$true_pr)]
+# mean_percent_reduction_itn<- mean(((base_itn - forecast_itn) / base_itn) * 100, na.rm = TRUE)
+# #mean_percent_reduction_itn <- mean(percent_reduction_itn, na.rm = TRUE)# (excluding any NaN/Inf from division by zero)
+# 
+# index_irs <- which(baseline_focast$outputs$time == 4015)
+# base_irs <- vals_base_focast$true_pr[index_irs:length(vals_base_focast$true_pr)]
+# forecast_irs <- vals_forecast_irs$true_pr[index_irs:length(vals_forecast_irs$true_pr)]
+# percent_reduction_irs <- mean(((base_irs - forecast_irs) / base_irs) * 100, na.rm = TRUE)
+# #mean_percent_reduction_irs <- mean(percent_reduction_irs, na.rm = TRUE)# (excluding any NaN/Inf from division by zero)
+# 
+# base_itn_irs <- vals_base_focast$true_pr[index_irs:length(vals_base_focast$true_pr)]
+# forecast_itn_irs <- vals_forecast_itn_irs$true_pr[index_irs:length(vals_forecast_VC$true_pr)]
+# percent_reduction_itn_irs <- mean(((base_itn_irs - forecast_itn_irs) / base_itn_irs) * 100, na.rm = TRUE)
+# #mean_percent_reduction_itn_irs <- mean(percent_reduction_itn_irs, na.rm = TRUE)# (excluding any NaN/Inf from division by zero)
+
+
+plot(baseline_focast$outputs$time/365 + FirstYear, vals_base_focast$true_pr, type = "l", lwd = 2, col = "blue",
+       ylim = c(0, 1), ylab = "Parasite Rate (PR)", xlab = "Year",
+      main = paste(dname="Bukwo District"))
+ lines(baseline_focast$outputs$time/365 + FirstYear, vals_forecast_itn$true_pr, col="darkorange", lwd=2)
+lines(baseline_focast$outputs$time/365 + FirstYear, vals_forecast_irs$true_pr, col="purple4", lwd=2)
+lines(baseline_focast$outputs$time/365 + FirstYear, vals_forecast_VC$true_pr, col="darkred", lwd=2)
+
+with(prts1[[1]],lines(jdate/365 + FirstYear, pfpr,type="o", pch=16, col="darkblue"))
+
+#irs_interv <- c(4015/365 + FirstYear,4380/365 + FirstYear,4745/365 + FirstYear,5110/365 + FirstYear)
+#abline(v = irs_interv, col = "black", lty = 2, lwd = 2)
+
+#itn_interv <- c(4015/365 + FirstYear,5110/365 + FirstYear)
+#abline(v = itn_interv, col = "red", lty = 2, lwd = 2)
+add_irs_history(unique(prts1[[1]]$district_name))
+add_itn_history(unique(prts1[[1]]$district_name))
+# legend("topright",
+#        legend = c("Observed PR", 
+#                   "Baseline forecast", 
+#                   "ITN only", 
+#                   "IRS only", 
+#                   "ITN + IRS", 
+#                   "IRS rounds", 
+#                   "ITN rounds"),
+#        col = c("darkblue", "blue", "darkorange", "purple4", "darkred", "black", "red"),
+#        lty = c(NA, 1, 1, 1, 1, 2, 2),   # NA for points, 1 for solid lines, 2 for dashed verticals
+#        lwd = c(NA, 2, 2, 2, 2, 2, 2),
+#        pch = c(16, NA, NA, NA, NA, NA, NA),  # filled circle only for observed PR
+#        pt.cex = 1.2,
+#        bty = "n")  # no box around the legend
+
+      
+```
+```
