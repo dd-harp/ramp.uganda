@@ -2,33 +2,109 @@
 title: "Pipeline"
 output: html_document
 ---
+```{r}
+library(ramp.xds)
+library(ramp.library)
+library(ramp.control)
+library(ramp.work)
+library(ramp.uganda)
+```
+
+```{r, echo=F}
+#devtools::load_all()
+#devtools::load_all("~/git/ramp.work")
+#devtools::load_all("~/git/ramp.control")
+```
+Use the function `pipeline` to set up models for scenario planning.  
+
+# An Analytics Pipeline
+
+```
+pipeline = function(i, base_model_name, wd_name)
+```
+
+Before running the pipeline, the user should: 
+
+1. Configure a base model using `xds_setup -> model`
+
+2. Run `xde_scaling(model) -> model` 
+
+3. Save `model` to a file called `base_model_name.rds` using `saveRDS`. 
+
+4. The file `base_model_name.rds` should live in the directory `wd_name`
+
+5. The index $i$ runs from `1:146` for all Uganda Districts. 
+
+
+The function reads the model from `model_file`: 
+
+```
+model_file <- paste(wd_name, base_model_name, ".rds", sep="")` 
+```
+
+
+```{r, eval=F}
+i = 132
+base_mod = "sip_si" 
+wd = "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/models"
+#wd = "/Users/smitdave/git/ramp.uganda/models/"
+pipeline(i, base_mod, wd, impute="mean") -> report
+```
+
+##  
+
+We want to automate the process of model fitting and baseline reconstruction. It is a common enough task to spell it out. 
 
 ```{r}
 library(ramp.xds)
-library(ramp.work)
 library(ramp.library)
-#library(ramp.uganda)
+library(ramp.control)
+library(ramp.work)
+library(ramp.uganda)
+```
+
+```{r, echo=F}
 devtools::load_all()
+devtools::load_all("~/git/ramp.work")
 ```
 
-## Define a model family 
+## Working Directory
 
-```{r base_mod}
-Lo <- list(
-   Lambda = 1,  
-   season_par = makepar_F_sin(), 
-   trend_par = makepar_F_spline(c(0:9)*365, rep(1,10))
-) 
-  
-sip_base <- xds_setup(Xname = "SIP", MYZname = "SI", HPop=220000, Lopts = Lo)
-sip_base <- xds_solve(sip_base, 3650, 3650)
-sip_base <- last_to_inits(sip_base)
+```{r}
+save_to = "/Users/smitdave/git/ramp.uganda/models/"
+#save_to = "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/models/" 
 ```
 
 
-```{r save_base_mod}
-saveRDS(sip_base, "sip_base.rds")
+## Base Model 
+
+We want to work with a model family, so we set one up. We will want to use the `eirpr` table created by `xde_scaling_lambda`, but we only need to do it once: 
+
+
+
+```{r, eval=F}
+# The block sets `eval=F` to avoid having to repeat this step
+sip_si <- xds_setup(MYZname = "SI", Xname = "SIP")
+sip_si <- xde_scaling_lambda(sip_si)
 ```
+
+```{r}
+save_as <- "sip_si.rds" 
+file_name <- paste(save_to, save_as, sep="")
+```
+
+```{r, eval=F}
+file_name <- paste(save_to, save_as, sep="")
+saveRDS(sip_si, file_name)
+```
+
+```{r}
+print(file_name)
+sip_si_base <- readRDS(file_name)
+```
+
+## The Data 
+
 
 ```{r prts}
 i = 132
@@ -42,35 +118,29 @@ with(prts, {
   lines(jdate, pfpr)
 })
 ```
+## Naive History
 
 ```{r}
-sip_base <- readRDS("sip_base.rds")
-
-pipeline_i = function(i, model, impute="mean"){
-  this_district <- district_dir[i,]
-  district_name <- this_district$district_name
-  dir_name <- this_district$dir
-  prts <- get_district_pfpr(district_name)
-  irs_rounds <- make_irs_rounds(district_name)
-  bednet_rounds <- make_bednet_rounds(district_name)
-  print("history") 
-  history0 <- pr2Lambda_history(prts$pfpr, prts$jdate, model)
-  print("baseline") 
-  history1 <- reconstruct_baseline(history0, 
-                                   prts$pfpr, prts$jdate, 
-                                   irs_rounds, bednet_rounds, 
-                                   impute) 
-   
-  return(list(district_name = district_name, 
-              dir_name = dir_name, 
-              prts = prts, 
-              irs_rounds = irs_rounds, 
-              model = model,
-              history=history)) 
-}
+ fit_mod <- setup_fitting(sip_si_base, prts$pfpr, prts$jdate)
+ fit_mod <- pr2history(prts$pfpr, prts$jdate, fit_mod)
 ```
 
 ```{r}
-pipeline_i(i, sip_base)
+make_irs_rounds(prts$date)
+```
+
+
+```{r}
+fit_mod1 <- reconstruct_baseline(fit_mod, prts$pfpr, prts$jdate)
+```
+
+
+
+```{r}
+time0 = Sys.time()
+for(i in 1:365)
+  a <- runif(10000, 0, 1)
+time1 = Sys.time()
+time1-time0
 ```
 

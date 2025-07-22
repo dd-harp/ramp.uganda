@@ -92,7 +92,6 @@ model <- setup_bednets(model, coverage_name = "multiround", coverage_opts = bedn
 ```{r, eval=F}
 recon <- reconstruct_baseline(model, prts$pfpr, prts$jdate, irs_rounds, bednet_rounds, "mean")
 ```
-
 ```{r, eval=F}
 saveRDS(recon, "recon.rds") 
 ```

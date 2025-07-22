@@ -44,14 +44,17 @@ profile_plot = function(model, data, Yr0=2015){
 #' @param model a model; an xds object
 #' @param data a data set
 #' @param Yr0 a reference year
+#' @param y1 scale y limits to 1
 #'
 #' @returns invisible()
 #' @export
-profile_pr = function(model, data, Yr0=2015){
+profile_pr = function(model, data, Yr0=2015, y1=FALSE){
 
+  if(y1 == FALSE) ylm = c(0, 1.5*max(data$pfpr))
+  if(y1 == TRUE) ylm = c(0,1)
   dname <- data$district_name[1]
   with(get_XH(model),
-       plot(model$outputs$time/365+Yr0, true_pr, ylim = c(0,1),
+       plot(model$outputs$time/365+Yr0, true_pr, ylim = ylm,
             ylab = "PR", lwd=2, xlab = "Time",
             main = dname, type = "l", col="darkred"))
 

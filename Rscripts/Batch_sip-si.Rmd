@@ -1,0 +1,51 @@
+---
+title: "Batch_sip-si"
+output: html_document
+---
+
+```{r}
+library(ramp.xds)
+library(ramp.library)
+library(ramp.control)
+library(ramp.work)
+library(ramp.uganda)
+devtools::load_all()
+```
+
+```{r}
+base_mod = "sip_si" 
+wd = "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/models/"
+base_mod <- "sip_si"
+save_as <- paste(base_mod, ".rds", sep="")
+file_name <- paste(wd, save_as, sep="")
+file_name
+```
+
+```{r}
+sip_si <- xds_setup(MYZname = "SI", Xname = "SIP")
+sip_si <- xde_scaling_lambda(sip_si)
+```
+
+```{r}
+saveRDS(sip_si, file_name)
+```
+
+```{r}
+pipeline(13, base_mod, wd)
+```
+These errors: 
+
+```{r}
+ix = which(district_dir$district_name == "Kalaki District")
+ix
+```
+
+Agago District 3
+Bugiri District 13
+Gulu District 33
+Kalaki District 45
+Kitgum District 69
+Kole District 71
+Mayuge District 91
+Nwoya District 113
+Serere District 128
