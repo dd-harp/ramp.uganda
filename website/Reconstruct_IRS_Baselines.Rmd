@@ -1,0 +1,67 @@
+---
+title:"Reconstruct IRS Baselines"
+output:html_document
+---
+
+This is a working document for the 
+
+```{r}
+library(ramp.uganda)
+library(ramp.xds)
+library(ramp.work)
+library(ramp.control)
+library(ramp.library)
+devtools::load_all("~/git/ramp.work")
+```
+
+```{r}
+base_mod = "sip_si" 
+wd = "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/models/"
+base_mod <- "sip_si"
+save_as <- paste(base_mod, ".rds", sep="")
+file_name <- paste(wd, save_as, sep="")
+```
+
+
+```{r}
+half_pipe_2(18, base_mod, wd)
+```
+
+```{r set 1}
+set1<-c(3,9,20,22,25,40,103,114,126,133)
+ix1 <- set1*0
+for(i in 1:10){
+  ix1[i] = which(district_dir$district_name == uga_district_shp$name[set1[i]]) 
+}
+cbind(ix1, district_dir$district_name[ix1]) 
+```
+```{r set 2}
+set2<-c(60,111,122,131,145)
+ix2 <- set2*0
+for(i in 1:5){
+  ix2[i] = which(district_dir$district_name == uga_district_shp$name[set2[i]]) 
+}
+cbind(ix2, district_dir$district_name[ix2]) 
+```
+
+```{r}
+ix = 17
+prts <- get_district_pfpr_i(ix)
+dir_name <- prts$dir_name[1]
+dname <- prts$district_name[1]
+filename1 <- paste(base_mod, "_", dir_name, "_history.rds", sep="")
+model1 <- readRDS(paste(wd, filename1, sep=""))
+model1 <- xds_solve(model1, times = prts$jdate)
+filename2 <- paste(base_mod, "_", dir_name, "_baseline.rds", sep="")
+model2 <- readRDS(paste(wd, filename2, sep=""))
+model2 <- xds_solve(model2, times=prts$jdate)
+profile_pr(model1, prts)
+lines(prts$jdate/365, smooth(prts$pfpr), col = "gold2", lwd=2)
+pr2 <- get_XH(model2,1)$true_pr
+lines(prts$jdate/365+2015, pr2, col= "blue", lwd=2, lty=2)
+ tt = seq(0, 3650)
+#show_coverage(tt, model2, "irs", add=TRUE, clr="#4686FBFF")
+#add_itn_history_jdate(dname, model2$bednets$coverage_mod$coverage)
+#show_coverage(tt, model2, "bednet", add=TRUE, clr="#E4460AFF")
+```
+

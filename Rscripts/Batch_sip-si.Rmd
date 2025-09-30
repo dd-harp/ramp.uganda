@@ -36,16 +36,22 @@ pipeline(13, base_mod, wd)
 These errors: 
 
 ```{r}
-ix = which(district_dir$district_name == "Kalaki District")
-ix
+devtools::load_all()
 ```
 
-Agago District 3
-Bugiri District 13
-Gulu District 33
-Kalaki District 45
-Kitgum District 69
-Kole District 71
-Mayuge District 91
-Nwoya District 113
-Serere District 128
+```{r}
+pdf("~/git/ramp.uganda/models/sip_si.pdf")
+for(i in 1:146) viz_pipe_1(i, base_mod, wd, pdf=FALSE)
+dev.off(dev.cur())
+```
+
+```{r}
+for(i in 1:146) viz_pipe(i, base_mod, wd, pdf=TRUE)
+```
+
+```{r}
+i=1
+viz_pipe(133, base_mod, wd) 
+```
+
+

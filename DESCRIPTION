@@ -9,7 +9,7 @@ Description: This package
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 URL: https://dd-harp.github.io/ramp.uganda/
 BugReports: https://github.com/dd-harp/ramp.uganda/issues
 Roxygen: list(markdown = TRUE)

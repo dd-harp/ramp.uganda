@@ -1,0 +1,149 @@
+---
+title: "debug"
+output: html_document
+---
+
+```{r}
+library(ramp.xds)
+library(ramp.library)
+#library(ramp.control)
+devtools::load_all("~/git/ramp.control")
+#library(ramp.work)
+devtools::load_all("~/git/ramp.work")
+#library(ramp.uganda)
+devtools::load_all("~/git/ramp.uganda")
+```
+
+## pipeline 
+
+The pipeline has been run. 
+
+```{r}
+base_mod = "sip_si" 
+wd = "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/models/"
+base_mod <- "sip_si"
+save_as <- paste(base_mod, ".rds", sep="")
+file_name <- paste(wd, save_as, sep="")
+file_name
+```
+
+```{r pipeline, eval=F}
+pipeline(133, base_mod, wd)
+```
+
+
+
+## half_pipe_1
+
+```{r half_pipe_1, eval=F}
+half_pipe_1(i, base_mod, wd)
+```
+
+```{r model1}
+filename1 <- paste(base_mod, "_", dir_name, "_history.rds", sep="")
+  model1 <- readRDS(paste(wd, filename1, sep=""))
+  print(filename1)
+```
+
+
+```{r}
+viz_pipe_1(i, base_mod, wd)
+```
+
+## half_pipe_2 
+
+This will rerun and save the baseline model.  
+
+```{r}
+devtools::load_all("~/git/ramp.work")
+devtools::load_all()
+half_pipe_2(133, base_mod, wd)
+```
+
+```{r model2}
+filename2 <- paste(base_mod, "_", dir_name, "_baseline.rds", sep="")
+  model2 <- readRDS(paste(wd, filename2, sep=""))
+  print(filename2)
+```
+
+```{r}
+tt <- seq(0, 3650, by = 10)
+show_coverage(tt, model2, "irs")
+```
+```{r}
+show_trend(model2)
+```
+
+```{r viz_pipe_2}
+viz_pipe_2(133, base_mod, wd)
+```
+
+## reset  
+
+```{r}
+tt <- seq(0, 3650, by=10)
+```
+
+```{r}
+devtools::load_all("~/git/ramp.work")
+```
+
+```{r reset_cf_baseline}
+model3 <- reset_cf_baseline(model2, 0.6)
+show_trend(model3, dt=10)
+```
+
+
+```{r reset_cf_baseline}
+model3$irs$coverage_mod$coverage = model3$irs$coverage_mod$coverage*0 
+model3$irs$coverage_mod <- setup_F_cover_irs(model3$irs$coverage_mod)
+show_coverage(tt, model3, "irs")
+```
+
+
+```{r reset_cf_baseline}
+model3 <- burnin(model3) 
+model3 <- xds_solve(model3, times = prts$jdate) 
+profile_pr(model3, prts, y1=TRUE)
+```
+```{r}
+model3$irs$coverage_mod$coverage[c(1,2)] = 0.3
+model3$irs$coverage_mod$coverage[c(3)] = 0.2
+model3$irs$coverage_mod$coverage[c(4)] = 0.14
+model3$irs$coverage_mod$coverage[c(5)] = 0.09
+model3$irs$coverage_mod$coverage[c(6)] = 0.05
+model3$irs$coverage_mod$coverage[c(7)] = 0.12
+model3$irs$coverage_mod$coverage[c(8)] = 0.03
+model3$irs$coverage_mod$coverage[c(9)] = 0.01
+model3$irs$coverage_mod$coverage[c(10)] = 0.14
+model3$irs$coverage_mod <- setup_F_cover_irs(model3$irs$coverage_mod)
+show_coverage(tt, model3, "irs")
+```
+```{r}
+model3 <- xds_solve(model3, times = prts$jdate) 
+profile_pr(model3, prts, y1=TRUE)
+```
+
+```{r refit_effect_size}
+devtools::load_all("~/git/ramp.work")
+model4 <- refit_effect_size(model3, prts$pfpr, prts$jdate)
+```
+
+```{r viz4}
+model4 <- xds_solve(model4, times = prts$jdate)
+profile_pr(model4, prts, y1=TRUE)
+```
+
+```{r model5}
+devtools::load_all("~/git/ramp.work")
+devtools::load_all("~/git/ramp.uganda")
+model5 <- refit_effect_size(model3, prts$pfpr, prts$jdate, c(1,2))
+```
+
+```{r viz5}
+model5 <- xds_solve(model5, times = prts$jdate)
+profile_pr(model5, prts, y1=TRUE)
+```
+
+
+
