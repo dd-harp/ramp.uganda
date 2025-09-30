@@ -1,0 +1,15 @@
+Rscript batch_sip-si.R 1 10  &
+Rscript batch_sip-si.R 11 20 &
+Rscript batch_sip-si.R 21 30 &
+Rscript batch_sip-si.R 31 40 &
+Rscript batch_sip-si.R 41 50 &
+Rscript batch_sip-si.R 51 60 &
+Rscript batch_sip-si.R 61 70 &
+Rscript batch_sip-si.R 71 80 &
+Rscript batch_sip-si.R 81 90 &
+Rscript batch_sip-si.R 91 100 &
+Rscript batch_sip-si.R 101 110 &
+Rscript batch_sip-si.R 111 120 &
+Rscript batch_sip-si.R 121 130 &
+Rscript batch_sip-si.R 131 140 &
+Rscript batch_sip-si.R 141 146 &

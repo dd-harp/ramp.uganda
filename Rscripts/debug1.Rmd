@@ -1,0 +1,151 @@
+---
+title: "debug1"
+output: html_document
+---
+
+```{r}
+library(ramp.xds)
+library(ramp.library)
+#library(ramp.control)
+devtools::load_all("~/git/ramp.control")
+#library(ramp.work)
+devtools::load_all("~/git/ramp.work")
+#library(ramp.uganda)
+devtools::load_all("~/git/ramp.uganda")
+```
+
+```{r}
+base_mod = "sip_si" 
+wd = "/Users/smitdave/Library/CloudStorage/Box-Box/RAMP/models/"
+base_mod <- "sip_si"
+save_as <- paste(base_mod, ".rds", sep="")
+file_name <- paste(wd, save_as, sep="")
+```
+
+```{r}
+add_irs_history_jdate = function(district_name, coverage, ymax=1, clr="#4686FBFF", Yr0=2015){
+  origin = as.Date(paste(Yr0,"-01-01", sep =""))
+
+  jd <- get_irs_jdates(district_name, Yr0)
+
+  if(length(jd)>0){
+    ix = which(ramp.uganda::uga_irs$location == district_name)
+    formula <- ramp.uganda::uga_irs[ix,]$formulation
+
+    for(i in 1:length(jd)){
+      points(jd[i], 0, pch = 15, col=clr)
+      segments(jd[i], 0, jd[i], .4*ymax, col=clr)
+      text(jd[i], ymax, formula[i], srt=90, adj=0, pos=2, col = clr, cex=0.8)
+    }
+  }
+}
+
+add_itn_history_jdate = function(district_name, coverage, ymax=1, clr = "#E4460AFF", Yr0=2015){
+  origin = as.Date(paste(Yr0,"-01-01", sep =""))
+
+  jd <- get_itn_jdates(district_name, Yr0)
+
+  if(length(jd)>0){
+    ix = which(ramp.uganda::uga_itn$location == district_name)
+
+    for(i in 1:length(jd)){
+      points(jd[i], 0, pch = 21, col=clr)
+      segments(jd[i], 0, jd[i], .5*ymax, col=clr)
+    }
+  }
+}
+```
+
+```{r}
+ix = 14
+prts <- get_district_pfpr_i(ix)
+dir_name <- prts$dir_name[1]
+dname <- prts$district_name[1]
+filename1 <- paste(base_mod, "_", dir_name, "_history.rds", sep="")
+model1 <- readRDS(paste(wd, filename1, sep=""))
+model1 <- xds_solve(model1, times = prts$jdate)
+filename2 <- paste(base_mod, "_", dir_name, "_baseline.rds", sep="")
+model2 <- readRDS(paste(wd, filename2, sep=""))
+model2 <- xds_solve(model2, times=prts$jdate)
+```
+
+```{r}
+plot_district = function(ix, make_pdf=FALSE){
+  prts <- get_district_pfpr_i(ix)
+  dir_name <- prts$dir_name[1]
+  dname <- prts$district_name[1]
+  filename1 <- paste(base_mod, "_", dir_name, "_history.rds", sep="")
+  model1 <- readRDS(paste(wd, filename1, sep=""))
+  model1 <- xds_solve(model1, times = prts$jdate)
+  filename2 <- paste(base_mod, "_", dir_name, "_baseline.rds", sep="")
+  model2 <- readRDS(paste(wd, filename2, sep=""))
+  model2 <- xds_solve(model2, times=prts$jdate)
+  if(make_pdf==TRUE){
+    pdf_filename = paste("~/Nextcloud/scratch/", dir_name, ".pdf", sep="")
+    pdf(pdf_filename, height=5, width=8)
+  } 
+  plot(prts$jdate, prts$pfpr, ylim = c(0,1), pch =15, cex=1, main = paste(dname, ", i=", ix), ylab = "PfPR", xlab = "Time (jdate)")
+  lines(prts$jdate, smooth(prts$pfpr), col = "gold2", lwd=2)
+  pr1 <- get_XH(model1,1)$true_pr
+  lines(prts$jdate, pr1, col= "orange", lwd=3)
+  pr2 <- get_XH(model2,1)$true_pr
+  lines(prts$jdate, pr2, col= "blue", lwd=2, lty=2)
+  add_irs_history_jdate(dname, model2$irs$coverage_mod$coverage)
+  tt = seq(0, 3650)
+  show_coverage(tt, model2, "irs", add=TRUE, clr="#4686FBFF")
+  add_itn_history_jdate(dname, model2$bednets$coverage_mod$coverage)
+  show_coverage(tt, model2, "bednet", add=TRUE, clr="#E4460AFF")
+  model3 <- model2
+  model3$irs$coverage_mod$coverage = model3$irs$coverage_mod$coverage*0
+  model3$irs$coverage_mod <- setup_F_cover_irs(model3$irs$coverage_mod)
+  model3$bednets$coverage_mod$coverage = model3$bednets$coverage_mod$coverage*0
+  model3$bednets$coverage_mod <- setup_F_cover_bednet(model3$bednets$coverage_mod)
+  model3 <- xds_solve(model3, times=prts$jdate)
+  pr3 <- get_XH(model3,1)$true_pr
+  lines(prts$jdate, pr3, col= "purple", lwd=2)
+  if(make_pdf==TRUE) dev.off(dev.cur())
+}
+```
+
+```{r}
+plot_district(133, make_pdf=FALSE)
+```
+
+```{r}
+for(i in 1:146){
+  print(c(i=i))
+  plot_district(i, make_pdf=TRUE)
+}
+```
+
+```{r}
+pdf("~/git/ramp.uganda/outputs/plots.pdf", height=5, width=8)
+for(i in 1:146){
+  print(c(i=i))
+  plot_district(i)
+}
+dev.off(dev.cur())
+```
+
+```{r}
+half_pipe_2(ix,base_mod,wd)
+filename2 <- paste(base_mod, "_", dir_name, "_baseline.rds", sep="")
+model2 <- readRDS(paste(wd, filename2, sep=""))
+model2 <- xds_solve(model2, times=prts$jdate)
+plot(prts$jdate, prts$pfpr, ylim = c(0,1), pch =15, cex=1)
+pr1 <- get_XH(model1,1)$true_pr
+lines(prts$jdate, pr1, col= "darkblue", lwd=2)
+pr2 <- get_XH(model2,1)$true_pr
+lines(prts$jdate, pr2, col= "orange", lwd=2, lty=2)
+```
+```
+
+```{r}
+plot(prts$jdate, prts$pfpr, ylim = c(0,1), pch =15, cex=1)
+pr1 <- get_XH(model1,1)$true_pr
+lines(prts$jdate, pr1, col= "darkblue", lwd=2)
+pr2 <- get_XH(model2,1)$true_pr
+lines(prts$jdate, pr2, col= "orange", lwd=2, lty=2)
+```
+
+

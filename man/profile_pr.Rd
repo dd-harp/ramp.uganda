@@ -4,7 +4,7 @@
 \alias{profile_pr}
 \title{Plot Predicted and Observed PR}
 \usage{
-profile_pr(model, data, Yr0 = 2015)
+profile_pr(model, data, Yr0 = 2015, y1 = FALSE)
 }
 \arguments{
 \item{model}{a model; an xds object}
@@ -12,6 +12,8 @@ profile_pr(model, data, Yr0 = 2015)
 \item{data}{a data set}
 
 \item{Yr0}{a reference year}
+
+\item{y1}{scale y limits to 1}
 }
 \value{
 invisible()

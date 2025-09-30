@@ -1,0 +1,105 @@
+---
+title: "Baselines"
+output: html_document
+---
+
+```{r}
+library(ramp.xds)
+library(ramp.control)
+library(ramp.work)
+library(ramp.library)
+library(ramp.uganda)
+devtools::load_all()
+attach(yaml::read_yaml("../my_paths.yaml")) 
+```
+
+There is a SimBA webpage that explains the rationale.  This is a step-by-step guide. 
+
+First, we specify a district name:
+
+```{r}
+# Set district names
+dname <- c("Abim District")#, "Sheema District", "Ntungamo District")
+
+# Get matching directories
+ix <- which(district_dir$district_name %in% dname)
+dirname <- district_dir$dir[ix]
+
+# Build file paths
+models_path <- "/Users/doree/Box/RAMP/models/"
+filename <- paste0(models_path, dirname, "_Lambda_sis.rds")
+
+# Load models
+model <- setNames(lapply(filename, readRDS), dname)
+readRDS("recon.rds") -> recon
+# Load time series data
+prts <- setNames(lapply(dname, get_district_pfpr), dname)
+
+# Update models
+update_model <- function(model) {
+  model$nVectorSpecies <- 1
+  model$nHostSpecies <- 1
+  model$Xpar[[1]]$F_treat <- F_zero
+  model <- setup_other_variables(model)
+  model <- setup_MYZpar("SI", model, 1, MYZopts = model$MYZpar[[1]])
+  model <- setup_MYZinits(model, 1, MYZopts = get_MYZinits(model, 1))
+  model <- make_indices(model)
+  model$Umatrix <- recon$calU
+  return(model)
+}
+model_up <- lapply(model, update_model)
+
+# Solve models
+solved_models <- lapply(model_up, xds_solve)
+
+# Set up interventions
+irs_rounds <- setNames(lapply(dname, make_irs_rounds), dname)
+bednets_rounds <- setNames(lapply(dname, make_bednet_rounds), dname)
+
+# Apply IRS and bednets setup
+setup_interventions <- function(district_name) {
+  mod <- setup_irs(
+    solved_models[[district_name]],
+    coverage_name = "multiround",
+    coverage_opts = irs_rounds[[district_name]],
+    effect_sizes_name = "simple"
+  )
+  mod <- setup_bednets(
+    mod,
+    coverage_name = "multiround",
+    coverage_opts = bednets_rounds[[district_name]],
+    effect_sizes_name = "lemenach"
+  )
+  return(mod)
+}
+model_with_interventions <- setNames(lapply(dname, setup_interventions), dname)
+
+# Reconstruct baseline for each district
+reconstruct_all <- function(district_name) {
+  pfpr_obj <- prts[[district_name]]
+  reconstruct_baseline(
+    model_with_interventions[[district_name]],
+    pfpr_obj$pfpr,
+    pfpr_obj$jdate,
+    irs_rounds[[district_name]],
+    bednets_rounds[[district_name]],
+    "mean"
+  )
+}
+#reconstruct_all("Bukwo District")
+recon_results <- setNames(lapply(dname, reconstruct_all), dname)
+
+# Optional: save each result
+lapply(names(recon_results), function(d) {
+  saveRDS(recon_results[[d]], paste0("recon_", gsub(" ", "_", d), ".rds"))
+})
+```
+
+
+```{r}
+readRDS("recon_Bukwo District.rds") -> recon_Bukwo
+```
+
+
+
+
