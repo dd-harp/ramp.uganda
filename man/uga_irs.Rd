@@ -5,7 +5,7 @@
 \alias{uga_irs}
 \title{Uganda Mass ITN Distribution Data}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 316 rows and 18 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 316 rows and 19 columns.
 }
 \usage{
 uga_irs
