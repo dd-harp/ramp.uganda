@@ -9,4 +9,8 @@ ix = which(uga_irs$round == "Fludora Fusion")
 uga_irs$round[ix] = "fludora_fusion"
 ix = which(uga_irs$round == "Sumishield")
 uga_irs$round[ix] = "sumishield"
+start = as.Date("2015-01-01")
+start_date <- as.Date(uga_irs$spray_start)
+uga_irs$jdate = julian(start_date, origin = start)
 usethis::use_data(uga_irs, overwrite=TRUE)
+
