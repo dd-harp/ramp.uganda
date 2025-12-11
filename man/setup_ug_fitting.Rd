@@ -4,7 +4,7 @@
 \alias{setup_ug_fitting}
 \title{Setup Fitting for a Uganda District}
 \usage{
-setup_ug_fitting(xds_obj, ix, N = c())
+setup_ug_fitting(xds_obj, ix, N = c(), tmin = 0, tmax = Inf)
 }
 \arguments{
 \item{xds_obj}{a \strong{\code{ramp.xds}} model object}
@@ -12,6 +12,10 @@ setup_ug_fitting(xds_obj, ix, N = c())
 \item{ix}{the index of a district}
 
 \item{N}{the number of spline interpolation points}
+
+\item{tmin}{censor data before tmin}
+
+\item{tmax}{censor data after tmax}
 }
 \value{
 a \strong{\code{ramp.xds}} model object
