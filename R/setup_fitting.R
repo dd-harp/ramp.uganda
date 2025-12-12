@@ -11,7 +11,9 @@
 setup_ug_fitting = function(xds_obj, ix, N=c(), tmin=0, tmax=Inf){
   prts  <- get_district_pfpr_i(ix)
   dname <- unique(prts$district_name)
+  dir_name <- unique(prts$dir_name)
   xds_obj$location <- dname
+  xds_obj$saveto   <- dir_name
 
 
   ix = with(prts, which(jdate<tmax & jdate>tmin))
@@ -48,4 +50,80 @@ setup_bednet_eval = function(xds_obj, round, N=2, buf=1000){
   pr <- xds_obj$data_obj$pfpr[ix]
   xds_obj <- setup_fitting(xds_obj, pr, jday, N=N)
   return(xds_obj)
+}
+
+
+
+#' Fit the Realized History
+#'
+#' @param ix an index for a district
+#' @param base_model a **`ramp.xds`** model object with scaling
+#' @param model_name a string, the model name
+#'
+#' @returns the filename
+#' @export
+realized_history_ix = function(ix, base_model, model_name = "sip_eir"){
+  dist_mod <- setup_ug_fitting(base_model, ix, 9)
+  dist_mod$events_obj$bednet$event_length = rep(100, 4)
+  dist_mod <- change_bednet_shock_multiround(dist_mod, rep(0, 4))
+  dist_mod <- pr2history_xm(dist_mod)
+  filename = paste(dist_mod$saveto, "-", model_name, "-history.rds", sep="")
+  dist_mod$filename = filename
+  saveRDS(dist_mod, filename)
+  return(filename)
+}
+
+#' Evaluate the Bed Net Rounds
+#'
+#' @param ix an index for a district
+#' @param model_name a string, the model name
+#'
+#' @returns a string
+#' @export
+eval_bednet_rounds = function(ix, model_name = "sip_eir"){
+  prts  <- get_district_pfpr_i(ix)
+  saveto <- unique(prts$dir_name)
+  filename = paste(saveto, "-", model_name, "-history.rds", sep="")
+  stopifnot(file.exists(filename))
+  real_hist <- readRDS(filename)
+
+  for(round in 2:4){
+    print(c(round=round))
+    dist_round_hist <- setup_bednet_eval(real_hist, round=round, N=3, buf=1000)
+
+    #print("trend")
+    dist_round_hist <- fit_trend(dist_round_hist)
+    #print("season")
+    dist_round_hist <- fit_season(dist_round_hist)
+    dist_round_hist <- norm_trend(dist_round_hist)
+    #print("trend")
+    dist_round_hist <- fit_trend(dist_round_hist)
+    filename = paste(saveto, "-", model_name, "-round", round, "hist.rds", sep="")
+    saveRDS(dist_round_hist, filename)
+
+    Xinit = rep(0, 4)
+    Xinit[round] = 0.1
+
+    print("dist_shock_3")
+    ## Leave the Middle, Fit Shocks
+    dist_shock_3 <- change_bednet_shock_multiround(dist_round_hist, Xinit)
+    dist_shock_3 <- fit_bednet_shock(dist_shock_3, list(bednet_ix=round))
+    dist_shock_3 <- fit_trend(dist_shock_3)
+    dist_shock_3 <- fit_bednet_shock(dist_shock_3, list(bednet_ix=round))
+    dist_shock_3 <- fit_trend(dist_shock_3)
+    filename = paste(saveto, "-", model_name, "-round", round, "shock3.rds", sep="")
+    saveRDS(dist_shock_3, filename)
+
+    print("dist_shock_2")
+    ## Remove the Middle, Fit Shocks
+    dist_shock_2 <- change_bednet_shock_multiround(dist_round_hist, Xinit)
+    dist_shock_2 <- rm_ix_fit_spline_ty(2, dist_shock_2)
+    dist_shock_2 <- fit_bednet_shock(dist_shock_2, list(bednet_ix=round))
+    dist_shock_2 <- fit_trend(dist_shock_2)
+    dist_shock_2 <- fit_bednet_shock(dist_shock_2, list(bednet_ix=round))
+    dist_shock_2 <- fit_trend(dist_shock_2)
+    filename = paste(saveto, "-", model_name, "-round", round, "shock2.rds", sep="")
+    saveRDS(dist_shock_2, filename)
+  }
+  return(filename)
 }
