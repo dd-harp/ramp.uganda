@@ -5,7 +5,7 @@
 \alias{district_dir}
 \title{District Directories}
 \format{
-An object of class \code{data.frame} with 146 rows and 7 columns.
+An object of class \code{data.frame} with 146 rows and 13 columns.
 }
 \usage{
 district_dir
