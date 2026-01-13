@@ -173,6 +173,6 @@ eval_bednet_rounds = function(ix, model_name = "sip_eir"){
       dist_shock_2 <- fit_bednet_shock(dist_shock_2, list(bednet_ix=round))
       dist_shock_2 <- fit_trend(dist_shock_2)
       saveRDS(dist_shock_2, filename)
-  }}
+    }}
   return(filename)
 }
