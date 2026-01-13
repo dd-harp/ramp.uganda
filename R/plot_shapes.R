@@ -49,7 +49,7 @@ shade_region = function(region, clrs = "#CCCCCC"){
 make_district_icon = function(district){
   ix = which(district_dir$district_name == district)
   region = district_dir$in_region[ix]
-  ttl <- paste(district, "in", region)
+  ttl <- paste(district, "in", region, "Region")
   plot(ramptools::uga_district_shp$geometry, col = "#F2F2F2", main = ttl)
   shade_region(region, "#808080")
   plot(uga_water_shp$geometry, col = "skyblue", border="skyblue", add=TRUE)
@@ -107,5 +107,49 @@ outline_region = function(region, lwd=2, clr = "black", add=TRUE){
 shade_district = function(district, clr = "darkred"){
   ix =  which(ramptools::uga_district_shp$name == district)
   plot(ramptools::uga_district_shp$geometry[ix], col=clr, add=TRUE)
+  return(invisible())
+}
+
+#' Plot a district in red within its region
+#'
+#' @param district the district name
+#'
+#' @returns invisible()
+#' @export
+make_region_icon = function(region, lcex = 1){
+  ix = which(district_dir$in_region == region)
+  names = district_dir$district_name[ix]
+  dix = which(uga_district_shp$name %in% names)
+#  ttl <- paste(region, "Region")
+  ttl <- ""
+  rix <- which(uga_region_shp$name == region)
+  plot(uga_region_shp$geometry[rix], main = ttl)
+  plot(uga_district_shp$geometry[dix], col = "#F2F2F2", main = ttl, add=TRUE)
+  d_water <- suppressWarnings(st_intersection(uga_water_shp, uga_region_shp$geometry[rix]))
+  suppressWarnings(plot(d_water, col = "skyblue", border="skyblue", add=TRUE))
+  plot(uga_district_shp$geometry[dix], border = "#B3B3B3", add=TRUE)
+  with(district_dir,  text(lab_x[ix], lab_y[ix], short[ix], cex=lcex))
+  outline_region(region, lwd=3)
+  return(invisible())
+}
+
+#' Plot a district in red within its region
+#'
+#' @param district the district name
+#'
+#' @returns invisible()
+#' @export
+make_region_loc = function(region, lcex = 1){
+  ix = which(district_dir$in_region == region)
+  names = district_dir$district_name[ix]
+#  ttl <- paste(region, "Region")
+  ttl <- ""
+  rix <- which(uga_region_shp$name == region)
+  plot(uga_region_shp$geometry, main = ttl)
+  plot(uga_region_shp$geometry[rix], col = "#B3B3B3", add=T)
+  d_water <- suppressWarnings(st_intersection(uga_water_shp, uga_region_shp$geometry))
+  suppressWarnings(plot(d_water, col = "skyblue", border="skyblue", add=TRUE))
+  plot(uga_region_shp$geometry, main = ttl, add=T)
+  outline_region(region, lwd=3)
   return(invisible())
 }

@@ -1,0 +1,522 @@
+---
+title: "Region Icons"
+output: html_document
+---
+
+```{r}
+library(sf)
+library(ramptools)
+devtools::load_all()
+```
+```{r, fig.height=12, fig.width=12}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/uganda_by_region.png") 
+png(outfile, width= 720, height=720)
+plot(uga_region_shp$geometry, main = "")
+x = y = rep(0, 15)
+for(i in 1:15){
+  xy = st_centroid(uga_region_shp$geometry[i])
+  x[i] = xy[[1]][1]
+  y[i] = xy[[1]][2]
+}
+d_water <- suppressWarnings(st_intersection(uga_water_shp, uga_region_shp$geometry))
+suppressWarnings(plot(d_water, col = "skyblue", border="skyblue", add=TRUE))
+plot(uga_region_shp$geometry, lwd=2, border = grey(0.6), add=TRUE)
+shade_district("Kampala District", clr = grey(0.7))
+# shift the label for South Central
+y[9] = y[9] + 0.1
+x[9] = x[9] - 0.35
+# shift the label for North Central
+y[8] = y[8] + 0.5
+x[8] = x[8] - 0.3
+# shift the label for Busoga 
+y[4] = y[4] + 0.3
+# shift the label for Bukedi 
+y[2] = y[2] - 0.1
+x[2] = x[2] + 0.1
+text(x[-5], y[-5], uga_region_shp$name[-5])
+dev.off(dev.cur())
+```
+
+
+```{r, eval=F}
+make_region_icon = function(region, lcex = 1){
+  ix = which(district_dir$in_region == region)
+  names = district_dir$district_name[ix]
+  dix = which(uga_district_shp$name %in% names)
+  #ttl <- paste(region, "Region")
+  ttl <- paste(region, "Region")
+  rix <- which(uga_region_shp$name == region)
+  plot(uga_region_shp$geometry[rix], main = ttl)
+  plot(uga_district_shp$geometry[dix], col = "#F2F2F2", main = ttl, add=TRUE)
+  d_water <- suppressWarnings(st_intersection(uga_water_shp, uga_region_shp$geometry[rix]))
+  suppressWarnings(plot(d_water, col = "skyblue", border="skyblue", add=TRUE))
+  plot(uga_district_shp$geometry[dix], border = "#BFBFBF", add=TRUE)
+  with(district_dir,  text(lab_x[ix], lab_y[ix], short[ix], cex=lcex))
+  outline_region(region, lwd=3)
+  return(invisible())
+}
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/tooro_region/icon.png") 
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Kabarole District")
+district_dir[ix,12] = .73
+ix = which(district_dir$district_name== "Bunyangabu District")
+district_dir[ix,12] = district_dir[ix,10] + .05 
+ix = which(district_dir$district_name== "Bundibugyo District")
+district_dir[ix,12] = district_dir[ix,10] + .07
+district_dir[ix,11] = district_dir[ix,9] + .015 
+ix = which(district_dir$district_name== "Kamwenge District")
+district_dir[ix,12] = district_dir[ix,10] - .03 
+ix = which(district_dir$district_name== "Kitagwenda District")
+district_dir[ix,12] = district_dir[ix,10] + .09 
+district_dir[ix,11] = district_dir[ix,9] + .02 
+make_region_icon("Tooro", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+for(i in 1:15){
+  outfile = paste("~/Nextcloud/websites/uganda_intelligence/", region_dir$region_dir[i], "/location.png", sep="") 
+  png(outfile, height=720, width=720)
+  make_region_loc(region_dir$region_name[i])
+  dev.off(dev.cur())
+}
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/acholi_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Amuru District")
+district_dir[ix,12] = district_dir[ix,10] - .11
+district_dir[ix,11] = district_dir[ix,9] + .03 
+make_region_icon("Acholi", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/ankole_region/icon.png") 
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Sheema District")
+district_dir[ix,12] = district_dir[ix,10] - .05
+district_dir[ix,11] = district_dir[ix,9] + .0 
+ix = which(district_dir$district_name== "Isingiro District")
+district_dir[ix,12] = district_dir[ix,10] - .03
+district_dir[ix,11] = district_dir[ix,9] - .05 
+make_region_icon("Ankole", lcex=1)
+dev.off(dev.cur())
+```
+
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/bugisu_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Bulambuli District")
+district_dir[ix,12] = district_dir[ix,10] + .08
+district_dir[ix,11] = district_dir[ix,9] - .04 
+ix = which(district_dir$district_name== "Namisindwa District")
+district_dir[ix,12] = district_dir[ix,10] + .04
+district_dir[ix,11] = district_dir[ix,9] + .01 
+ix = which(district_dir$district_name== "Kapchorwa District")
+district_dir[ix,11] = district_dir[ix,9] - .02 
+ix = which(district_dir$district_name== "Mbale City")
+district_dir[ix,11] = district_dir[ix,9] + .02 
+make_region_icon("Bugisu", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/bukedi_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Butebo District")
+district_dir[ix,12] = district_dir[ix,10] + .01
+district_dir[ix,11] = district_dir[ix,9] - .02 
+make_region_icon("Bukedi", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/bunyoro_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Buliisa District")
+district_dir[ix,12] = district_dir[ix,10] - .12
+district_dir[ix,11] = district_dir[ix,9] + .05 
+ix = which(district_dir$district_name== "Hoima District")
+district_dir[ix,11] = district_dir[ix,9] + .06 
+make_region_icon("Bunyoro", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/busoga_region/icon.png") 
+
+png(outfile, height=1080, width=720)
+ix = which(district_dir$district_name== "Mayuge District")
+district_dir[ix,12] = district_dir[ix,10] + .45
+ix = which(district_dir$district_name== "Buyende District")
+district_dir[ix,12] = district_dir[ix,10] - .1
+district_dir[ix,11] = district_dir[ix,9] + .1 
+ix = which(district_dir$district_name== "Namayingo District")
+district_dir[ix,12] = district_dir[ix,10] + .55
+ix = which(district_dir$district_name== "Luuka District")
+district_dir[ix,12] = district_dir[ix,10] - .1
+ix = which(district_dir$district_name== "Iganga District")
+district_dir[ix,12] = district_dir[ix,10] + .03
+ix = which(district_dir$district_name== "Jinja District")
+district_dir[ix,12] = district_dir[ix,10] + .02 
+ix = which(district_dir$district_name== "Jinja City")
+district_dir[ix,11] = district_dir[ix,9] + .04 
+make_region_icon("Busoga", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/karamoja_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Napak District")
+district_dir[ix,12] = district_dir[ix,10] - .1 
+ix = which(district_dir$district_name== "Nakapiripirit District")
+district_dir[ix,12] = district_dir[ix,10] - .03 
+ix = which(district_dir$district_name== "Nabilatuk District")
+district_dir[ix,12] = district_dir[ix,10] + .01 
+district_dir[ix,11] = district_dir[ix,9] + .08
+ix = which(district_dir$district_name== "Amudat District")
+district_dir[ix,11] = district_dir[ix,9] + .15
+district_dir[ix,12] = district_dir[ix,10] - .3 
+make_region_icon("Karamoja", lcex=1)
+dev.off(dev.cur())
+```
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/kigezi_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Kisoro District")
+district_dir[ix,12] = district_dir[ix,10] + .05 
+ix = which(district_dir$district_name== "Kabale District")
+district_dir[ix,12] = district_dir[ix,10] + .03 
+ix = which(district_dir$district_name== "Rukiga District")
+district_dir[ix,12] = district_dir[ix,10] - .03 
+make_region_icon("Kigezi", lcex=1)
+dev.off(dev.cur())
+```
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/lango_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Kole District")
+district_dir[ix,11] = district_dir[ix,9] - .02 
+ix = which(district_dir$district_name== "Dokolo District")
+district_dir[ix,12] = district_dir[ix,10] + .07
+district_dir[ix,11] = district_dir[ix,9] + .1 
+ix = which(district_dir$district_name== "Lira District")
+district_dir[ix,12] = district_dir[ix,10] + .14
+district_dir[ix,11] = district_dir[ix,9] - .03 
+make_region_icon("Lango", lcex=1)
+with(district_dir, text(x[ix]+0.05, y[ix]-0.1, short[ix]))
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/north_central_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Buikwe District")
+district_dir[ix,12] = district_dir[ix,10] + 0.02
+ix = which(district_dir$district_name== "Kayunga District")
+district_dir[ix,11] = district_dir[ix,9] + 0.2
+ix = which(district_dir$district_name== "Mukono District")
+district_dir[ix,12] = district_dir[ix,10] + .45 
+district_dir[ix,11] = district_dir[ix,9] + 0.015
+ix = which(district_dir$district_name== "Mityana District")
+district_dir[ix,12] = district_dir[ix,10] + .015
+district_dir[ix,11] = district_dir[ix,9] + 0.01
+make_region_icon("North Central", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/south_central_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Wakiso District")
+district_dir[ix,12] = district_dir[ix,10] + 0.2
+ix = which(district_dir$district_name== "Gomba District")
+district_dir[ix,12] = district_dir[ix,10] - 0.05
+ix = which(district_dir$district_name== "Butambala District")
+district_dir[ix,12] = district_dir[ix,10] + 0.02
+district_dir[ix,11] = district_dir[ix,9] + 0.06
+ix = which(district_dir$district_name== "Kyotera District")
+district_dir[ix,12] = district_dir[ix,10] + 0.05
+district_dir[ix,11] = district_dir[ix,9] - 0.07
+ix = which(district_dir$district_name== "Mpigi District")
+district_dir[ix,12] = district_dir[ix,10] - 0.05
+district_dir[ix,11] = district_dir[ix,9] - 0.12
+ix = which(district_dir$district_name== "Rakai District")
+district_dir[ix,12] = district_dir[ix,10] - 0.05
+ix = which(district_dir$district_name== "Kalungu District")
+district_dir[ix,12] = district_dir[ix,10] + 0.01
+#district_dir[ix,11] = district_dir[ix,9] - 0.09
+make_region_icon("South Central", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/teso_region/icon.png") 
+ix = which(district_dir$district_name== "Ngora District")
+district_dir[ix,12] = district_dir[ix,10] + 0.02
+district_dir[ix,11] = district_dir[ix,9] + 0.02
+ix = which(district_dir$district_name== "Kalaki District")
+district_dir[ix,12] = district_dir[ix,10] + 0.02
+ix = which(district_dir$district_name== "Katakwi District")
+district_dir[ix,12] = district_dir[ix,10] + 0.08
+district_dir[ix,11] = district_dir[ix,9] - 0.03
+ix = which(district_dir$district_name== "Kaberamaido District")
+district_dir[ix,12] = district_dir[ix,10] + 0.08
+district_dir[ix,11] = district_dir[ix,9] + 0.07
+ix = which(district_dir$district_name== "Kapelebyong District")
+district_dir[ix,12] = district_dir[ix,10] + 0.05
+district_dir[ix,11] = district_dir[ix,9] - 0.03
+ix = which(district_dir$district_name== "Soroti District")
+district_dir[ix,12] = district_dir[ix,10] + 0.08
+district_dir[ix,11] = district_dir[ix,9] - 0.02
+png(outfile, height=720, width=720)
+make_region_icon("Teso", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/west_nile_region/icon.png") 
+ix = which(district_dir$district_name== "Obongi District")
+district_dir[ix,12] = district_dir[ix,10] + 0.06
+ix = which(district_dir$district_name== "Pakwach District")
+district_dir[ix,12] = district_dir[ix,10] - 0.01
+district_dir[ix,11] = district_dir[ix,9] + 0.02
+png(outfile, height=720, width=720)
+make_region_icon("West Nile", lcex=1)
+dev.off(dev.cur())
+```
+
+
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/acholi_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Amuru District")
+district_dir[ix,12] = district_dir[ix,10] - .11
+district_dir[ix,11] = district_dir[ix,9] + .03 
+make_region_icon("Acholi", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/ankole_region/icon.png") 
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Sheema District")
+district_dir[ix,12] = district_dir[ix,10] - .05
+district_dir[ix,11] = district_dir[ix,9] + .0 
+ix = which(district_dir$district_name== "Isingiro District")
+district_dir[ix,12] = district_dir[ix,10] - .03
+district_dir[ix,11] = district_dir[ix,9] - .05 
+make_region_icon("Ankole", lcex=1)
+dev.off(dev.cur())
+```
+
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/bugisu_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Bulambuli District")
+district_dir[ix,12] = district_dir[ix,10] + .08
+district_dir[ix,11] = district_dir[ix,9] - .04 
+ix = which(district_dir$district_name== "Namisindwa District")
+district_dir[ix,12] = district_dir[ix,10] + .04
+district_dir[ix,11] = district_dir[ix,9] + .01 
+ix = which(district_dir$district_name== "Kapchorwa District")
+district_dir[ix,11] = district_dir[ix,9] - .02 
+ix = which(district_dir$district_name== "Mbale City")
+district_dir[ix,11] = district_dir[ix,9] + .02 
+make_region_icon("Bugisu", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/bukedi_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Butebo District")
+district_dir[ix,12] = district_dir[ix,10] + .01
+district_dir[ix,11] = district_dir[ix,9] - .02 
+make_region_icon("Bukedi", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/bunyoro_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Buliisa District")
+district_dir[ix,12] = district_dir[ix,10] - .12
+district_dir[ix,11] = district_dir[ix,9] + .05 
+ix = which(district_dir$district_name== "Hoima District")
+district_dir[ix,11] = district_dir[ix,9] + .06 
+make_region_icon("Bunyoro", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/busoga_region/icon.png") 
+
+png(outfile, height=1080, width=720)
+ix = which(district_dir$district_name== "Mayuge District")
+district_dir[ix,12] = district_dir[ix,10] + .45
+ix = which(district_dir$district_name== "Buyende District")
+district_dir[ix,12] = district_dir[ix,10] - .1
+district_dir[ix,11] = district_dir[ix,9] + .1 
+ix = which(district_dir$district_name== "Namayingo District")
+district_dir[ix,12] = district_dir[ix,10] + .55
+ix = which(district_dir$district_name== "Luuka District")
+district_dir[ix,12] = district_dir[ix,10] - .1
+ix = which(district_dir$district_name== "Iganga District")
+district_dir[ix,12] = district_dir[ix,10] + .03
+ix = which(district_dir$district_name== "Jinja District")
+district_dir[ix,12] = district_dir[ix,10] + .02 
+ix = which(district_dir$district_name== "Jinja City")
+district_dir[ix,11] = district_dir[ix,9] + .04 
+make_region_icon("Busoga", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/karamoja_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Napak District")
+district_dir[ix,12] = district_dir[ix,10] - .1 
+ix = which(district_dir$district_name== "Nakapiripirit District")
+district_dir[ix,12] = district_dir[ix,10] - .03 
+ix = which(district_dir$district_name== "Nabilatuk District")
+district_dir[ix,12] = district_dir[ix,10] + .01 
+district_dir[ix,11] = district_dir[ix,9] + .08
+ix = which(district_dir$district_name== "Amudat District")
+district_dir[ix,11] = district_dir[ix,9] + .15
+district_dir[ix,12] = district_dir[ix,10] - .3 
+make_region_icon("Karamoja", lcex=1)
+dev.off(dev.cur())
+```
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/kigezi_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Kisoro District")
+district_dir[ix,12] = district_dir[ix,10] + .05 
+ix = which(district_dir$district_name== "Kabale District")
+district_dir[ix,12] = district_dir[ix,10] + .03 
+ix = which(district_dir$district_name== "Rukiga District")
+district_dir[ix,12] = district_dir[ix,10] - .03 
+make_region_icon("Kigezi", lcex=1)
+dev.off(dev.cur())
+```
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/lango_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Kole District")
+district_dir[ix,11] = district_dir[ix,9] - .02 
+ix = which(district_dir$district_name== "Dokolo District")
+district_dir[ix,12] = district_dir[ix,10] + .07
+district_dir[ix,11] = district_dir[ix,9] + .1 
+ix = which(district_dir$district_name== "Lira District")
+district_dir[ix,12] = district_dir[ix,10] + .14
+district_dir[ix,11] = district_dir[ix,9] - .03 
+make_region_icon("Lango", lcex=1)
+with(district_dir, text(x[ix]+0.05, y[ix]-0.1, short[ix]))
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/north_central_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Buikwe District")
+district_dir[ix,12] = district_dir[ix,10] + 0.02
+ix = which(district_dir$district_name== "Kayunga District")
+district_dir[ix,11] = district_dir[ix,9] + 0.2
+ix = which(district_dir$district_name== "Mukono District")
+district_dir[ix,12] = district_dir[ix,10] + .45 
+district_dir[ix,11] = district_dir[ix,9] + 0.015
+ix = which(district_dir$district_name== "Mityana District")
+district_dir[ix,12] = district_dir[ix,10] + .015
+district_dir[ix,11] = district_dir[ix,9] + 0.01
+make_region_icon("North Central", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/south_central_region/icon.png") 
+
+png(outfile, height=720, width=720)
+ix = which(district_dir$district_name== "Wakiso District")
+district_dir[ix,12] = district_dir[ix,10] + 0.2
+ix = which(district_dir$district_name== "Gomba District")
+district_dir[ix,12] = district_dir[ix,10] - 0.05
+ix = which(district_dir$district_name== "Butambala District")
+district_dir[ix,12] = district_dir[ix,10] + 0.02
+district_dir[ix,11] = district_dir[ix,9] + 0.06
+ix = which(district_dir$district_name== "Kyotera District")
+district_dir[ix,12] = district_dir[ix,10] + 0.05
+district_dir[ix,11] = district_dir[ix,9] - 0.07
+ix = which(district_dir$district_name== "Mpigi District")
+district_dir[ix,12] = district_dir[ix,10] - 0.05
+district_dir[ix,11] = district_dir[ix,9] - 0.12
+ix = which(district_dir$district_name== "Rakai District")
+district_dir[ix,12] = district_dir[ix,10] - 0.05
+ix = which(district_dir$district_name== "Kalungu District")
+district_dir[ix,12] = district_dir[ix,10] + 0.01
+#district_dir[ix,11] = district_dir[ix,9] - 0.09
+make_region_icon("South Central", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/teso_region/icon.png") 
+ix = which(district_dir$district_name== "Ngora District")
+district_dir[ix,12] = district_dir[ix,10] + 0.02
+district_dir[ix,11] = district_dir[ix,9] + 0.02
+ix = which(district_dir$district_name== "Kalaki District")
+district_dir[ix,12] = district_dir[ix,10] + 0.02
+ix = which(district_dir$district_name== "Katakwi District")
+district_dir[ix,12] = district_dir[ix,10] + 0.08
+district_dir[ix,11] = district_dir[ix,9] - 0.03
+ix = which(district_dir$district_name== "Kaberamaido District")
+district_dir[ix,12] = district_dir[ix,10] + 0.08
+district_dir[ix,11] = district_dir[ix,9] + 0.07
+ix = which(district_dir$district_name== "Kapelebyong District")
+district_dir[ix,12] = district_dir[ix,10] + 0.05
+district_dir[ix,11] = district_dir[ix,9] - 0.03
+ix = which(district_dir$district_name== "Soroti District")
+district_dir[ix,12] = district_dir[ix,10] + 0.08
+district_dir[ix,11] = district_dir[ix,9] - 0.02
+png(outfile, height=720, width=720)
+make_region_icon("Teso", lcex=1)
+dev.off(dev.cur())
+```
+
+```{r, fig.height=10}
+outfile = paste("~/Nextcloud/websites/uganda_intelligence/west_nile_region/icon.png") 
+ix = which(district_dir$district_name== "Obongi District")
+district_dir[ix,12] = district_dir[ix,10] + 0.06
+ix = which(district_dir$district_name== "Pakwach District")
+district_dir[ix,12] = district_dir[ix,10] - 0.01
+district_dir[ix,11] = district_dir[ix,9] + 0.02
+png(outfile, height=720, width=720)
+make_region_icon("West Nile", lcex=1)
+dev.off(dev.cur())
+```

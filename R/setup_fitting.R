@@ -176,3 +176,47 @@ eval_bednet_rounds = function(ix, model_name = "sip_eir"){
     }}
   return(filename)
 }
+
+#' Evaluate the Bed Net Rounds
+#'
+#' @param ix an index for a district
+#' @param model_name a string, the model name
+#'
+#' @returns a string
+#' @export
+re_eval_bednet_rounds = function(ix, model_name = "sip_eir"){
+  prts  <- get_district_pfpr_i(ix)
+  saveto <- unique(prts$dir_name)
+  for(round in 2:3){
+
+    Xinit = rep(0, 4)
+    Xinit[round] = 0.1
+
+    #print("dist_shock_3")
+    ## Leave the Middle, Fit Shocks
+    filename = paste("./outputs/", saveto, "-", model_name, "-round", round, "shock3.rds", sep="")
+    print(filename)
+    dist_shock_3 <- readRDS(filename)
+    dist_shock_3 <- fit_bednet_shock(dist_shock_3, list(bednet_ix=round))
+    dist_shock_3 <- fit_trend(dist_shock_3)
+    dist_shock_3 <- norm_trend(dist_shock_3)
+    dist_shock_3 <- fit_season(dist_shock_3)
+    dist_shock_3 <- fit_bednet_shock(dist_shock_3, list(bednet_ix=round))
+    dist_shock_3 <- fit_trend(dist_shock_3)
+    saveRDS(dist_shock_3, filename)
+
+    #print("dist_shock_2")
+    ## Remove the Middle, Fit ShocksA
+    filename = paste("./outputs/", saveto, "-", model_name, "-round", round, "shock2.rds", sep="")
+    dist_shock_2 <- readRDS(filename)
+    dist_shock_2 <- rm_ix_fit_spline_ty(2, dist_shock_2)
+    dist_shock_2 <- fit_bednet_shock(dist_shock_2, list(bednet_ix=round))
+    dist_shock_2 <- fit_trend(dist_shock_2)
+    dist_shock_2 <- norm_trend(dist_shock_2)
+    dist_shock_2 <- fit_season(dist_shock_2)
+    dist_shock_2 <- fit_bednet_shock(dist_shock_2, list(bednet_ix=round))
+    dist_shock_2 <- fit_trend(dist_shock_2)
+    saveRDS(dist_shock_2, filename)
+  }
+  return(filename)
+}
